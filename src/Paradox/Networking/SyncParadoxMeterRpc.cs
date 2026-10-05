@@ -1,4 +1,5 @@
 using Hazel;
+using Paradox.Core;
 using Reactor.Networking.Attributes;
 using Reactor.Networking.Rpc;
 
