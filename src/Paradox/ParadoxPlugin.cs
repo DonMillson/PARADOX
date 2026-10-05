@@ -11,12 +11,14 @@ namespace Paradox;
 [BepInDependency(ReactorPlugin.Id)]
 public partial class ParadoxPlugin : BasePlugin
 {
+    public static ParadoxPlugin Instance { get; private set; } = null!;
     public static ParadoxClientRegistry Clients { get; } = new();
 
     public Harmony Harmony { get; } = new(Id);
 
     public override void Load()
     {
+        Instance = this;
         Clients.Clear();
         Log.LogInfo($"PARADOX v{ParadoxInfo.Version} / protocol {ParadoxInfo.ProtocolVersion} loading...");
         Harmony.PatchAll();
