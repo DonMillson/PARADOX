@@ -9,6 +9,9 @@ public static class ParadoxGame
 
     public static void Reset() => State.Reset();
 
+    public static IReadOnlyList<ParadoxEvent> AddFrom(ParadoxMeterSource source) =>
+        AddMeter(ParadoxMeterRules.AmountFor(source));
+
     public static IReadOnlyList<ParadoxEvent> AddMeter(float amount)
     {
         if (!AmongUsClient.Instance.AmHost)
