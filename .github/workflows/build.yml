@@ -1,0 +1,30 @@
+name: Build PARADOX
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Build
+        run: dotnet build src/Paradox/Paradox.csproj -c Release
+
+      - name: Upload Paradox DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-v0.1.0
+          path: src/Paradox/bin/Release/net6.0/Paradox.dll
