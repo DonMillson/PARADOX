@@ -1,3 +1,4 @@
+using Paradox.Roles;
 using HarmonyLib;
 
 namespace Paradox.Core;
@@ -20,5 +21,6 @@ public static class ParadoxGameplayPatches
     public static void EndGameStartPostfix()
     {
         ParadoxGame.Reset();
+        RoleAssignment.Reset();
     }
 }
