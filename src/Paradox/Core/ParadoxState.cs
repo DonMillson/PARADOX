@@ -12,6 +12,11 @@ public sealed class ParadoxState
         _triggered.Clear();
     }
 
+    public void Set(float value)
+    {
+        Meter = Math.Clamp(value, 0f, 100f);
+    }
+
     public IReadOnlyList<ParadoxEvent> Add(float amount)
     {
         Meter = Math.Clamp(Meter + amount, 0f, 100f);
