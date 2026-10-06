@@ -6,5 +6,6 @@ public enum ParadoxRpcId : uint
     SyncParadoxMeter = 1,
     AssignRole = 2,
     UseRoleAbility = 3,
-    SyncRoleState = 4
+    SyncRoleState = 4,
+    ObserverTrace = 5
 }
