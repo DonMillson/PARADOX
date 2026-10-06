@@ -25,6 +25,18 @@ public sealed class ObserverTraceRpc : PlayerCustomRpc<ParadoxPlugin, ObserverTr
 
     public override void Handle(PlayerControl player, Data data)
     {
-        ObserverRole.RecordAbilityTrace(data.SourcePlayerId, data.CreatedAt);
+        if (AmongUsClient.Instance == null || player == null)
+            return;
+
+        if (player.OwnerId != AmongUsClient.Instance.HostId)
+        {
+            Plugin.Log.LogWarning(
+                $"Rejected Observer trace from non-host player {player.PlayerId}.");
+            return;
+        }
+
+        ObserverRole.RecordAbilityTrace(
+            data.SourcePlayerId,
+            data.CreatedAt);
     }
 }

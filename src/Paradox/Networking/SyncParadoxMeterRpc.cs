@@ -20,6 +20,16 @@ public sealed class SyncParadoxMeterRpc : PlayerCustomRpc<ParadoxPlugin, SyncPar
 
     public override void Handle(PlayerControl player, Data data)
     {
-        ParadoxGame.ApplySyncedMeter(data.Meter);
+        if (AmongUsClient.Instance == null || player == null)
+            return;
+
+        if (player.OwnerId != AmongUsClient.Instance.HostId)
+        {
+            Plugin.Log.LogWarning(
+                $"Rejected Paradox Meter sync from non-host player {player.PlayerId}.");
+            return;
+        }
+
+        ParadoxGame.ApplySyncedMeter(Math.Clamp(data.Meter, 0f, 100f));
     }
 }
