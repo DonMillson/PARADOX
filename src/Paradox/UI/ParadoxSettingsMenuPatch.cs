@@ -23,6 +23,7 @@ public static class ParadoxSettingsMenuPatch
     {
         Roles,
         Mechanics,
+        Meter,
         Language
     }
 
@@ -88,28 +89,35 @@ public static class ParadoxSettingsMenuPatch
             3.2f,
             TextAlignmentOptions.Center);
 
-        CreateButton(new Vector3(-2.4f, 1.92f, -2f), new Vector3(0.52f, 0.52f, 1f),
+        CreateButton(new Vector3(-3.15f, 1.92f, -2f), new Vector3(0.43f, 0.5f, 1f),
             ParadoxPlugin.Localizer.Get("ui.menu.roles"), () =>
             {
                 _tab = MenuTab.Roles;
                 Render();
             });
 
-        CreateButton(new Vector3(-0.8f, 1.92f, -2f), new Vector3(0.52f, 0.52f, 1f),
+        CreateButton(new Vector3(-1.58f, 1.92f, -2f), new Vector3(0.43f, 0.5f, 1f),
             ParadoxPlugin.Localizer.Get("ui.menu.mechanics"), () =>
             {
                 _tab = MenuTab.Mechanics;
                 Render();
             });
 
-        CreateButton(new Vector3(0.8f, 1.92f, -2f), new Vector3(0.52f, 0.52f, 1f),
+        CreateButton(new Vector3(0f, 1.92f, -2f), new Vector3(0.43f, 0.5f, 1f),
+            ParadoxPlugin.Localizer.Get("ui.menu.meter"), () =>
+            {
+                _tab = MenuTab.Meter;
+                Render();
+            });
+
+        CreateButton(new Vector3(1.58f, 1.92f, -2f), new Vector3(0.43f, 0.5f, 1f),
             ParadoxPlugin.Localizer.Get("ui.menu.language"), () =>
             {
                 _tab = MenuTab.Language;
                 Render();
             });
 
-        CreateButton(new Vector3(2.4f, 1.92f, -2f), new Vector3(0.52f, 0.52f, 1f),
+        CreateButton(new Vector3(3.15f, 1.92f, -2f), new Vector3(0.43f, 0.5f, 1f),
             ParadoxPlugin.Localizer.Get("ui.menu.close"), CloseMenu);
 
         switch (_tab)
@@ -119,6 +127,9 @@ public static class ParadoxSettingsMenuPatch
                 break;
             case MenuTab.Mechanics:
                 RenderMechanics();
+                break;
+            case MenuTab.Meter:
+                RenderMeter();
                 break;
             case MenuTab.Language:
                 RenderLanguage();
@@ -246,8 +257,31 @@ public static class ParadoxSettingsMenuPatch
         if (_contentRoot == null)
             return;
 
-        CreateText(_contentRoot.transform, "PARADOX_MeterTitle", new Vector3(0f, 1.0f, -2f),
+        CreateText(_contentRoot.transform, "PARADOX_MechanicsTitle", new Vector3(0f, 1.0f, -2f),
             ParadoxPlugin.Localizer.Get("ui.menu.mechanicsTitle"), 2.4f, TextAlignmentOptions.Center);
+
+        var lines = new[]
+        {
+            ParadoxPlugin.Localizer.Get("ui.menu.mechanicsHost"),
+            ParadoxPlugin.Localizer.Get("ui.menu.mechanicsSaved"),
+            ParadoxPlugin.Localizer.Get("ui.menu.mechanicsMore")
+        };
+
+        for (var i = 0; i < lines.Length; i++)
+        {
+            CreateText(_contentRoot.transform, $"PARADOX_Mechanic_{i}",
+                new Vector3(0f, 0.25f - i * 0.58f, -2f),
+                lines[i], 1.65f, TextAlignmentOptions.Center);
+        }
+    }
+
+    private static void RenderMeter()
+    {
+        if (_contentRoot == null)
+            return;
+
+        CreateText(_contentRoot.transform, "PARADOX_MeterTitle", new Vector3(0f, 1.0f, -2f),
+            ParadoxPlugin.Localizer.Get("ui.menu.meterTitle"), 2.4f, TextAlignmentOptions.Center);
 
         var lines = new[]
         {
@@ -260,7 +294,7 @@ public static class ParadoxSettingsMenuPatch
 
         for (var i = 0; i < lines.Length; i++)
         {
-            CreateText(_contentRoot.transform, $"PARADOX_Mechanic_{i}",
+            CreateText(_contentRoot.transform, $"PARADOX_Meter_{i}",
                 new Vector3(0f, 0.4f - i * 0.48f, -2f),
                 lines[i], 1.8f, TextAlignmentOptions.Center);
         }
