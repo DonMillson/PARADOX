@@ -14,6 +14,7 @@ public static class ParadoxRoleSettings
         [RoleId.Guardian] = true,
         [RoleId.Medic] = true,
         [RoleId.Tracker] = true,
+        [RoleId.Forensic] = true,
         [RoleId.Stabilizer] = true,
         [RoleId.Anomaly] = true
     };
@@ -28,6 +29,7 @@ public static class ParadoxRoleSettings
         [RoleId.Guardian] = 100,
         [RoleId.Medic] = 100,
         [RoleId.Tracker] = 100,
+        [RoleId.Forensic] = 100,
         [RoleId.Stabilizer] = 100,
         [RoleId.Anomaly] = 100
     };
@@ -80,6 +82,7 @@ public static class ParadoxRoleSettings
     public static float MedicCooldownSeconds { get; set; } = 25f;
     public static float TrackerDurationSeconds { get; set; } = 18f;
     public static float TrackerCooldownSeconds { get; set; } = 30f;
+    public static float ForensicCooldownSeconds { get; set; } = 20f;
     public static float StabilizerCooldownSeconds { get; set; } = 25f;
     public static float StabilizerReductionAmount { get; set; } = 10f;
     public static float AnomalyCooldownSeconds { get; set; } = 20f;
@@ -93,6 +96,7 @@ public static class ParadoxRoleSettings
         RoleId.Guardian or
         RoleId.Medic or
         RoleId.Tracker or
+        RoleId.Forensic or
         RoleId.Stabilizer or
         RoleId.Anomaly;
 
@@ -160,6 +164,7 @@ public static class ParadoxRoleSettings
         MedicCooldownSeconds = 25f;
         TrackerDurationSeconds = 18f;
         TrackerCooldownSeconds = 30f;
+        ForensicCooldownSeconds = 20f;
         StabilizerCooldownSeconds = 25f;
         StabilizerReductionAmount = 10f;
         AnomalyCooldownSeconds = 20f;

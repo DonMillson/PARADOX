@@ -108,7 +108,13 @@ public static class DefaultTranslations
         AddRoleName(l, "Technician", "Technician", "Technik");
         AddRoleName(l, "Seer", "Seer", "Wieszcz");
         AddRoleName(l, "Dispatcher", "Dispatcher", "Dyspozytor");
-        AddRoleName(l, "Forensic", "Forensic", "Kryminalistyk");
+        AddRole(l, "Forensic", "Forensic", "Kryminalistyk",
+            "Examine a nearby body for real death-time evidence and recent ability residue.", "Badaj pobliskie ciało pod kątem rzeczywistego czasu śmierci i śladów niedawnych zdolności.");
+        Add(l, "role.Forensic.ability", "EXAMINE", "ZBADAJ");
+        Add(l, "role.Forensic.result", "Forensic: death {seconds}s ago. Ability residue: {residue}.", "Kryminalistyka: śmierć {seconds}s temu. Ślad zdolności: {residue}.");
+        Add(l, "role.Forensic.residue.yes", "DETECTED", "WYKRYTY");
+        Add(l, "role.Forensic.residue.no", "NONE", "BRAK");
+        Add(l, "role.Forensic.result.unknown", "Forensic: evidence record unavailable.", "Kryminalistyka: brak zapisu dowodowego.");
         AddRole(l, "Stabilizer", "Stabilizer", "Stabilizator",
             "Reduce the Paradox Meter and slow reality collapse.", "Obniżaj Miernik Paradoksu i spowalniaj rozpad rzeczywistości.");
         Add(l, "role.Stabilizer.ability", "STABILIZE", "STABILIZUJ");
