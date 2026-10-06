@@ -54,12 +54,10 @@ public static class ParadoxLobbySettingsPatch
             if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
                 return;
 
-            if (ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish)
-                ParadoxFontSupport.EnsurePolishGlyphs();
-
             CreateTab(__instance);
             CreateTabButton(__instance);
             BuildRows(__instance);
+            ApplyPolishFontsIfNeeded();
 
             ParadoxPlugin.Instance.Log.LogInfo("PARADOX native lobby settings tab created.");
         }
@@ -155,9 +153,6 @@ public static class ParadoxLobbySettingsPatch
         if (_menu == null || _tab == null)
             return;
 
-        if (ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish)
-            ParadoxFontSupport.EnsurePolishGlyphs();
-
         _menu.ChangeTab(-1, false);
 
         _menu.PresetsTab?.gameObject.SetActive(false);
@@ -174,14 +169,34 @@ public static class ParadoxLobbySettingsPatch
         if (_menu.MenuDescriptionText != null)
         {
             DestroyTranslator(_menu.MenuDescriptionText);
-            ParadoxFontSupport.ApplyTo(_menu.MenuDescriptionText);
             _menu.MenuDescriptionText.text = ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish
                 ? "Ustawienia PARADOX. Host wybiera aktywne role, szanse pojawienia, język i mechaniki moda."
                 : "PARADOX settings. The host controls enabled roles, spawn chances, language and mod mechanics.";
         }
 
+        ApplyPolishFontsIfNeeded();
         RefreshRows();
         LayoutRows();
+    }
+
+    private static void ApplyPolishFontsIfNeeded()
+    {
+        if (ParadoxPlugin.Localizer.CurrentLanguage != Language.Polish)
+            return;
+
+        ParadoxFontSupport.EnsurePolishGlyphs();
+
+        foreach (var header in Headers)
+            ParadoxFontSupport.ApplyTo(header.Header.Title);
+
+        foreach (var item in OrderedRows)
+        {
+            ParadoxFontSupport.ApplyTo(item.Row.TitleText);
+            ParadoxFontSupport.ApplyTo(item.Row.ValueText);
+        }
+
+        if (_menu?.MenuDescriptionText != null)
+            ParadoxFontSupport.ApplyTo(_menu.MenuDescriptionText);
     }
 
     private static void BuildRows(GameSettingMenu menu)
@@ -266,7 +281,6 @@ public static class ParadoxLobbySettingsPatch
 
         header.name = $"PARADOX_Header_{title}";
         DestroyTranslator(header.Title);
-        ParadoxFontSupport.ApplyTo(header.Title);
         header.Title.text = title;
 
         var maskLayer = GameOptionsMenu.MASK_LAYER;
@@ -297,8 +311,6 @@ public static class ParadoxLobbySettingsPatch
         row.OnValueChanged = new Action<OptionBehaviour>(_ => { });
 
         DestroyTranslator(row.TitleText);
-        ParadoxFontSupport.ApplyTo(row.TitleText);
-        ParadoxFontSupport.ApplyTo(row.ValueText);
         row.TitleText.text = definition.Title;
 
         if (definition.Kind == RowKind.Role)
@@ -321,9 +333,6 @@ public static class ParadoxLobbySettingsPatch
         {
             var row = item.Row;
             var definition = item.Definition;
-
-            ParadoxFontSupport.ApplyTo(row.TitleText);
-            ParadoxFontSupport.ApplyTo(row.ValueText);
 
             row.TitleText.text = definition.Kind == RowKind.Role
                 ? ParadoxPlugin.Localizer.Get($"role.{definition.Role}.name")
@@ -431,6 +440,7 @@ public static class ParadoxLobbySettingsPatch
                     ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish
                         ? Language.English
                         : Language.Polish);
+                ApplyPolishFontsIfNeeded();
                 break;
 
             case RowKind.Role when !definition.Planned:
@@ -563,8 +573,6 @@ public static class ParadoxLobbySettingsPatch
                 return true;
 
             DestroyTranslator(__instance.TitleText);
-            ParadoxFontSupport.ApplyTo(__instance.TitleText);
-            ParadoxFontSupport.ApplyTo(__instance.ValueText);
             __instance.TitleText.text = definition.Title;
             RefreshRows();
             return false;
@@ -622,7 +630,6 @@ public static class ParadoxLobbySettingsPatch
             if (!TryGetRow(__instance, out _))
                 return true;
 
-            RefreshRows();
             return false;
         }
     }
