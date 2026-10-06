@@ -1,3 +1,4 @@
+using Paradox.Roles.Observer;
 using Paradox.Roles;
 using HarmonyLib;
 
@@ -22,5 +23,6 @@ public static class ParadoxGameplayPatches
     {
         ParadoxGame.Reset();
         RoleAssignment.Reset();
+        ObserverRole.Reset();
     }
 }
