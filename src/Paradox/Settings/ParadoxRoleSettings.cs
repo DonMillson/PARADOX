@@ -8,6 +8,7 @@ public static class ParadoxRoleSettings
     {
         [RoleId.Doppelganger] = true,
         [RoleId.Parasite] = true,
+        [RoleId.Cleaner] = true,
         [RoleId.Observer] = true,
         [RoleId.Witness] = true
     };
@@ -16,6 +17,7 @@ public static class ParadoxRoleSettings
     {
         [RoleId.Doppelganger] = 100,
         [RoleId.Parasite] = 100,
+        [RoleId.Cleaner] = 100,
         [RoleId.Observer] = 100,
         [RoleId.Witness] = 100
     };
@@ -50,9 +52,24 @@ public static class ParadoxRoleSettings
     public static float ParasiteInfectionDurationSeconds { get; set; } = 15f;
     public static float ParasiteCooldownSeconds { get; set; } = 30f;
 
+    public static bool CleanerEnabled
+    {
+        get => IsEnabled(RoleId.Cleaner);
+        set => SetEnabled(RoleId.Cleaner, value);
+    }
+
+    public static int CleanerSpawnChancePercent
+    {
+        get => GetSpawnChance(RoleId.Cleaner);
+        set => SetSpawnChance(RoleId.Cleaner, value);
+    }
+
+    public static float CleanerCooldownSeconds { get; set; } = 25f;
+
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
         RoleId.Parasite or
+        RoleId.Cleaner or
         RoleId.Observer or
         RoleId.Witness;
 
@@ -114,5 +131,6 @@ public static class ParadoxRoleSettings
         DoppelgangerCooldownSeconds = 30f;
         ParasiteInfectionDurationSeconds = 15f;
         ParasiteCooldownSeconds = 30f;
+        CleanerCooldownSeconds = 25f;
     }
 }
