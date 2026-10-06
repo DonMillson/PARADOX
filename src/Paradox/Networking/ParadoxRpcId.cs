@@ -7,5 +7,6 @@ public enum ParadoxRpcId : uint
     AssignRole = 2,
     UseRoleAbility = 3,
     SyncRoleState = 4,
-    ObserverTrace = 5
+    ObserverTrace = 5,
+    ParasiteInfection = 6
 }
