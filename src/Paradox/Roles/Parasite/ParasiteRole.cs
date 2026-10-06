@@ -1,4 +1,6 @@
+using Paradox.Networking;
 using Paradox.Settings;
+using Reactor.Networking.Rpc;
 using UnityEngine;
 
 namespace Paradox.Roles.Parasite;
@@ -31,14 +33,40 @@ public static class ParasiteRole
         if (!RoleAbilityService.Use(source, RoleId.Parasite))
             return false;
 
-        Infections[target.PlayerId] = new ParasiteInfection(
+        ApplySyncedInfection(
             source.PlayerId,
             target.PlayerId,
             now,
             ParadoxRoleSettings.ParasiteInfectionDurationSeconds);
 
         CooldownEndsAt[source.PlayerId] = now + ParadoxRoleSettings.ParasiteCooldownSeconds;
+
+        var sender = PlayerControl.LocalPlayer;
+        if (sender != null)
+        {
+            Rpc<ParasiteInfectionRpc>.Instance.Send(
+                sender,
+                new ParasiteInfectionRpc.Data(
+                    source.PlayerId,
+                    target.PlayerId,
+                    ParadoxRoleSettings.ParasiteInfectionDurationSeconds),
+                immediately: true);
+        }
+
         return true;
+    }
+
+    public static void ApplySyncedInfection(
+        byte sourcePlayerId,
+        byte targetPlayerId,
+        float startedAt,
+        float durationSeconds)
+    {
+        Infections[targetPlayerId] = new ParasiteInfection(
+            sourcePlayerId,
+            targetPlayerId,
+            startedAt,
+            durationSeconds);
     }
 
     public static bool TryTakeCompleted(byte targetPlayerId, float now, out ParasiteInfection infection)
