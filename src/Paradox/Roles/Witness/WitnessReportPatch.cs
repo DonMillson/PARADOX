@@ -6,7 +6,7 @@ namespace Paradox.Roles.Witness;
 public static class WitnessReportPatch
 {
     [HarmonyPrefix]
-    public static void ReportDeadBodyPrefix(PlayerControl __instance, NetworkedPlayerInfo target)
+    public static void ReportDeadBodyPrefix(PlayerControl __instance, GameData.PlayerInfo target)
     {
         if (__instance == null || target == null || !WitnessRole.IsWitness(__instance.PlayerId))
             return;
