@@ -1,158 +1,144 @@
-using Il2CppInterop.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.TextCore.LowLevel;
 
 namespace Paradox.UI;
 
 /// <summary>
-/// Adds fallbacks from fonts already shipped with Among Us.
-/// The lobby rows use a different TMP font than category headers, so a font can
-/// render "OGÓLNE" correctly while rows still show tofu squares for ł/ż/ś.
+/// Reliable Polish font support for PARADOX UI.
+/// Among Us' baked TMP atlases contain only part of Latin Extended, so fallback
+/// assets shipped by the game still render boxes for letters such as ę/ł/ż.
+/// On Windows we build a dynamic TMP font from a system TTF that contains Polish.
 /// </summary>
 public static class ParadoxFontSupport
 {
     private const string PolishCharacters = "ąćęłńóśźżĄĆĘŁŃÓŚŹŻ";
-    private static bool _configured;
+
+    private static TMP_FontAsset? _polishFont;
+    private static bool _attempted;
+
+    public static TMP_FontAsset? PolishFont
+    {
+        get
+        {
+            EnsurePolishGlyphs();
+            return _polishFont;
+        }
+    }
 
     public static void EnsurePolishGlyphs()
     {
-        if (_configured)
+        if (_polishFont != null || _attempted)
             return;
+
+        _attempted = true;
 
         try
         {
-            var objects = Resources.FindObjectsOfTypeAll(Il2CppType.Of<TMP_FontAsset>());
-            if (objects == null || objects.Length == 0)
-                return;
-
-            var fonts = new List<TMP_FontAsset>();
-
-            foreach (var obj in objects)
+            var candidates = new[]
             {
-                if (obj == null)
+                @"C:\Windows\Fonts\arial.ttf",
+                @"C:\Windows\Fonts\segoeui.ttf",
+                @"C:\Windows\Fonts\tahoma.ttf",
+                @"C:\Windows\Fonts\calibri.ttf"
+            };
+
+            foreach (var path in candidates)
+            {
+                if (!File.Exists(path))
                     continue;
 
-                var font = obj.Cast<TMP_FontAsset>();
-                if (font != null && !fonts.Any(existing => existing.Pointer == font.Pointer))
-                    fonts.Add(font);
-            }
+                TMP_FontAsset? asset = null;
 
-            if (fonts.Count == 0)
-                return;
-
-            // Find fonts that REALLY contain the glyphs in their own atlas.
-            // Do not trust a hard-coded Noto font name: its baked AU atlas can omit Latin Extended.
-            var missing = new HashSet<char>(PolishCharacters);
-            var selected = new List<TMP_FontAsset>();
-
-            foreach (var font in fonts
-                         .OrderByDescending(FontPreference)
-                         .ThenByDescending(font => CountDirectPolishGlyphs(font)))
-            {
-                var contributes = false;
-
-                foreach (var character in missing.ToArray())
+                try
                 {
-                    if (!HasDirectGlyph(font, character))
-                        continue;
-
-                    missing.Remove(character);
-                    contributes = true;
+                    asset = TMP_FontAsset.CreateFontAsset(
+                        path,
+                        0,
+                        64,
+                        6,
+                        GlyphRenderMode.SDFAA,
+                        1024,
+                        1024,
+                        AtlasPopulationMode.Dynamic,
+                        true);
+                }
+                catch (Exception e)
+                {
+                    ParadoxPlugin.Instance.Log.LogWarning(
+                        $"PARADOX could not create TMP font from {path}: {e.Message}");
                 }
 
-                if (contributes)
-                    selected.Add(font);
-
-                if (missing.Count == 0)
-                    break;
-            }
-
-            if (selected.Count == 0)
-            {
-                ParadoxPlugin.Instance.Log.LogWarning(
-                    "PARADOX found no loaded Among Us font containing Polish Latin Extended glyphs.");
-                return;
-            }
-
-            foreach (var font in fonts)
-            {
-                if (font.fallbackFontAssetTable == null)
+                if (asset == null)
                     continue;
 
-                foreach (var fallback in selected)
+                asset.name = "PARADOX Polish Dynamic";
+                asset.hideFlags = HideFlags.HideAndDontSave;
+
+                // Force the glyphs into the dynamic atlas now instead of waiting for
+                // the first rendered Polish label.
+                try
                 {
-                    if (font.Pointer == fallback.Pointer)
-                        continue;
-
-                    var exists = false;
-                    foreach (var existing in font.fallbackFontAssetTable)
-                    {
-                        if (existing != null && existing.Pointer == fallback.Pointer)
-                        {
-                            exists = true;
-                            break;
-                        }
-                    }
-
-                    if (!exists)
-                        font.fallbackFontAssetTable.Add(fallback);
+                    asset.TryAddCharacters(PolishCharacters);
                 }
-            }
+                catch
+                {
+                    // Dynamic TMP can still add glyphs lazily while rendering.
+                }
 
-            if (missing.Count > 0)
-            {
-                ParadoxPlugin.Instance.Log.LogWarning(
-                    $"PARADOX Polish fallback is partial. Missing glyphs: {new string(missing.ToArray())}");
+                if (!SupportsPolish(asset))
+                {
+                    UnityEngine.Object.Destroy(asset);
+                    continue;
+                }
+
+                _polishFont = asset;
+                ParadoxPlugin.Instance.Log.LogInfo(
+                    $"PARADOX Polish dynamic font ready: {path}");
                 return;
             }
 
-            _configured = true;
-            ParadoxPlugin.Instance.Log.LogInfo(
-                $"PARADOX Polish glyph fallback ready: {string.Join(", ", selected.Select(font => font.name))}");
+            ParadoxPlugin.Instance.Log.LogError(
+                "PARADOX could not find a Windows font with Polish glyphs.");
         }
         catch (Exception e)
         {
-            ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX could not configure Polish font fallback: {e}");
+            ParadoxPlugin.Instance.Log.LogError(
+                $"PARADOX Polish font setup failed: {e}");
         }
     }
 
-    private static int CountDirectPolishGlyphs(TMP_FontAsset font)
+    public static void ApplyTo(TMP_Text? text)
     {
-        var count = 0;
+        if (text == null || ParadoxPlugin.Localizer.CurrentLanguage != Localization.Language.Polish)
+            return;
 
-        foreach (var character in PolishCharacters)
-        {
-            if (HasDirectGlyph(font, character))
-                count++;
-        }
+        EnsurePolishGlyphs();
 
-        return count;
+        if (_polishFont == null)
+            return;
+
+        text.font = _polishFont;
     }
 
-    private static bool HasDirectGlyph(TMP_FontAsset font, char character)
+    public static bool SupportsPolish(TMP_FontAsset? font)
     {
+        if (font == null)
+            return false;
+
         try
         {
-            return font.HasCharacter(character, false, false);
+            foreach (var character in PolishCharacters)
+            {
+                if (!font.HasCharacter(character, false, true))
+                    return false;
+            }
+
+            return true;
         }
         catch
         {
             return false;
         }
-    }
-
-    private static int FontPreference(TMP_FontAsset font)
-    {
-        var name = font.name ?? string.Empty;
-
-        if (name.Contains("Barlow", StringComparison.OrdinalIgnoreCase))
-            return 4;
-        if (name.Contains("LiberationSans", StringComparison.OrdinalIgnoreCase))
-            return 3;
-        if (name.Contains("NotoSans", StringComparison.OrdinalIgnoreCase))
-            return 2;
-
-        return 1;
     }
 }
