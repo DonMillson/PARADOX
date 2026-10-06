@@ -6,7 +6,7 @@ public static class ParadoxFinalEventSelector
 {
     public static ParadoxFinalEventType Pick()
     {
-        var value = Random.Range(0, 3);
+        var value = UnityEngine.Random.Range(0, 3);
         return (ParadoxFinalEventType)value;
     }
 }
