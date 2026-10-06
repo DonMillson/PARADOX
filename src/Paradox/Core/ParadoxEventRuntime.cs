@@ -8,6 +8,7 @@ namespace Paradox.Core;
 /// Client-side presentation and short gameplay effects for Paradox thresholds.
 /// 25% = Reality Disturbance (visual interference + light camera shake).
 /// 50% = Reality Distortion (stronger interference + 6s role-ability jam).
+/// 75% = Critical Instability (heavy interference + intermittent blackout + 8s role-ability jam).
 /// </summary>
 public static class ParadoxEventRuntime
 {
@@ -23,13 +24,13 @@ public static class ParadoxEventRuntime
     private static bool _shakeCaptured;
 
     public static bool RoleAbilitiesBlocked =>
-        _activeThreshold == ParadoxThreshold.Distortion &&
+        _activeThreshold is ParadoxThreshold.Distortion or ParadoxThreshold.Instability &&
         Time.time < _effectEndsAt;
 
     public static void Trigger(ParadoxEvent paradoxEvent)
     {
         if (paradoxEvent == null ||
-            paradoxEvent.Threshold is not (ParadoxThreshold.Disturbance or ParadoxThreshold.Distortion) ||
+            paradoxEvent.Threshold is not (ParadoxThreshold.Disturbance or ParadoxThreshold.Distortion or ParadoxThreshold.Instability) ||
             !Triggered.Add(paradoxEvent.Threshold))
             return;
 
@@ -37,6 +38,7 @@ public static class ParadoxEventRuntime
         {
             ParadoxThreshold.Disturbance => 4f,
             ParadoxThreshold.Distortion => 6f,
+            ParadoxThreshold.Instability => 8f,
             _ => 0f
         };
 
@@ -61,6 +63,9 @@ public static class ParadoxEventRuntime
 
         if (previousMeter < 50f && currentMeter >= 50f)
             Trigger(ParadoxEventCatalog.For(ParadoxThreshold.Distortion));
+
+        if (previousMeter < 75f && currentMeter >= 75f)
+            Trigger(ParadoxEventCatalog.For(ParadoxThreshold.Instability));
     }
 
     public static void Update(HudManager hud)
@@ -100,9 +105,13 @@ public static class ParadoxEventRuntime
                 return;
 
             var title = ParadoxPlugin.Localizer.Get(paradoxEvent.LocalizationKey);
-            var detailKey = paradoxEvent.Threshold == ParadoxThreshold.Disturbance
-                ? "event.25.detail"
-                : "event.50.detail";
+            var detailKey = paradoxEvent.Threshold switch
+            {
+                ParadoxThreshold.Disturbance => "event.25.detail",
+                ParadoxThreshold.Distortion => "event.50.detail",
+                ParadoxThreshold.Instability => "event.75.detail",
+                _ => paradoxEvent.LocalizationKey
+            };
             var detail = ParadoxPlugin.Localizer.Get(detailKey);
 
             hud.Notifier.AddDisconnectMessage(
@@ -159,9 +168,18 @@ public static class ParadoxEventRuntime
             return;
         }
 
-        var red = new Color(0.95f, 0.08f, 0.18f, 0.10f + pulse * 0.10f);
-        var cyanStrong = new Color(0.08f, 0.85f, 0.90f, 0.08f + (1f - pulse) * 0.08f);
-        _overlay.color = Color.Lerp(red, cyanStrong, pulse);
+        if (_activeThreshold == ParadoxThreshold.Distortion)
+        {
+            var red = new Color(0.95f, 0.08f, 0.18f, 0.10f + pulse * 0.10f);
+            var cyanStrong = new Color(0.08f, 0.85f, 0.90f, 0.08f + (1f - pulse) * 0.08f);
+            _overlay.color = Color.Lerp(red, cyanStrong, pulse);
+            return;
+        }
+
+        var criticalPulse = (Mathf.Sin(elapsed * 16f) + 1f) * 0.5f;
+        var deepViolet = new Color(0.45f, 0.02f, 0.62f, 0.20f + pulse * 0.14f);
+        var blackout = new Color(0.01f, 0.00f, 0.03f, 0.28f + criticalPulse * 0.22f);
+        _overlay.color = Color.Lerp(deepViolet, blackout, criticalPulse);
     }
 
     private static void ApplyInitialCameraShake()
@@ -193,9 +211,12 @@ public static class ParadoxEventRuntime
         if (hud.PlayerCam == null)
             return;
 
-        var amount = _activeThreshold == ParadoxThreshold.Distortion
-            ? 0.035f
-            : 0.018f;
+        var amount = _activeThreshold switch
+        {
+            ParadoxThreshold.Instability => 0.055f,
+            ParadoxThreshold.Distortion => 0.035f,
+            _ => 0.018f
+        };
 
         hud.PlayerCam.shakeAmount = Math.Max(_previousShakeAmount, amount);
         hud.PlayerCam.shakePeriod = Math.Max(_previousShakePeriod, 16f);

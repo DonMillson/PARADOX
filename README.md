@@ -15,7 +15,7 @@ Status legend: **Partial** = code/foundation exists but the role is not yet end-
 | Doppelgänger | Impostor | Copies another player's appearance temporarily, then restores the original outfit. | Partial | Ability button, target selection, final multiplayer/runtime verification |
 | Parasite | Impostor | Infects a target; after the infection timer completes, the victim is killed. | Partial | Ability button, target UX, infection feedback, runtime verification |
 | Puppeteer | Impostor | Temporarily manipulates another player's actions/movement. | Planned | Full implementation and synchronization |
-| Cleaner | Impostor | Removes a dead body to deny report/evidence. | Planned | Full implementation and synchronization |
+| Cleaner | Impostor | Removes a dead body to deny report/evidence. | Partial | Runtime verification and balance tuning |
 | Blackmailer | Impostor | Temporarily prevents a selected player from communicating normally. | Planned | Full implementation, meeting integration |
 | Illusionist | Impostor | Creates deceptive visual information/decoys. | Planned | Full implementation and client sync |
 | Corruptor | Impostor | Corrupts players or systems to create harmful effects. | Planned | Final mechanic, implementation and sync |
@@ -56,6 +56,7 @@ Status legend: **Partial** = code/foundation exists but the role is not yet end-
 ## Implemented foundation
 
 - Paradox Meter 0–100 with one-time thresholds at 25/50/75/100.
+- Runtime threshold effects implemented for 25% Reality Disturbance, 50% Reality Distortion and 75% Critical Instability; the 50% and 75% events temporarily jam special role abilities.
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
 - Host-side initial role assignment. Doppelgänger and Parasite independently respect Enabled and SpawnChance; if neither qualifies, the player remains a vanilla Impostor.
@@ -72,6 +73,6 @@ Status legend: **Partial** = code/foundation exists but the role is not yet end-
 4. Implement Anomaly objective and neutral win condition.
 5. Add host settings UI for role pool, spawn chances, cooldowns, Meter and events.
 6. Complete PARADOX STATION gameplay map and tasks.
-7. Expand Paradox events, then implement the remaining registered roles.
+7. Implement the synchronized randomized 100% PARADOX EVENT, then expand the remaining event pool and registered roles.
 8. Harden multiplayer RPC validation and perform multi-client runtime tests.
 9. Android adapter and cosmetic-only Founder/Premium features after the PC gameplay core is stable.

@@ -42,6 +42,7 @@ public static class DefaultTranslations
         Add(l, "event.50", "Reality distortion", "Zniekształcenie rzeczywistości");
         Add(l, "event.50.detail", "Special role abilities are jammed for 6 seconds.", "Specjalne umiejętności ról są zablokowane na 6 sekund.");
         Add(l, "event.75", "Critical instability", "Krytyczna niestabilność");
+        Add(l, "event.75.detail", "Reality collapses into heavy flicker and role abilities are jammed for 8 seconds.", "Rzeczywistość wpada w silne zakłócenia, a umiejętności ról są zablokowane na 8 sekund.");
         Add(l, "event.100", "PARADOX EVENT", "ZDARZENIE PARADOKSU");
 
         AddRole(l, "Doppelganger", "Doppelgänger", "Sobowtór",
