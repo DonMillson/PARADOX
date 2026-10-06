@@ -11,6 +11,7 @@ public static class DefaultTranslations
         Add(l, "ui.menu.open", "PARADOX", "PARADOX");
         Add(l, "ui.menu.roles", "ROLES", "ROLE");
         Add(l, "ui.menu.mechanics", "MECHANICS", "MECHANIKI");
+        Add(l, "ui.menu.meter", "PARADOX METER", "MIERNIK");
         Add(l, "ui.menu.language", "LANGUAGE", "JĘZYK");
         Add(l, "ui.menu.close", "CLOSE", "ZAMKNIJ");
         Add(l, "ui.menu.previous", "PREV", "WSTECZ");
@@ -22,7 +23,11 @@ public static class DefaultTranslations
         Add(l, "ui.menu.roleHint", "Click ON/OFF or chance to change host settings.", "Kliknij WŁ./WYŁ. lub szansę, aby zmienić ustawienia hosta.");
         Add(l, "ui.menu.notHost", "Role settings can be changed by the host.", "Ustawienia ról może zmieniać host.");
         Add(l, "ui.menu.languageHint", "Choose the PARADOX interface language.", "Wybierz język interfejsu PARADOX.");
-        Add(l, "ui.menu.mechanicsTitle", "PARADOX METER", "MIERNIK PARADOKSU");
+        Add(l, "ui.menu.mechanicsTitle", "GAMEPLAY MECHANICS", "MECHANIKI ROZGRYWKI");
+        Add(l, "ui.menu.mechanicsHost", "Host controls enabled roles and spawn chances.", "Host kontroluje aktywne role i szanse ich pojawienia.");
+        Add(l, "ui.menu.mechanicsSaved", "Language and role settings are saved between launches.", "Język i ustawienia ról są zapisywane między uruchomieniami.");
+        Add(l, "ui.menu.mechanicsMore", "More role mechanics will appear here as they are completed.", "Kolejne mechaniki ról pojawią się tutaj wraz z ich ukończeniem.");
+        Add(l, "ui.menu.meterTitle", "PARADOX METER", "MIERNIK PARADOKSU");
         Add(l, "ui.menu.kill", "Kill +10", "Zabójstwo +10");
         Add(l, "ui.menu.sabotage", "Sabotage +4", "Sabotaż +4");
         Add(l, "ui.menu.ability", "Role ability +2", "Umiejętność roli +2");
