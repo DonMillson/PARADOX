@@ -9,8 +9,8 @@ using Object = UnityEngine.Object;
 namespace Paradox.UI;
 
 /// <summary>
-/// PARADOX role/chance summary shown directly in the lobby for every PARADOX client.
-/// Anchored to the HUD top-left so the 2026 lobby layout cannot push or clip it off-screen.
+/// Compact PARADOX role card shown in the lobby for every PARADOX client.
+/// The card is intentionally small and styled like a native sci-fi HUD widget.
 /// </summary>
 [HarmonyPatch]
 public static class ParadoxLobbyRoleSummaryPatch
@@ -20,6 +20,10 @@ public static class ParadoxLobbyRoleSummaryPatch
     private static PassiveButton? _roleSummaryButton;
     private static BoxCollider2D? _roleSummaryCollider;
     private static AspectPosition? _anchor;
+    private static SpriteRenderer? _frame;
+    private static SpriteRenderer? _panel;
+    private static SpriteRenderer? _accent;
+    private static Sprite? _solidSprite;
     private static int _pageIndex;
     private static float _nextRefresh;
     private static bool _buildFailed;
@@ -43,7 +47,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX could not create lobby role summary: {e}");
+                $"PARADOX could not create lobby role card: {e}");
             DestroySummary();
             _buildFailed = true;
         }
@@ -65,7 +69,7 @@ public static class ParadoxLobbyRoleSummaryPatch
             catch (Exception e)
             {
                 ParadoxPlugin.Instance.Log.LogWarning(
-                    $"PARADOX lobby role summary late build failed: {e.Message}");
+                    $"PARADOX lobby role card late build failed: {e.Message}");
                 _buildFailed = true;
             }
         }
@@ -83,7 +87,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX lobby role summary refresh failed: {e.Message}");
+                $"PARADOX lobby role card refresh failed: {e.Message}");
         }
     }
 
@@ -100,36 +104,36 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (template == null)
             return;
 
-        var root = new GameObject("PARADOX_LobbyRoleSummaryRoot");
+        var root = new GameObject("PARADOX_LobbyRoleCardRoot");
         root.transform.SetParent(HudManager.Instance.transform, false);
         root.transform.localPosition = Vector3.zero;
         root.transform.localRotation = Quaternion.identity;
         root.transform.localScale = Vector3.one;
         _root = root;
 
-        // Use Among Us' own aspect-aware anchoring instead of guessing local
-        // coordinates from GameStartManager. This keeps the panel on-screen at
-        // 16:9, ultrawide and other supported resolutions.
         try
         {
             _anchor = root.AddComponent<AspectPosition>();
             _anchor.Alignment = AspectPosition.EdgeAlignments.LeftTop;
-            _anchor.DistanceFromEdge = new Vector3(0.48f, 1.35f, -20f);
+            _anchor.DistanceFromEdge = new Vector3(0.42f, 1.42f, -20f);
             _anchor.updateAlways = true;
             _anchor.AdjustPosition();
         }
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX role summary AspectPosition failed: {e.Message}");
+                $"PARADOX role card AspectPosition failed: {e.Message}");
 
             var cam = Camera.main;
             if (cam != null)
-                root.transform.position = cam.ViewportToWorldPoint(new Vector3(0.035f, 0.82f, 10f));
+                root.transform.position =
+                    cam.ViewportToWorldPoint(new Vector3(0.03f, 0.79f, 10f));
         }
 
+        CreateCardBackground(root.transform);
+
         var go = Object.Instantiate(template.gameObject, root.transform);
-        go.name = "PARADOX_LobbyRoleSummary";
+        go.name = "PARADOX_LobbyRoleCardText";
 
         foreach (var component in go.GetComponents<Component>())
         {
@@ -157,36 +161,37 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
 
         go.SetActive(true);
-        go.transform.localPosition = Vector3.zero;
+        go.transform.localPosition = new Vector3(0.20f, -0.16f, -0.15f);
         go.transform.localRotation = Quaternion.identity;
         go.transform.localScale = Vector3.one;
 
         _roleSummary.enabled = true;
         _roleSummary.text = string.Empty;
-        _roleSummary.fontSize = 1.08f;
-        _roleSummary.lineSpacing = -7f;
+        _roleSummary.fontSize = 0.74f;
+        _roleSummary.lineSpacing = -4f;
         _roleSummary.alignment = TextAlignmentOptions.TopLeft;
         _roleSummary.autoSizeTextContainer = false;
         _roleSummary.richText = true;
         _roleSummary.enableWordWrapping = false;
         _roleSummary.overflowMode = TextOverflowModes.Overflow;
         _roleSummary.color = Color.white;
-        _roleSummary.outlineWidth = 0.16f;
-        _roleSummary.outlineColor = Color.black;
+        _roleSummary.outlineWidth = 0.10f;
+        _roleSummary.outlineColor = new Color32(2, 8, 12, 230);
+        _roleSummary.renderer.sortingOrder = 25;
 
         var rt = _roleSummary.rectTransform;
         if (rt != null)
         {
             rt.pivot = new Vector2(0f, 1f);
-            rt.sizeDelta = new Vector2(3.35f, 2.25f);
+            rt.sizeDelta = new Vector2(2.76f, 1.48f);
         }
 
         if (instance.StartButton != null)
             go.layer = instance.StartButton.gameObject.layer;
 
         _roleSummaryCollider = go.AddComponent<BoxCollider2D>();
-        _roleSummaryCollider.size = new Vector2(3.35f, 2.25f);
-        _roleSummaryCollider.offset = new Vector2(1.675f, -1.125f);
+        _roleSummaryCollider.size = new Vector2(2.98f, 1.68f);
+        _roleSummaryCollider.offset = new Vector2(1.29f, -0.69f);
         _roleSummaryCollider.isTrigger = true;
 
         _roleSummaryButton = go.AddComponent<PassiveButton>();
@@ -198,12 +203,81 @@ public static class ParadoxLobbyRoleSummaryPatch
         _roleSummaryButton.enabled = true;
         _roleSummaryButton.SetButtonEnableState(true);
         _roleSummaryButton.OnClick.AddListener((Action)NextPage);
+        _roleSummaryButton.OnMouseOver.AddListener((Action)(() => SetHover(true)));
+        _roleSummaryButton.OnMouseOut.AddListener((Action)(() => SetHover(false)));
 
         ParadoxFontSupport.ApplyTo(_roleSummary);
         Refresh();
 
         ParadoxPlugin.Instance.Log.LogInfo(
-            "PARADOX lobby role summary built and anchored to HUD top-left.");
+            "PARADOX compact lobby role card built.");
+    }
+
+    private static void CreateCardBackground(Transform parent)
+    {
+        var sprite = GetSolidSprite();
+        if (sprite == null)
+            return;
+
+        var frameGo = new GameObject("PARADOX_RoleCardFrame");
+        frameGo.transform.SetParent(parent, false);
+        frameGo.transform.localPosition = new Vector3(1.56f, -0.93f, 0.10f);
+        frameGo.transform.localScale = new Vector3(3.12f, 1.86f, 1f);
+        _frame = frameGo.AddComponent<SpriteRenderer>();
+        _frame.sprite = sprite;
+        _frame.color = new Color32(70, 215, 210, 150);
+        _frame.sortingOrder = 20;
+
+        var panelGo = new GameObject("PARADOX_RoleCardPanel");
+        panelGo.transform.SetParent(parent, false);
+        panelGo.transform.localPosition = new Vector3(1.56f, -0.93f, 0.08f);
+        panelGo.transform.localScale = new Vector3(3.04f, 1.78f, 1f);
+        _panel = panelGo.AddComponent<SpriteRenderer>();
+        _panel.sprite = sprite;
+        _panel.color = new Color32(7, 15, 22, 220);
+        _panel.sortingOrder = 21;
+
+        var accentGo = new GameObject("PARADOX_RoleCardAccent");
+        accentGo.transform.SetParent(parent, false);
+        accentGo.transform.localPosition = new Vector3(0.075f, -0.93f, 0.05f);
+        accentGo.transform.localScale = new Vector3(0.055f, 1.62f, 1f);
+        _accent = accentGo.AddComponent<SpriteRenderer>();
+        _accent.sprite = sprite;
+        _accent.color = new Color32(255, 90, 90, 255);
+        _accent.sortingOrder = 22;
+    }
+
+    private static Sprite? GetSolidSprite()
+    {
+        if (_solidSprite != null)
+            return _solidSprite;
+
+        try
+        {
+            var texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, Color.white);
+            texture.Apply();
+            _solidSprite = Sprite.Create(
+                texture,
+                new Rect(0f, 0f, 1f, 1f),
+                new Vector2(0.5f, 0.5f),
+                1f);
+        }
+        catch (Exception e)
+        {
+            ParadoxPlugin.Instance.Log.LogWarning(
+                $"PARADOX solid UI sprite creation failed: {e.Message}");
+        }
+
+        return _solidSprite;
+    }
+
+    private static void SetHover(bool hover)
+    {
+        if (_frame != null)
+            _frame.color = hover
+                ? new Color32(85, 240, 235, 220)
+                : new Color32(70, 215, 210, 150);
     }
 
     private static void NextPage()
@@ -232,6 +306,16 @@ public static class ParadoxLobbyRoleSummaryPatch
             _ => "#E7C64B"
         };
 
+        if (_accent != null)
+        {
+            _accent.color = faction switch
+            {
+                RoleFaction.Impostor => new Color32(255, 90, 90, 255),
+                RoleFaction.Crewmate => new Color32(85, 207, 232, 255),
+                _ => new Color32(231, 198, 75, 255)
+            };
+        }
+
         var factionName = faction switch
         {
             RoleFaction.Impostor => polish ? "IMPOSTORZY" : "IMPOSTORS",
@@ -241,8 +325,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            "<size=92%><color=#55D9D2><b>PARADOX</b></color></size>",
-            $"<color={color}><b>{factionName}</b></color>   <color=#AAAAAA>{_pageIndex + 1}/3  ></color>"
+            "<size=96%><color=#55D9D2><b>PARADOX</b></color>  <color=#667783>///</color></size>",
+            $"<size=82%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{_pageIndex + 1}/3  ></color></size>"
         };
 
         var roles = RoleRegistry.All
@@ -255,8 +339,8 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (roles.Length == 0)
         {
             lines.Add(polish
-                ? "<color=#AAAAAA>Brak aktywnych ról</color>"
-                : "<color=#AAAAAA>No active roles</color>");
+                ? "<size=74%><color=#89949D>Brak aktywnych ról</color></size>"
+                : "<size=74%><color=#89949D>No active roles</color></size>");
         }
         else
         {
@@ -264,13 +348,16 @@ public static class ParadoxLobbyRoleSummaryPatch
             {
                 var name = ParadoxPlugin.Localizer.Get(definition.NameKey);
                 var chance = ParadoxRoleSettings.GetSpawnChance(definition.Id);
-                lines.Add($"<color={color}>•</color> {name}  <b>{chance}%</b>");
+                lines.Add(
+                    $"<size=76%><color={color}>■</color> " +
+                    $"<color=#F2F5F7>{name}</color>  " +
+                    $"<color=#C9D2D9><b>{chance}%</b></color></size>");
             }
         }
 
         lines.Add(polish
-            ? "\n<size=52%><color=#77818C>kliknij ></color></size>"
-            : "\n<size=52%><color=#77818C>click ></color></size>");
+            ? "<size=48%><color=#65727D>kliknij kartę, aby zmienić  ></color></size>"
+            : "<size=48%><color=#65727D>click card to switch  ></color></size>");
 
         _roleSummary.text = string.Join("\n", lines);
     }
@@ -285,6 +372,9 @@ public static class ParadoxLobbyRoleSummaryPatch
         _roleSummaryButton = null;
         _roleSummaryCollider = null;
         _anchor = null;
+        _frame = null;
+        _panel = null;
+        _accent = null;
         _pageIndex = 0;
         _nextRefresh = 0f;
     }
