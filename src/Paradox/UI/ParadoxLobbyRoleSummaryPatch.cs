@@ -114,7 +114,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         {
             _anchor = root.AddComponent<AspectPosition>();
             _anchor.Alignment = AspectPosition.EdgeAlignments.LeftTop;
-            _anchor.DistanceFromEdge = new Vector3(0.55f, 1.55f, -20f);
+            _anchor.DistanceFromEdge = new Vector3(0.48f, 1.35f, -20f);
             _anchor.updateAlways = true;
             _anchor.AdjustPosition();
         }
@@ -163,7 +163,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         _roleSummary.enabled = true;
         _roleSummary.text = string.Empty;
-        _roleSummary.fontSize = 1.48f;
+        _roleSummary.fontSize = 1.08f;
+        _roleSummary.lineSpacing = -7f;
         _roleSummary.alignment = TextAlignmentOptions.TopLeft;
         _roleSummary.autoSizeTextContainer = false;
         _roleSummary.richText = true;
@@ -177,15 +178,15 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (rt != null)
         {
             rt.pivot = new Vector2(0f, 1f);
-            rt.sizeDelta = new Vector2(4.35f, 3.15f);
+            rt.sizeDelta = new Vector2(3.35f, 2.25f);
         }
 
         if (instance.StartButton != null)
             go.layer = instance.StartButton.gameObject.layer;
 
         _roleSummaryCollider = go.AddComponent<BoxCollider2D>();
-        _roleSummaryCollider.size = new Vector2(4.35f, 3.15f);
-        _roleSummaryCollider.offset = new Vector2(2.175f, -1.575f);
+        _roleSummaryCollider.size = new Vector2(3.35f, 2.25f);
+        _roleSummaryCollider.offset = new Vector2(1.675f, -1.125f);
         _roleSummaryCollider.isTrigger = true;
 
         _roleSummaryButton = go.AddComponent<PassiveButton>();
@@ -240,7 +241,7 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            "<color=#55D9D2><b>PARADOX — ROLE</b></color>",
+            "<size=92%><color=#55D9D2><b>PARADOX</b></color></size>",
             $"<color={color}><b>{factionName}</b></color>   <color=#AAAAAA>{_pageIndex + 1}/3  ></color>"
         };
 
@@ -268,8 +269,8 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
 
         lines.Add(polish
-            ? "\n<color=#888888>Kliknij listę, aby zmienić kategorię</color>"
-            : "\n<color=#888888>Click the list to change category</color>");
+            ? "\n<size=52%><color=#77818C>kliknij ></color></size>"
+            : "\n<size=52%><color=#77818C>click ></color></size>");
 
         _roleSummary.text = string.Join("\n", lines);
     }
