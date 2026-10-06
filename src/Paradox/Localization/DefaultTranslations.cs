@@ -100,7 +100,10 @@ public static class DefaultTranslations
         AddRoleName(l, "Seer", "Seer", "Wieszcz");
         AddRoleName(l, "Dispatcher", "Dispatcher", "Dyspozytor");
         AddRoleName(l, "Forensic", "Forensic", "Kryminalistyk");
-        AddRoleName(l, "Stabilizer", "Stabilizer", "Stabilizator");
+        AddRole(l, "Stabilizer", "Stabilizer", "Stabilizator",
+            "Reduce the Paradox Meter and slow reality collapse.", "Obniżaj Miernik Paradoksu i spowalniaj rozpad rzeczywistości.");
+        Add(l, "role.Stabilizer.ability", "STABILIZE", "STABILIZUJ");
+        Add(l, "role.Stabilizer.feedback", "Reality stabilized: Paradox Meter -{amount}.", "Rzeczywistość ustabilizowana: Miernik Paradoksu -{amount}.");
 
         AddRoleName(l, "Forgotten", "Forgotten", "Zapomniany");
         AddRoleName(l, "Collector", "Collector", "Kolekcjoner");

@@ -14,5 +14,6 @@ public enum ParadoxRpcId : uint
     TriggerParadoxFinalEvent = 9,
     DoppelgangerState = 10,
     AnomalyPulse = 11,
-    GuardianProtect = 12
+    GuardianProtect = 12,
+    StabilizerPulse = 13
 }

@@ -41,6 +41,24 @@ public static class ParadoxGame
         return events;
     }
 
+    public static float ReduceMeter(float amount)
+    {
+        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+            return 0f;
+
+        var reduction = Math.Min(Math.Max(0f, amount), State.Meter);
+        if (reduction <= 0f)
+            return 0f;
+
+        State.Set(State.Meter - reduction);
+        BroadcastMeter();
+
+        ParadoxPlugin.Instance.Log.LogInfo(
+            $"Paradox Meter stabilized by {reduction:0.#}; now {State.Meter:0.#}%.");
+
+        return reduction;
+    }
+
     public static void ApplySyncedMeter(float meter)
     {
         var previous = State.Meter;

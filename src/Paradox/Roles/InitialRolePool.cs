@@ -13,7 +13,8 @@ public static class InitialRolePool
     {
         RoleId.Observer,
         RoleId.Witness,
-        RoleId.Guardian
+        RoleId.Guardian,
+        RoleId.Stabilizer
     };
 
     public static IReadOnlyList<RoleId> Neutral { get; } = new[]

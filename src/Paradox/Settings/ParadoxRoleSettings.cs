@@ -12,6 +12,7 @@ public static class ParadoxRoleSettings
         [RoleId.Observer] = true,
         [RoleId.Witness] = true,
         [RoleId.Guardian] = true,
+        [RoleId.Stabilizer] = true,
         [RoleId.Anomaly] = true
     };
 
@@ -23,6 +24,7 @@ public static class ParadoxRoleSettings
         [RoleId.Observer] = 100,
         [RoleId.Witness] = 100,
         [RoleId.Guardian] = 100,
+        [RoleId.Stabilizer] = 100,
         [RoleId.Anomaly] = 100
     };
 
@@ -71,6 +73,8 @@ public static class ParadoxRoleSettings
     public static float CleanerCooldownSeconds { get; set; } = 25f;
     public static float GuardianProtectionDurationSeconds { get; set; } = 10f;
     public static float GuardianCooldownSeconds { get; set; } = 30f;
+    public static float StabilizerCooldownSeconds { get; set; } = 25f;
+    public static float StabilizerReductionAmount { get; set; } = 10f;
     public static float AnomalyCooldownSeconds { get; set; } = 20f;
 
     public static bool IsImplemented(RoleId role) => role is
@@ -80,6 +84,7 @@ public static class ParadoxRoleSettings
         RoleId.Observer or
         RoleId.Witness or
         RoleId.Guardian or
+        RoleId.Stabilizer or
         RoleId.Anomaly;
 
     public static bool IsEnabled(RoleId role) =>
@@ -143,6 +148,8 @@ public static class ParadoxRoleSettings
         CleanerCooldownSeconds = 25f;
         GuardianProtectionDurationSeconds = 10f;
         GuardianCooldownSeconds = 30f;
+        StabilizerCooldownSeconds = 25f;
+        StabilizerReductionAmount = 10f;
         AnomalyCooldownSeconds = 20f;
     }
 }
