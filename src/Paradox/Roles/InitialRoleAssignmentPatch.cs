@@ -15,6 +15,7 @@ public static class InitialRoleAssignmentPatch
 
         RoleAssignment.Reset();
 
+        var enabledImpostorRoles = BuildEnabledImpostorPool();
         var impostorIndex = 0;
         var crewIndex = 0;
 
@@ -25,19 +26,15 @@ public static class InitialRoleAssignmentPatch
 
             if (player.Data.Role.IsImpostor)
             {
-                var role = InitialRolePool.Impostor[impostorIndex % InitialRolePool.Impostor.Count];
-
-                if (role == RoleId.Doppelganger)
+                // If every PARADOX impostor role is disabled or fails its spawn roll,
+                // leave this player as a vanilla impostor instead of forcing a disabled role.
+                if (enabledImpostorRoles.Count > 0)
                 {
-                    if (!ParadoxRoleSettings.DoppelgangerEnabled ||
-                        UnityEngine.Random.Range(0, 100) >= ParadoxRoleSettings.DoppelgangerSpawnChancePercent)
-                    {
-                        role = RoleId.Parasite;
-                    }
+                    var role = enabledImpostorRoles[impostorIndex % enabledImpostorRoles.Count];
+                    RoleAssignment.Assign(player, role);
+                    impostorIndex++;
                 }
 
-                RoleAssignment.Assign(player, role);
-                impostorIndex++;
                 continue;
             }
 
@@ -50,5 +47,30 @@ public static class InitialRoleAssignmentPatch
         // Anomaly becomes eligible once neutral win conditions are implemented.
         ParadoxPlugin.Instance.Log.LogInfo(
             $"PARADOX initial roles assigned: {PlayerRoleRegistry.All.Count} players.");
+    }
+
+    private static List<RoleId> BuildEnabledImpostorPool()
+    {
+        var roles = new List<RoleId>();
+
+        if (ParadoxRoleSettings.DoppelgangerEnabled &&
+            PassesSpawnRoll(ParadoxRoleSettings.DoppelgangerSpawnChancePercent))
+        {
+            roles.Add(RoleId.Doppelganger);
+        }
+
+        if (ParadoxRoleSettings.ParasiteEnabled &&
+            PassesSpawnRoll(ParadoxRoleSettings.ParasiteSpawnChancePercent))
+        {
+            roles.Add(RoleId.Parasite);
+        }
+
+        return roles;
+    }
+
+    private static bool PassesSpawnRoll(int chancePercent)
+    {
+        var chance = Math.Clamp(chancePercent, 0, 100);
+        return chance >= 100 || (chance > 0 && UnityEngine.Random.Range(0, 100) < chance);
     }
 }
