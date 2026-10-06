@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Forensic, Stabilizer and Anomaly.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Nightmare, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Forensic, Stabilizer and Anomaly.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -23,7 +23,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Corruptor | Impostor | Corrupts players or systems to create harmful effects. | Planned | Final mechanic, implementation and sync |
 | Devourer | Impostor | Removes/consumes a victim with a specialized kill mechanic. | Planned | Final mechanic and implementation |
 | Timebreaker | Impostor | Temporarily disrupts time-related gameplay. | Planned | Final mechanic, safe networking model |
-| Nightmare | Impostor | Applies fear/vision disruption to selected players. | Planned | Full implementation and effects |
+| Nightmare | Impostor | Haunts a nearby player with a 7-second synchronized fear/vision distortion. | Partial | Multiplayer/runtime verification and balance tuning |
 | Shapeshifter X | Impostor | Advanced transformation-oriented impostor role distinct from Doppelgänger. | Planned | Final unique mechanic and implementation |
 | Saboteur | Impostor | Enhanced sabotage-focused role. | Planned | Sabotage extensions and balancing |
 | Undertaker | Impostor | Interacts with/moves bodies to conceal evidence. | Planned | Body interaction and synchronization |
@@ -61,6 +61,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Runtime threshold effects implemented for 25% Reality Disturbance, 50% Reality Distortion and 75% Critical Instability; the 50% and 75% events temporarily jam special role abilities.
 - At 100%, the host selects and synchronizes one final event for every client: Reality Storm, Blackout or Null Field. Null Field jams special role abilities for 12 seconds.
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
+- Nightmare can apply a synchronized 7-second fear/vision distortion to a nearby player.
 - Guardian can place a synchronized one-hit protection on a nearby living player.
 - Chronologist can query the authoritative death timeline for the age of the latest death.
 - Detective can scan nearby players for recent violent activity based on authoritative death records.

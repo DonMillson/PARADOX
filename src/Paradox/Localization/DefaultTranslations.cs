@@ -76,7 +76,11 @@ public static class DefaultTranslations
         AddRoleName(l, "Corruptor", "Corruptor", "Deprawator");
         AddRoleName(l, "Devourer", "Devourer", "Pożeracz");
         AddRoleName(l, "Timebreaker", "Timebreaker", "Łamacz Czasu");
-        AddRoleName(l, "Nightmare", "Nightmare", "Koszmar");
+        AddRole(l, "Nightmare", "Nightmare", "Koszmar",
+            "Haunt a nearby player with a short synchronized fear and vision-distortion effect.", "Nawiedzaj pobliskiego gracza krótkim, zsynchronizowanym efektem strachu i zaburzonej widoczności.");
+        Add(l, "role.Nightmare.ability", "HAUNT", "NAWIEDŹ");
+        Add(l, "role.Nightmare.feedback.source", "Nightmare effect applied for {seconds}s.", "Efekt Koszmaru nałożony na {seconds}s.");
+        Add(l, "role.Nightmare.feedback.target", "A nightmare closes in...", "Koszmar zaciska się wokół ciebie...");
         AddRoleName(l, "ShapeshifterX", "Shapeshifter X", "Zmiennokształtny X");
         AddRoleName(l, "Saboteur", "Saboteur", "Sabotażysta");
         AddRoleName(l, "Undertaker", "Undertaker", "Grabarz");
