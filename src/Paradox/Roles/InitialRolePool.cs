@@ -7,6 +7,7 @@ public static class InitialRolePool
         RoleId.Doppelganger,
         RoleId.Parasite,
         RoleId.Cleaner,
+        RoleId.Devourer,
         RoleId.Nightmare
     };
 

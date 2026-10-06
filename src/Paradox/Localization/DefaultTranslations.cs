@@ -74,7 +74,10 @@ public static class DefaultTranslations
         AddRoleName(l, "Blackmailer", "Blackmailer", "Szantażysta");
         AddRoleName(l, "Illusionist", "Illusionist", "Iluzjonista");
         AddRoleName(l, "Corruptor", "Corruptor", "Deprawator");
-        AddRoleName(l, "Devourer", "Devourer", "Pożeracz");
+        AddRole(l, "Devourer", "Devourer", "Pożeracz",
+            "Consume a nearby victim; the kill leaves no reportable body.", "Pożeraj pobliską ofiarę; po zabójstwie nie pozostaje ciało do zgłoszenia.");
+        Add(l, "role.Devourer.ability", "DEVOUR", "POŻRYJ");
+        Add(l, "role.Devourer.feedback", "Victim consumed. No body remains.", "Ofiara pożarta. Nie pozostało ciało.");
         AddRoleName(l, "Timebreaker", "Timebreaker", "Łamacz Czasu");
         AddRole(l, "Nightmare", "Nightmare", "Koszmar",
             "Haunt a nearby player with a short synchronized fear and vision-distortion effect.", "Nawiedzaj pobliskiego gracza krótkim, zsynchronizowanym efektem strachu i zaburzonej widoczności.");

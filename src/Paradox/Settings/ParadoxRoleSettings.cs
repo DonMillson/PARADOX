@@ -9,6 +9,7 @@ public static class ParadoxRoleSettings
         [RoleId.Doppelganger] = true,
         [RoleId.Parasite] = true,
         [RoleId.Cleaner] = true,
+        [RoleId.Devourer] = true,
         [RoleId.Nightmare] = true,
         [RoleId.Observer] = true,
         [RoleId.Witness] = true,
@@ -29,6 +30,7 @@ public static class ParadoxRoleSettings
         [RoleId.Doppelganger] = 100,
         [RoleId.Parasite] = 100,
         [RoleId.Cleaner] = 100,
+        [RoleId.Devourer] = 100,
         [RoleId.Nightmare] = 100,
         [RoleId.Observer] = 100,
         [RoleId.Witness] = 100,
@@ -87,6 +89,7 @@ public static class ParadoxRoleSettings
     }
 
     public static float CleanerCooldownSeconds { get; set; } = 25f;
+    public static float DevourerCooldownSeconds { get; set; } = 35f;
     public static float NightmareDurationSeconds { get; set; } = 7f;
     public static float NightmareCooldownSeconds { get; set; } = 30f;
     public static float GuardianProtectionDurationSeconds { get; set; } = 10f;
@@ -108,6 +111,7 @@ public static class ParadoxRoleSettings
         RoleId.Doppelganger or
         RoleId.Parasite or
         RoleId.Cleaner or
+        RoleId.Devourer or
         RoleId.Nightmare or
         RoleId.Observer or
         RoleId.Witness or
@@ -181,6 +185,7 @@ public static class ParadoxRoleSettings
         ParasiteInfectionDurationSeconds = 15f;
         ParasiteCooldownSeconds = 30f;
         CleanerCooldownSeconds = 25f;
+        DevourerCooldownSeconds = 35f;
         NightmareDurationSeconds = 7f;
         NightmareCooldownSeconds = 30f;
         GuardianProtectionDurationSeconds = 10f;
