@@ -8,6 +8,8 @@ The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Th
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end playable; **Planned** = registered design slot, gameplay implementation still required.
 
+Current Paradox threshold runtime: 25%, 50% and 75% are implemented in code; in-game runtime verification is still required before the 100% randomized final event is added.
+
 ## Role table
 
 | Role | Faction | Intended gameplay / ability | Status | Still required |
