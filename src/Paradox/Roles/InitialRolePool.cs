@@ -5,7 +5,8 @@ public static class InitialRolePool
     public static IReadOnlyList<RoleId> Impostor { get; } = new[]
     {
         RoleId.Doppelganger,
-        RoleId.Parasite
+        RoleId.Parasite,
+        RoleId.Cleaner
     };
 
     public static IReadOnlyList<RoleId> Crewmate { get; } = new[]
