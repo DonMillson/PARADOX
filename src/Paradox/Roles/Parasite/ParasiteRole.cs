@@ -20,7 +20,10 @@ public static class ParasiteRole
         if (source == null || target == null || !AmongUsClient.Instance.AmHost)
             return false;
 
-        if (!IsParasite(source.PlayerId) || source.PlayerId == target.PlayerId)
+        if (!IsParasite(source.PlayerId) ||
+            source.PlayerId == target.PlayerId ||
+            source.Data == null || source.Data.IsDead || source.Data.Disconnected ||
+            target.Data == null || target.Data.IsDead || target.Data.Disconnected)
             return false;
 
         var now = Time.time;
@@ -30,6 +33,10 @@ public static class ParasiteRole
         if (Infections.ContainsKey(target.PlayerId))
             return false;
 
+        var distance = Vector2.Distance(source.GetTruePosition(), target.GetTruePosition());
+        if (distance > source.MaxReportDistance)
+            return false;
+
         if (!RoleAbilityService.Use(source, RoleId.Parasite))
             return false;
 
@@ -37,9 +44,8 @@ public static class ParasiteRole
             source.PlayerId,
             target.PlayerId,
             now,
-            ParadoxRoleSettings.ParasiteInfectionDurationSeconds);
-
-        CooldownEndsAt[source.PlayerId] = now + ParadoxRoleSettings.ParasiteCooldownSeconds;
+            ParadoxRoleSettings.ParasiteInfectionDurationSeconds,
+            ParadoxRoleSettings.ParasiteCooldownSeconds);
 
         var sender = PlayerControl.LocalPlayer;
         if (sender != null)
@@ -49,7 +55,8 @@ public static class ParasiteRole
                 new ParasiteInfectionRpc.Data(
                     source.PlayerId,
                     target.PlayerId,
-                    ParadoxRoleSettings.ParasiteInfectionDurationSeconds),
+                    ParadoxRoleSettings.ParasiteInfectionDurationSeconds,
+                    ParadoxRoleSettings.ParasiteCooldownSeconds),
                 immediately: true);
         }
 
@@ -60,13 +67,59 @@ public static class ParasiteRole
         byte sourcePlayerId,
         byte targetPlayerId,
         float startedAt,
-        float durationSeconds)
+        float durationSeconds,
+        float cooldownSeconds)
     {
         Infections[targetPlayerId] = new ParasiteInfection(
             sourcePlayerId,
             targetPlayerId,
             startedAt,
             durationSeconds);
+
+        CooldownEndsAt[sourcePlayerId] = startedAt + Math.Max(0f, cooldownSeconds);
+        TryShowInfectionFeedback(sourcePlayerId, targetPlayerId, durationSeconds);
+    }
+
+    public static bool IsInfected(byte playerId) =>
+        Infections.ContainsKey(playerId);
+
+    public static float CooldownRemaining(byte playerId, float now)
+    {
+        if (!CooldownEndsAt.TryGetValue(playerId, out var cooldownEnd))
+            return 0f;
+
+        return Math.Max(0f, cooldownEnd - now);
+    }
+
+    private static void TryShowInfectionFeedback(
+        byte sourcePlayerId,
+        byte targetPlayerId,
+        float durationSeconds)
+    {
+        try
+        {
+            var local = PlayerControl.LocalPlayer;
+            var hud = HudManager.Instance;
+            if (local == null || hud == null || hud.Notifier == null)
+                return;
+
+            if (local.PlayerId == sourcePlayerId)
+            {
+                var text = ParadoxPlugin.Localizer.Get("role.Parasite.feedback.source")
+                    .Replace("{seconds}", Math.Ceiling(durationSeconds).ToString());
+                hud.Notifier.AddDisconnectMessage(text);
+            }
+            else if (local.PlayerId == targetPlayerId)
+            {
+                hud.Notifier.AddDisconnectMessage(
+                    ParadoxPlugin.Localizer.Get("role.Parasite.feedback.target"));
+            }
+        }
+        catch (Exception e)
+        {
+            ParadoxPlugin.Instance.Log.LogWarning(
+                $"Parasite infection feedback failed: {e.Message}");
+        }
     }
 
     public static bool TryTakeCompleted(byte targetPlayerId, float now, out ParasiteInfection infection)

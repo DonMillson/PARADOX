@@ -52,6 +52,9 @@ public static class DefaultTranslations
             "Copy another player's identity temporarily.", "Tymczasowo skopiuj tożsamość innego gracza.");
         AddRole(l, "Parasite", "Parasite", "Pasożyt",
             "Infect players and let the infection develop.", "Zarażaj graczy i pozwól infekcji się rozwijać.");
+        Add(l, "role.Parasite.ability", "INFECT", "ZARAŹ");
+        Add(l, "role.Parasite.feedback.source", "Target infected. Incubation: {seconds}s.", "Cel zarażony. Inkubacja: {seconds}s.");
+        Add(l, "role.Parasite.feedback.target", "Something feels wrong...", "Coś jest nie tak...");
         AddRole(l, "Anomaly", "Anomaly", "Anomalia",
             "Drive the Paradox Meter toward 100%.", "Doprowadź Miernik Paradoksu do 100%.");
         AddRole(l, "Observer", "Observer", "Obserwator",
