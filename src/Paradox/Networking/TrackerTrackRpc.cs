@@ -1,5 +1,5 @@
 using Hazel;
-using Paradox.Roles.Tracker;
+using ParadoxTrackerRole = Paradox.Roles.Tracker.TrackerRole;
 using Reactor.Networking.Attributes;
 using Reactor.Networking.Rpc;
 
@@ -48,7 +48,7 @@ public sealed class TrackerTrackRpc : PlayerCustomRpc<ParadoxPlugin, TrackerTrac
 
             if (data.Accepted != 0 ||
                 data.SourcePlayerId != player.PlayerId ||
-                !TrackerRole.IsTracker(player.PlayerId))
+                !ParadoxTrackerRole.IsTracker(player.PlayerId))
             {
                 Plugin.Log.LogWarning(
                     $"Rejected Tracker request from player {player.PlayerId}.");
@@ -59,22 +59,22 @@ public sealed class TrackerTrackRpc : PlayerCustomRpc<ParadoxPlugin, TrackerTrac
             if (target == null)
                 return;
 
-            TrackerRole.TryTrack(player, target);
+            ParadoxTrackerRole.TryTrack(player, target);
             return;
         }
 
         if (player.OwnerId != AmongUsClient.Instance.HostId ||
             data.Accepted != 1 ||
-            !TrackerRole.IsTracker(data.SourcePlayerId))
+            !ParadoxTrackerRole.IsTracker(data.SourcePlayerId))
             return;
 
-        TrackerRole.ApplySyncedTracking(
+        ParadoxTrackerRole.ApplySyncedTracking(
             data.SourcePlayerId,
             data.TargetPlayerId,
             data.DurationSeconds,
             data.CooldownSeconds);
 
-        TrackerRole.ShowFeedback(data.SourcePlayerId);
+        ParadoxTrackerRole.ShowFeedback(data.SourcePlayerId);
     }
 
     private static PlayerControl? FindPlayer(byte playerId)
