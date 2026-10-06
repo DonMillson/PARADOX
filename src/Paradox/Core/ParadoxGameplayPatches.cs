@@ -1,5 +1,6 @@
 using Paradox.Roles.Observer;
 using Paradox.Roles.Doppelganger;
+using Paradox.Roles.Parasite;
 using Paradox.Roles;
 using HarmonyLib;
 
@@ -26,5 +27,6 @@ public static class ParadoxGameplayPatches
         RoleAssignment.Reset();
         ObserverRole.Reset();
         DoppelgangerRole.Reset();
+        ParasiteRole.Reset();
     }
 }
