@@ -1,4 +1,6 @@
+using Paradox.Networking;
 using Paradox.Settings;
+using Reactor.Networking.Rpc;
 using UnityEngine;
 
 namespace Paradox.Roles.Doppelganger;
@@ -25,9 +27,13 @@ public static class DoppelgangerRole
             return false;
 
         if (!IsDoppelganger(player.PlayerId) ||
-            player.Data == null || player.Data.IsDead ||
-            target.Data == null || target.Data.IsDead ||
+            player.Data == null || player.Data.IsDead || player.Data.Disconnected ||
+            target.Data == null || target.Data.IsDead || target.Data.Disconnected ||
             player.PlayerId == target.PlayerId)
+            return false;
+
+        var distance = Vector2.Distance(player.GetTruePosition(), target.GetTruePosition());
+        if (distance > player.MaxReportDistance)
             return false;
 
         var state = GetOrCreate(player.PlayerId);
@@ -53,6 +59,13 @@ public static class DoppelgangerRole
             return false;
         }
 
+        BroadcastState(
+            player.PlayerId,
+            target.PlayerId,
+            ParadoxRoleSettings.DoppelgangerDisguiseDurationSeconds,
+            ParadoxRoleSettings.DoppelgangerCooldownSeconds,
+            active: true);
+
         return true;
     }
 
@@ -74,6 +87,57 @@ public static class DoppelgangerRole
 
         DoppelgangerAppearance.Restore(player);
         state.ClearDisguise();
+
+        BroadcastState(
+            player.PlayerId,
+            byte.MaxValue,
+            0f,
+            state.CooldownRemaining(Time.time),
+            active: false);
+    }
+
+    public static void ApplySyncedState(
+        byte playerId,
+        byte targetPlayerId,
+        float disguiseDurationSeconds,
+        float cooldownSeconds,
+        bool active)
+    {
+        var state = GetOrCreate(playerId);
+        if (active)
+        {
+            state.ApplySyncedStart(
+                targetPlayerId,
+                Time.time,
+                disguiseDurationSeconds,
+                cooldownSeconds);
+        }
+        else
+        {
+            state.ClearDisguise();
+        }
+    }
+
+    private static void BroadcastState(
+        byte playerId,
+        byte targetPlayerId,
+        float disguiseDurationSeconds,
+        float cooldownSeconds,
+        bool active)
+    {
+        var sender = PlayerControl.LocalPlayer;
+        if (sender == null || !AmongUsClient.Instance.AmHost)
+            return;
+
+        Rpc<DoppelgangerStateRpc>.Instance.Send(
+            sender,
+            new DoppelgangerStateRpc.Data(
+                playerId,
+                targetPlayerId,
+                disguiseDurationSeconds,
+                cooldownSeconds,
+                active ? (byte)1 : (byte)0),
+            immediately: true);
     }
 
     public static void Reset()

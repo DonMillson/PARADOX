@@ -14,7 +14,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 | Role | Faction | Intended gameplay / ability | Status | Still required |
 |---|---|---|---|---|
-| Doppelgänger | Impostor | Copies another player's appearance temporarily, then restores the original outfit. | Partial | Ability button, target selection, final multiplayer/runtime verification |
+| Doppelgänger | Impostor | Copies another player's appearance temporarily, then restores the original outfit. | Partial | Final multiplayer/runtime verification and balance tuning |
 | Parasite | Impostor | Infects a target; after the infection timer completes, the victim is killed. | Partial | Multiplayer/runtime verification and balance tuning |
 | Puppeteer | Impostor | Temporarily manipulates another player's actions/movement. | Planned | Full implementation and synchronization |
 | Cleaner | Impostor | Removes a dead body to deny report/evidence. | Partial | Runtime verification and balance tuning |
@@ -70,7 +70,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 ## Next milestones
 
-1. Finish Doppelgänger end-to-end ability UX and runtime synchronization.
+1. Runtime-test Doppelgänger ability UX, host validation, synchronized disguise timer/cooldown and restoration.
 2. Runtime-test Parasite target/ability UX, infection feedback and host-side RPC validation.
 3. Restore Witness and Observer HUD on the 2026 API.
 4. Implement Anomaly objective and neutral win condition.

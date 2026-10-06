@@ -33,6 +33,17 @@ public sealed class DoppelgangerState
         return true;
     }
 
+    public void ApplySyncedStart(
+        byte targetPlayerId,
+        float now,
+        float durationSeconds,
+        float cooldownSeconds)
+    {
+        TargetPlayerId = targetPlayerId;
+        DisguiseEndsAt = now + Math.Max(0f, durationSeconds);
+        CooldownEndsAt = now + Math.Max(0f, cooldownSeconds);
+    }
+
     public void ClearDisguise()
     {
         TargetPlayerId = null;
