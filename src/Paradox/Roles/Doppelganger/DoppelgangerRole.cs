@@ -24,7 +24,10 @@ public static class DoppelgangerRole
         if (player == null || target == null || !AmongUsClient.Instance.AmHost)
             return false;
 
-        if (!IsDoppelganger(player.PlayerId))
+        if (!IsDoppelganger(player.PlayerId) ||
+            player.Data == null || player.Data.IsDead ||
+            target.Data == null || target.Data.IsDead ||
+            player.PlayerId == target.PlayerId)
             return false;
 
         var state = GetOrCreate(player.PlayerId);
@@ -35,15 +38,18 @@ public static class DoppelgangerRole
                 ParadoxRoleSettings.DoppelgangerCooldownSeconds))
             return false;
 
-        if (!RoleAbilityService.Use(player, RoleId.Doppelganger))
+        // Apply the gameplay effect before charging the shared ability side effects.
+        // A failed appearance copy must not increase the Paradox Meter or emit an Observer trace.
+        if (!DoppelgangerAppearance.Copy(player, target))
         {
-            state.ClearDisguise();
+            state.CancelStart();
             return false;
         }
 
-        if (!DoppelgangerAppearance.Copy(player, target))
+        if (!RoleAbilityService.Use(player, RoleId.Doppelganger))
         {
-            state.ClearDisguise();
+            DoppelgangerAppearance.Restore(player);
+            state.CancelStart();
             return false;
         }
 
