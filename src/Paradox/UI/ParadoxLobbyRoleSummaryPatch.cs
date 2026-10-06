@@ -9,14 +9,15 @@ namespace Paradox.UI;
 
 /// <summary>
 /// Clickable PARADOX role/chance summary shown directly in the hosted lobby.
-/// Only one faction is shown at a time so the lobby is not covered by one long list.
-/// The panel is independent from the settings + / - controls.
+/// Only one faction is shown at a time. The existing text panel itself is clickable;
+/// we do not clone the lobby Start button because that can interfere with lobby UI state.
 /// </summary>
 [HarmonyPatch(typeof(GameStartManager))]
 public static class ParadoxLobbyRoleSummaryPatch
 {
     private static TextMeshPro? _roleSummary;
-    private static PassiveButton? _pageButton;
+    private static PassiveButton? _roleSummaryButton;
+    private static BoxCollider2D? _roleSummaryCollider;
     private static int _pageIndex;
     private static float _nextRefresh;
 
@@ -31,7 +32,7 @@ public static class ParadoxLobbyRoleSummaryPatch
             if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
                 return;
 
-            if (__instance.PlayerCounter == null || __instance.StartButton == null)
+            if (__instance.PlayerCounter == null)
                 return;
 
             _pageIndex = 0;
@@ -51,27 +52,18 @@ public static class ParadoxLobbyRoleSummaryPatch
             _roleSummary.transform.localScale = Vector3.one;
             _roleSummary.rectTransform.sizeDelta = new Vector2(5.2f, 4.25f);
 
-            _pageButton = Object.Instantiate(
-                __instance.StartButton,
-                __instance.StartButton.transform.parent);
+            // Make only our own summary panel clickable. No cloning of StartButton.
+            _roleSummaryCollider = _roleSummary.gameObject.AddComponent<BoxCollider2D>();
+            _roleSummaryCollider.size = new Vector2(5.2f, 4.25f);
 
-            _pageButton.name = "PARADOX_LobbyRolePageButton";
-            _pageButton.transform.localPosition = new Vector3(4.15f, -2.15f, -5f);
-            _pageButton.transform.localScale = Vector3.one * 0.55f;
-            _pageButton.OnClick = new();
-            _pageButton.OnClick.AddListener((Action)(NextPage));
-
-            if (_pageButton.buttonText != null)
-            {
-                var translator = _pageButton.buttonText.GetComponent<TextTranslatorTMP>();
-                if (translator != null)
-                    Object.DestroyImmediate(translator);
-            }
+            _roleSummaryButton = _roleSummary.gameObject.AddComponent<PassiveButton>();
+            _roleSummaryButton.Colliders = new Collider2D[] { _roleSummaryCollider };
+            _roleSummaryButton.OnClick = new();
+            _roleSummaryButton.OnMouseOver = new();
+            _roleSummaryButton.OnMouseOut = new();
+            _roleSummaryButton.OnClick.AddListener((Action)NextPage);
 
             ParadoxFontSupport.ApplyTo(_roleSummary);
-            if (_pageButton.buttonText != null)
-                ParadoxFontSupport.ApplyTo(_pageButton.buttonText);
-
             Refresh();
         }
         catch (Exception e)
@@ -103,8 +95,6 @@ public static class ParadoxLobbyRoleSummaryPatch
         try
         {
             ParadoxFontSupport.ApplyTo(_roleSummary);
-            if (_pageButton?.buttonText != null)
-                ParadoxFontSupport.ApplyTo(_pageButton.buttonText);
             Refresh();
         }
         catch (Exception e)
@@ -150,7 +140,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         var lines = new List<string>
         {
             "<color=#55D9D2><b>PARADOX</b></color>",
-            $"<color={color}><b>{factionName}</b></color>   <color=#AAAAAA>{_pageIndex + 1}/3</color>"
+            $"<color={color}><b>{factionName}</b></color>   <color=#AAAAAA>{_pageIndex + 1}/3  ></color>"
         };
 
         var roles = RoleRegistry.All
@@ -177,17 +167,10 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
 
         lines.Add(polish
-            ? "\n<color=#888888>Kliknij przycisk, aby zmienić kategorię</color>"
-            : "\n<color=#888888>Click the button to change category</color>");
+            ? "\n<color=#888888>Kliknij panel, aby zmienić kategorię</color>"
+            : "\n<color=#888888>Click panel to change category</color>");
 
         _roleSummary.text = string.Join("\n", lines);
-
-        if (_pageButton?.buttonText != null)
-        {
-            _pageButton.buttonText.text = polish
-                ? $"ROLE  {_pageIndex + 1}/3  >"
-                : $"ROLES  {_pageIndex + 1}/3  >";
-        }
     }
 
     private static void DestroySummary()
@@ -195,11 +178,9 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (_roleSummary != null)
             Object.Destroy(_roleSummary.gameObject);
 
-        if (_pageButton != null)
-            Object.Destroy(_pageButton.gameObject);
-
         _roleSummary = null;
-        _pageButton = null;
+        _roleSummaryButton = null;
+        _roleSummaryCollider = null;
         _pageIndex = 0;
         _nextRefresh = 0f;
     }
