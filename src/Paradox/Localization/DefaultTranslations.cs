@@ -24,6 +24,9 @@ public static class DefaultTranslations
         AddRole(l, "Witness", "Witness", "Świadek",
             "Discover an incomplete clue near a body.", "Odkryj niepełną wskazówkę przy znalezionym ciele.");
 
+        Add(l, "role.Witness.clue.bodyAge", "The body appears to be recent.", "Ciało wygląda na znalezione niedługo po śmierci.");
+        Add(l, "role.Witness.clue.activity", "There are signs of recent activity nearby.", "W pobliżu widać ślady niedawnej aktywności.");
+
         return l;
     }
 
