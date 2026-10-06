@@ -32,6 +32,7 @@ public static class WitnessReportPatch
         var message = localizer.Get(clue.LocalizationKey);
 
         ParadoxPlugin.Instance.Log.LogInfo($"Witness clue: {message}");
-        HudManager.Instance?.Notifier?.AddItem(message);
+        // Current Among Us no longer exposes NotificationPopper.AddItem.
+        // Keep the clue in the log until the 2026-compatible HUD adapter is wired.
     }
 }
