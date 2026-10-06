@@ -3,6 +3,7 @@ using Paradox.Roles.Doppelganger;
 using Paradox.Roles.Parasite;
 using Paradox.Roles.Cleaner;
 using Paradox.Roles.Witness;
+using Paradox.Roles.Anomaly;
 using Paradox.Roles;
 using HarmonyLib;
 
@@ -18,8 +19,6 @@ public static class ParadoxGameplayPatches
         if (!AmongUsClient.Instance.AmHost || target == null)
             return;
 
-        // Current Among Us reports failed/protected murder attempts through result flags.
-        // Only a successful kill is allowed to advance the Paradox Meter.
         if ((resultFlags & MurderResultFlags.Succeeded) == 0)
             return;
 
@@ -37,5 +36,6 @@ public static class ParadoxGameplayPatches
         ParasiteRole.Reset();
         CleanerRole.Reset();
         WitnessRole.Reset();
+        AnomalyRole.ResetRuntime();
     }
 }

@@ -25,6 +25,16 @@ public sealed class AssignRoleRpc : PlayerCustomRpc<ParadoxPlugin, AssignRoleRpc
 
     public override void Handle(PlayerControl player, Data data)
     {
+        if (AmongUsClient.Instance == null || player == null)
+            return;
+
+        if (player.OwnerId != AmongUsClient.Instance.HostId)
+        {
+            Plugin.Log.LogWarning(
+                $"Rejected role assignment from non-host player {player.PlayerId}.");
+            return;
+        }
+
         if (!Enum.IsDefined(typeof(RoleId), data.Role))
         {
             Plugin.Log.LogWarning($"Rejected unknown PARADOX role id {data.Role} for player {data.PlayerId}");

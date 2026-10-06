@@ -17,8 +17,10 @@ public static class InitialRoleAssignmentPatch
 
         var enabledImpostorRoles = BuildEnabledPool(InitialRolePool.Impostor);
         var enabledCrewRoles = BuildEnabledPool(InitialRolePool.Crewmate);
-        var impostorIndex = 0;
-        var crewIndex = 0;
+        var enabledNeutralRoles = BuildEnabledPool(InitialRolePool.Neutral);
+
+        var impostors = new List<PlayerControl>();
+        var crew = new List<PlayerControl>();
 
         foreach (var player in PlayerControl.AllPlayerControls)
         {
@@ -26,27 +28,34 @@ public static class InitialRoleAssignmentPatch
                 continue;
 
             if (player.Data.Role.IsImpostor)
-            {
-                if (enabledImpostorRoles.Count > 0)
-                {
-                    var role = enabledImpostorRoles[impostorIndex % enabledImpostorRoles.Count];
-                    RoleAssignment.Assign(player, role);
-                    impostorIndex++;
-                }
-
-                continue;
-            }
-
-            if (enabledCrewRoles.Count > 0)
-            {
-                var crewRole = enabledCrewRoles[crewIndex % enabledCrewRoles.Count];
-                RoleAssignment.Assign(player, crewRole);
-                crewIndex++;
-            }
+                impostors.Add(player);
+            else
+                crew.Add(player);
         }
 
-        // First playable pass keeps vanilla factions intact.
-        // Anomaly becomes eligible once neutral win conditions are implemented.
+        for (var i = 0; i < impostors.Count && enabledImpostorRoles.Count > 0; i++)
+        {
+            var role = enabledImpostorRoles[i % enabledImpostorRoles.Count];
+            RoleAssignment.Assign(impostors[i], role);
+        }
+
+        if (crew.Count > 0 && enabledNeutralRoles.Count > 0)
+        {
+            var neutralIndex = UnityEngine.Random.Range(0, crew.Count);
+            var neutralPlayer = crew[neutralIndex];
+            var neutralRole = enabledNeutralRoles[
+                UnityEngine.Random.Range(0, enabledNeutralRoles.Count)];
+
+            RoleAssignment.Assign(neutralPlayer, neutralRole);
+            crew.RemoveAt(neutralIndex);
+        }
+
+        for (var i = 0; i < crew.Count && enabledCrewRoles.Count > 0; i++)
+        {
+            var role = enabledCrewRoles[i % enabledCrewRoles.Count];
+            RoleAssignment.Assign(crew[i], role);
+        }
+
         ParadoxPlugin.Instance.Log.LogInfo(
             $"PARADOX initial roles assigned: {PlayerRoleRegistry.All.Count} players.");
     }

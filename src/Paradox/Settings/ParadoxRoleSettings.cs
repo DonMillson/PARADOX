@@ -10,7 +10,8 @@ public static class ParadoxRoleSettings
         [RoleId.Parasite] = true,
         [RoleId.Cleaner] = true,
         [RoleId.Observer] = true,
-        [RoleId.Witness] = true
+        [RoleId.Witness] = true,
+        [RoleId.Anomaly] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -19,7 +20,8 @@ public static class ParadoxRoleSettings
         [RoleId.Parasite] = 100,
         [RoleId.Cleaner] = 100,
         [RoleId.Observer] = 100,
-        [RoleId.Witness] = 100
+        [RoleId.Witness] = 100,
+        [RoleId.Anomaly] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -65,13 +67,15 @@ public static class ParadoxRoleSettings
     }
 
     public static float CleanerCooldownSeconds { get; set; } = 25f;
+    public static float AnomalyCooldownSeconds { get; set; } = 20f;
 
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
         RoleId.Parasite or
         RoleId.Cleaner or
         RoleId.Observer or
-        RoleId.Witness;
+        RoleId.Witness or
+        RoleId.Anomaly;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
@@ -132,5 +136,6 @@ public static class ParadoxRoleSettings
         ParasiteInfectionDurationSeconds = 15f;
         ParasiteCooldownSeconds = 30f;
         CleanerCooldownSeconds = 25f;
+        AnomalyCooldownSeconds = 20f;
     }
 }
