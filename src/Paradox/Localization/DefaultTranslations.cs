@@ -38,7 +38,9 @@ public static class DefaultTranslations
 
         Add(l, "map.paradoxStation.name", "Paradox Station", "Stacja Paradoks");
         Add(l, "event.25", "Reality disturbance", "Zakłócenie rzeczywistości");
+        Add(l, "event.25.detail", "Reality flickers for a few seconds.", "Rzeczywistość migocze przez kilka sekund.");
         Add(l, "event.50", "Reality distortion", "Zniekształcenie rzeczywistości");
+        Add(l, "event.50.detail", "Special role abilities are jammed for 6 seconds.", "Specjalne umiejętności ról są zablokowane na 6 sekund.");
         Add(l, "event.75", "Critical instability", "Krytyczna niestabilność");
         Add(l, "event.100", "PARADOX EVENT", "ZDARZENIE PARADOKSU");
 
