@@ -18,6 +18,7 @@ public static class InitialRolePool
         RoleId.Detective,
         RoleId.Medic,
         RoleId.Tracker,
+        RoleId.Analyst,
         RoleId.Forensic,
         RoleId.Stabilizer
     };

@@ -112,7 +112,10 @@ public static class DefaultTranslations
         Add(l, "role.Tracker.active", "TRACK {distance}", "ŚLAD {distance}");
         Add(l, "role.Tracker.feedback", "Target acquired for {seconds}s.", "Cel namierzony na {seconds}s.");
         AddRoleName(l, "Locksmith", "Locksmith", "Ślusarz");
-        AddRoleName(l, "Analyst", "Analyst", "Analityk");
+        AddRole(l, "Analyst", "Analyst", "Analityk",
+            "Analyze limited live match telemetry without identifying players.", "Analizuj ograniczoną telemetrię meczu bez identyfikowania graczy.");
+        Add(l, "role.Analyst.ability", "ANALYZE", "ANALIZUJ");
+        Add(l, "role.Analyst.result", "Analyst: alive {alive} | deaths {deaths} | traces {traces} | meter {meter}%.", "Analityk: żywi {alive} | zgony {deaths} | ślady {traces} | miernik {meter}%.");
         AddRoleName(l, "Technician", "Technician", "Technik");
         AddRoleName(l, "Seer", "Seer", "Wieszcz");
         AddRoleName(l, "Dispatcher", "Dispatcher", "Dyspozytor");

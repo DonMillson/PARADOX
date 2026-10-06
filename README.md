@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Forensic, Stabilizer and Anomaly.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Forensic, Stabilizer and Anomaly.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -38,7 +38,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Medic | Crewmate | Scans nearby players and cures active Parasite infections. | Partial | Multiplayer/runtime verification and balance tuning |
 | Tracker | Crewmate | Tracks a selected player’s live position for 18 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Locksmith | Crewmate | Interacts with doors/locks and map access. | Planned | Door/map integration |
-| Analyst | Crewmate | Analyses match data to reveal limited information. | Planned | Data sources, UI and balancing |
+| Analyst | Crewmate | Reads limited live telemetry: alive players, recorded deaths, active ability traces and Paradox Meter. | Partial | Multiplayer/runtime verification and balance tuning |
 | Technician | Crewmate | Gains enhanced interaction with systems/sabotages. | Planned | System hooks and balancing |
 | Seer | Crewmate | Receives limited supernatural/information clues. | Planned | Final clue rules and implementation |
 | Dispatcher | Crewmate | Provides team-oriented information/coordination tools. | Planned | Final mechanic, HUD and sync |
@@ -66,6 +66,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Detective can scan nearby players for recent violent activity based on authoritative death records.
 - Medic can scan nearby living players and remove an active Parasite infection.
 - Tracker can lock onto a nearby living player and display live distance for 18 seconds.
+- Analyst can read limited host-authoritative live match telemetry without identifying players.
 - Forensic can examine a nearby body using authoritative death-time evidence and recent ability traces.
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
