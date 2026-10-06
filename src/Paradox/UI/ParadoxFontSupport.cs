@@ -1,3 +1,4 @@
+using Il2CppInterop.Runtime;
 using TMPro;
 using UnityEngine;
 
@@ -18,19 +19,26 @@ public static class ParadoxFontSupport
 
         try
         {
-            var fonts = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
-            if (fonts == null || fonts.Length == 0)
+            var objects = Resources.FindObjectsOfTypeAll(Il2CppType.Of<TMP_FontAsset>());
+            if (objects == null || objects.Length == 0)
                 return;
+
+            var fonts = new List<TMP_FontAsset>();
+
+            foreach (var obj in objects)
+            {
+                if (obj == null)
+                    continue;
+
+                var font = obj.Cast<TMP_FontAsset>();
+                if (font != null)
+                    fonts.Add(font);
+            }
 
             TMP_FontAsset? fallback = null;
 
-            // Among Us ships Noto Sans assets for East Asian languages.
-            // They also contain the Latin Extended glyphs needed by Polish.
             foreach (var font in fonts)
             {
-                if (font == null)
-                    continue;
-
                 if (font.name == "NotoSansJP-Regular SDF")
                 {
                     fallback = font;
@@ -40,18 +48,9 @@ public static class ParadoxFontSupport
 
             if (fallback == null)
             {
-                foreach (var font in fonts)
-                {
-                    if (font == null)
-                        continue;
-
-                    if (font.name == "NotoSansSC-Regular SDF" ||
-                        font.name == "NotoSansKR-Regular SDF")
-                    {
-                        fallback = font;
-                        break;
-                    }
-                }
+                fallback = fonts.FirstOrDefault(font =>
+                    font.name == "NotoSansSC-Regular SDF" ||
+                    font.name == "NotoSansKR-Regular SDF");
             }
 
             if (fallback == null)
@@ -63,7 +62,7 @@ public static class ParadoxFontSupport
 
             foreach (var font in fonts)
             {
-                if (font == null || font == fallback || font.fallbackFontAssetTable == null)
+                if (font == fallback || font.fallbackFontAssetTable == null)
                     continue;
 
                 var exists = false;
