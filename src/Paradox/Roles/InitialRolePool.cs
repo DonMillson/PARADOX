@@ -20,6 +20,7 @@ public static class InitialRolePool
         RoleId.Medic,
         RoleId.Tracker,
         RoleId.Analyst,
+        RoleId.Seer,
         RoleId.Forensic,
         RoleId.Stabilizer
     };

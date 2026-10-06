@@ -121,7 +121,11 @@ public static class DefaultTranslations
         Add(l, "role.Analyst.ability", "ANALYZE", "ANALIZUJ");
         Add(l, "role.Analyst.result", "Analyst: alive {alive} | deaths {deaths} | traces {traces} | meter {meter}%.", "Analityk: żywi {alive} | zgony {deaths} | ślady {traces} | miernik {meter}%.");
         AddRoleName(l, "Technician", "Technician", "Technik");
-        AddRoleName(l, "Seer", "Seer", "Wieszcz");
+        AddRole(l, "Seer", "Seer", "Wieszcz",
+            "Read whether a nearby player has left a fresh special-ability trace.", "Odczytuj, czy pobliski gracz pozostawił świeży ślad użycia specjalnej zdolności.");
+        Add(l, "role.Seer.ability", "READ AURA", "CZYTAJ AURĘ");
+        Add(l, "role.Seer.result.disturbed", "Seer: the aura is DISTURBED by recent ability use.", "Wieszcz: aura jest ZABURZONA przez niedawne użycie zdolności.");
+        Add(l, "role.Seer.result.calm", "Seer: the aura is calm.", "Wieszcz: aura jest spokojna.");
         AddRoleName(l, "Dispatcher", "Dispatcher", "Dyspozytor");
         AddRole(l, "Forensic", "Forensic", "Kryminalistyk",
             "Examine a nearby body for real death-time evidence and recent ability residue.", "Badaj pobliskie ciało pod kątem rzeczywistego czasu śmierci i śladów niedawnych zdolności.");
