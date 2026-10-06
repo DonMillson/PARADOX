@@ -52,6 +52,8 @@ public partial class ParadoxPlugin : BasePlugin
 
         if (_roleEnabled.TryGetValue(role, out var entry))
             entry.Value = enabled;
+
+        ParadoxNetwork.BroadcastRoleSetting(role);
     }
 
     public void ToggleRoleEnabled(RoleId role) =>
@@ -63,6 +65,8 @@ public partial class ParadoxPlugin : BasePlugin
 
         if (_roleChance.TryGetValue(role, out var entry))
             entry.Value = ParadoxRoleSettings.GetSpawnChance(role);
+
+        ParadoxNetwork.BroadcastRoleSetting(role);
     }
 
     public void CycleRoleSpawnChance(RoleId role)
