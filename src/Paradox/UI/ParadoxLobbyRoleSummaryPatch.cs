@@ -53,14 +53,21 @@ public static class ParadoxLobbyRoleSummaryPatch
             _roleSummary.rectTransform.sizeDelta = new Vector2(5.2f, 4.25f);
 
             // Make only our own summary panel clickable. No cloning of StartButton.
+            if (__instance.StartButton != null)
+                _roleSummary.gameObject.layer = __instance.StartButton.gameObject.layer;
+
             _roleSummaryCollider = _roleSummary.gameObject.AddComponent<BoxCollider2D>();
             _roleSummaryCollider.size = new Vector2(5.2f, 4.25f);
+            _roleSummaryCollider.isTrigger = true;
 
             _roleSummaryButton = _roleSummary.gameObject.AddComponent<PassiveButton>();
+            _roleSummaryButton.ClickMask = _roleSummaryCollider;
             _roleSummaryButton.Colliders = new Collider2D[] { _roleSummaryCollider };
             _roleSummaryButton.OnClick = new();
             _roleSummaryButton.OnMouseOver = new();
             _roleSummaryButton.OnMouseOut = new();
+            _roleSummaryButton.enabled = true;
+            _roleSummaryButton.SetButtonEnableState(true);
             _roleSummaryButton.OnClick.AddListener((Action)NextPage);
 
             ParadoxFontSupport.ApplyTo(_roleSummary);
