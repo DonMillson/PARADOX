@@ -91,7 +91,11 @@ public static class DefaultTranslations
         Add(l, "role.Guardian.feedback.target", "A Guardian is protecting you.", "Strażnik cię chroni.");
         Add(l, "role.Guardian.blocked", "Guardian protection blocked the attack.", "Ochrona Strażnika zablokowała atak.");
         AddRoleName(l, "Chronologist", "Chronologist", "Chronolog");
-        AddRoleName(l, "Detective", "Detective", "Detektyw");
+        AddRole(l, "Detective", "Detective", "Detektyw",
+            "Scan a nearby player for recent violent activity linked to recorded deaths.", "Badaj pobliskiego gracza pod kątem niedawnej gwałtownej aktywności powiązanej z zapisanymi zgonami.");
+        Add(l, "role.Detective.ability", "INVESTIGATE", "ZBADAJ");
+        Add(l, "role.Detective.result.hot", "Detective: recent violent residue DETECTED.", "Detektyw: WYKRYTO niedawny ślad gwałtownej aktywności.");
+        Add(l, "role.Detective.result.clear", "Detective: no recent violent residue detected.", "Detektyw: nie wykryto niedawnego śladu gwałtownej aktywności.");
         AddRole(l, "Medic", "Medic", "Medyk",
             "Scan nearby players and cure active Parasite infections.", "Badaj pobliskich graczy i usuwaj aktywne infekcje Pasożyta.");
         Add(l, "role.Medic.ability", "SCAN", "BADAJ");

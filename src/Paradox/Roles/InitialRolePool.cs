@@ -14,6 +14,7 @@ public static class InitialRolePool
         RoleId.Observer,
         RoleId.Witness,
         RoleId.Guardian,
+        RoleId.Detective,
         RoleId.Medic,
         RoleId.Tracker,
         RoleId.Forensic,
