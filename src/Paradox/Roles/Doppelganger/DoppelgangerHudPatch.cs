@@ -38,9 +38,20 @@ public static class DoppelgangerHudPatch
             local,
             local.MaxReportDistance);
 
+        var now = Time.time;
+        var isDisguised = state.IsDisguised(now);
+        var cooldownRemaining = state.CooldownRemaining(now);
+        var disguiseRemaining = state.DisguiseRemaining(now);
+        var displayedRemaining = isDisguised ? disguiseRemaining : cooldownRemaining;
+        var displayedMaximum = isDisguised
+            ? ParadoxRoleSettings.DoppelgangerDisguiseDurationSeconds
+            : ParadoxRoleSettings.DoppelgangerCooldownSeconds;
+
+        __instance.AbilityButton.SetCoolDown(displayedRemaining, displayedMaximum);
+
         var canUse = local.CanMove &&
-                     !state.IsDisguised(Time.time) &&
-                     state.IsReady(Time.time) &&
+                     !isDisguised &&
+                     state.IsReady(now) &&
                      CurrentTarget != null;
 
         if (canUse)
