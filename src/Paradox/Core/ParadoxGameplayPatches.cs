@@ -4,6 +4,7 @@ using Paradox.Roles.Parasite;
 using Paradox.Roles.Cleaner;
 using Paradox.Roles.Witness;
 using Paradox.Roles.Guardian;
+using ParadoxChronologistRole = Paradox.Roles.Chronologist.ChronologistRole;
 using ParadoxDetectiveRole = Paradox.Roles.Detective.DetectiveRole;
 using Paradox.Roles.Medic;
 using ParadoxTrackerRole = Paradox.Roles.Tracker.TrackerRole;
@@ -62,6 +63,7 @@ public static class ParadoxGameplayPatches
         CleanerRole.Reset();
         WitnessRole.Reset();
         GuardianRole.ResetRuntime();
+        ParadoxChronologistRole.ResetRuntime();
         ParadoxDetectiveRole.ResetRuntime();
         MedicRole.ResetRuntime();
         ParadoxTrackerRole.ResetRuntime();
