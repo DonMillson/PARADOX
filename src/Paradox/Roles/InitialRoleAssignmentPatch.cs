@@ -30,7 +30,7 @@ public static class InitialRoleAssignmentPatch
                 if (role == RoleId.Doppelganger)
                 {
                     if (!ParadoxRoleSettings.DoppelgangerEnabled ||
-                        Random.Range(0, 100) >= ParadoxRoleSettings.DoppelgangerSpawnChancePercent)
+                        UnityEngine.Random.Range(0, 100) >= ParadoxRoleSettings.DoppelgangerSpawnChancePercent)
                     {
                         role = RoleId.Parasite;
                     }
