@@ -115,7 +115,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         {
             _anchor = root.AddComponent<AspectPosition>();
             _anchor.Alignment = AspectPosition.EdgeAlignments.LeftTop;
-            _anchor.DistanceFromEdge = new Vector3(0.42f, 1.42f, -20f);
+            _anchor.DistanceFromEdge = new Vector3(0.34f, 1.18f, -20f);
             _anchor.updateAlways = true;
             _anchor.AdjustPosition();
         }
@@ -161,14 +161,14 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
 
         go.SetActive(true);
-        go.transform.localPosition = new Vector3(0.20f, -0.16f, -0.15f);
+        go.transform.localPosition = new Vector3(0.13f, -0.10f, -0.15f);
         go.transform.localRotation = Quaternion.identity;
         go.transform.localScale = Vector3.one;
 
         _roleSummary.enabled = true;
         _roleSummary.text = string.Empty;
-        _roleSummary.fontSize = 0.74f;
-        _roleSummary.lineSpacing = -4f;
+        _roleSummary.fontSize = 0.46f;
+        _roleSummary.lineSpacing = -6f;
         _roleSummary.alignment = TextAlignmentOptions.TopLeft;
         _roleSummary.autoSizeTextContainer = false;
         _roleSummary.richText = true;
@@ -183,15 +183,15 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (rt != null)
         {
             rt.pivot = new Vector2(0f, 1f);
-            rt.sizeDelta = new Vector2(2.76f, 1.48f);
+            rt.sizeDelta = new Vector2(1.72f, 0.92f);
         }
 
         if (instance.StartButton != null)
             go.layer = instance.StartButton.gameObject.layer;
 
         _roleSummaryCollider = go.AddComponent<BoxCollider2D>();
-        _roleSummaryCollider.size = new Vector2(2.98f, 1.68f);
-        _roleSummaryCollider.offset = new Vector2(1.29f, -0.69f);
+        _roleSummaryCollider.size = new Vector2(1.92f, 1.08f);
+        _roleSummaryCollider.offset = new Vector2(0.83f, -0.44f);
         _roleSummaryCollider.isTrigger = true;
 
         _roleSummaryButton = go.AddComponent<PassiveButton>();
@@ -221,8 +221,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var frameGo = new GameObject("PARADOX_RoleCardFrame");
         frameGo.transform.SetParent(parent, false);
-        frameGo.transform.localPosition = new Vector3(1.56f, -0.93f, 0.10f);
-        frameGo.transform.localScale = new Vector3(3.12f, 1.86f, 1f);
+        frameGo.transform.localPosition = new Vector3(0.96f, -0.56f, 0.10f);
+        frameGo.transform.localScale = new Vector3(1.92f, 1.12f, 1f);
         _frame = frameGo.AddComponent<SpriteRenderer>();
         _frame.sprite = sprite;
         _frame.color = new Color32(70, 215, 210, 150);
@@ -230,8 +230,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var panelGo = new GameObject("PARADOX_RoleCardPanel");
         panelGo.transform.SetParent(parent, false);
-        panelGo.transform.localPosition = new Vector3(1.56f, -0.93f, 0.08f);
-        panelGo.transform.localScale = new Vector3(3.04f, 1.78f, 1f);
+        panelGo.transform.localPosition = new Vector3(0.96f, -0.56f, 0.08f);
+        panelGo.transform.localScale = new Vector3(1.86f, 1.06f, 1f);
         _panel = panelGo.AddComponent<SpriteRenderer>();
         _panel.sprite = sprite;
         _panel.color = new Color32(7, 15, 22, 220);
@@ -239,8 +239,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var accentGo = new GameObject("PARADOX_RoleCardAccent");
         accentGo.transform.SetParent(parent, false);
-        accentGo.transform.localPosition = new Vector3(0.075f, -0.93f, 0.05f);
-        accentGo.transform.localScale = new Vector3(0.055f, 1.62f, 1f);
+        accentGo.transform.localPosition = new Vector3(0.055f, -0.56f, 0.05f);
+        accentGo.transform.localScale = new Vector3(0.035f, 0.94f, 1f);
         _accent = accentGo.AddComponent<SpriteRenderer>();
         _accent.sprite = sprite;
         _accent.color = new Color32(255, 90, 90, 255);
@@ -325,8 +325,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            "<size=96%><color=#55D9D2><b>PARADOX</b></color>  <color=#667783>///</color></size>",
-            $"<size=82%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{_pageIndex + 1}/3  ></color></size>"
+            "<size=92%><color=#55D9D2><b>PARADOX</b></color>  <color=#667783>///</color></size>",
+            $"<size=74%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{_pageIndex + 1}/3  ></color></size>"
         };
 
         var roles = RoleRegistry.All
@@ -339,8 +339,8 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (roles.Length == 0)
         {
             lines.Add(polish
-                ? "<size=74%><color=#89949D>Brak aktywnych ról</color></size>"
-                : "<size=74%><color=#89949D>No active roles</color></size>");
+                ? "<size=66%><color=#89949D>Brak aktywnych ról</color></size>"
+                : "<size=66%><color=#89949D>No active roles</color></size>");
         }
         else
         {
@@ -349,15 +349,14 @@ public static class ParadoxLobbyRoleSummaryPatch
                 var name = ParadoxPlugin.Localizer.Get(definition.NameKey);
                 var chance = ParadoxRoleSettings.GetSpawnChance(definition.Id);
                 lines.Add(
-                    $"<size=76%><color={color}>■</color> " +
+                    $"<size=68%><color={color}>■</color> " +
                     $"<color=#F2F5F7>{name}</color>  " +
                     $"<color=#C9D2D9><b>{chance}%</b></color></size>");
             }
         }
 
-        lines.Add(polish
-            ? "<size=48%><color=#65727D>kliknij kartę, aby zmienić  ></color></size>"
-            : "<size=48%><color=#65727D>click card to switch  ></color></size>");
+        // The entire card is clickable; no permanent instruction line is needed.
+        // Keeping the content short makes the widget feel like HUD, not a debug overlay.
 
         _roleSummary.text = string.Join("\n", lines);
     }
