@@ -39,6 +39,11 @@ public static class ParadoxGameplayPatches
         if (target.Data == null || !target.Data.IsDead)
             return;
 
+        DeathEvidenceRegistry.Record(
+            target.PlayerId,
+            __instance.PlayerId,
+            UnityEngine.Time.time);
+
         ParadoxGame.AddFrom(ParadoxMeterSource.Kill);
     }
 
@@ -47,6 +52,7 @@ public static class ParadoxGameplayPatches
     public static void EndGameStartPostfix()
     {
         ParadoxGame.Reset();
+        DeathEvidenceRegistry.Reset();
         RoleAssignment.Reset();
         ObserverRole.Reset();
         DoppelgangerRole.Reset();
