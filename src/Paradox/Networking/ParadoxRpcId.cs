@@ -12,5 +12,6 @@ public enum ParadoxRpcId : uint
     SyncRoleSetting = 7,
     CleanerCleanBody = 8,
     TriggerParadoxFinalEvent = 9,
-    DoppelgangerState = 10
+    DoppelgangerState = 10,
+    AnomalyPulse = 11
 }
