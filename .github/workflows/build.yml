@@ -20,11 +20,17 @@ jobs:
         with:
           dotnet-version: "6.0.x"
 
+      - name: Download Reactor 2.5.1 (2026 release)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path lib | Out-Null
+          Invoke-WebRequest -Uri "https://github.com/NuclearPowered/Reactor/releases/download/2.5.1/Reactor.dll" -OutFile "lib/Reactor.dll"
+
       - name: Build
         run: dotnet build src/Paradox/Paradox.csproj -c Release
 
       - name: Upload Paradox DLL
         uses: actions/upload-artifact@v4
         with:
-          name: PARADOX-v0.3.0
+          name: PARADOX-v0.4.0
           path: src/Paradox/bin/Release/net6.0/Paradox.dll
