@@ -6,13 +6,13 @@ using Object = UnityEngine.Object;
 namespace Paradox.UI;
 
 /// <summary>
-/// Adds a compact PARADOX edition badge to the original Among Us logo area.
-/// The vanilla AMONG US logo stays untouched.
+/// Small PARADOX edition mark integrated with the original AMONG US logo.
+/// It intentionally has no large backing plate, so it cannot cover menu buttons.
 /// </summary>
 [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
 public static class ParadoxBrandingPatch
 {
-    private const string RootName = "PARADOX_MainMenuEditionBadge";
+    private const string RootName = "PARADOX_MainMenuMark";
     private static GameObject? _root;
     private static Sprite? _solidSprite;
 
@@ -31,115 +31,92 @@ public static class ParadoxBrandingPatch
             var logo = __instance.transform.Find(
                 "MainUI/AspectScaler/LeftPanel/Sizer/LOGO-AU");
 
-            var parent = logo?.parent ?? __instance.transform;
-
             _root = new GameObject(RootName);
-            _root.transform.SetParent(parent, false);
+            _root.transform.SetParent(__instance.transform, false);
             _root.transform.localRotation = Quaternion.identity;
             _root.transform.localScale = Vector3.one;
 
-            // Treat PARADOX like an "edition badge" attached to the lower-right
-            // edge of the original logo instead of placing a second title over
-            // the menu buttons.
-            _root.transform.localPosition = logo != null
-                ? logo.localPosition + new Vector3(1.30f, -0.50f, -8f)
-                : new Vector3(-2.35f, 1.45f, -8f);
+            if (logo != null)
+            {
+                // Use world space from the real AU logo, but parent the mark to
+                // MainMenuManager itself. This avoids the stretched Sizer scale
+                // that previously created the huge cyan line / oversized badge.
+                _root.transform.position =
+                    logo.position + new Vector3(1.15f, -0.48f, -0.45f);
+            }
+            else
+            {
+                _root.transform.localPosition = new Vector3(-3.0f, 1.55f, -8f);
+            }
 
             var logoRenderer = logo?.GetComponent<SpriteRenderer>();
             var baseOrder = logoRenderer != null ? logoRenderer.sortingOrder : 0;
 
-            CreateBadgePlate(_root.transform, baseOrder);
+            CreateAccent(_root.transform, baseOrder);
 
             var text = CreateBrandText(__instance, _root.transform);
             if (text == null)
-            {
-                ParadoxPlugin.Instance.Log.LogWarning(
-                    "PARADOX main-menu badge could not find a usable TMP template.");
                 return;
-            }
 
             text.text =
-                "<size=118%><b>" +
-                "<color=#55D9D2>PARA</color>" +
-                "<color=#F3F6F8>DO</color>" +
-                "<color=#FF5665>X</color>" +
-                "</b></size>\n" +
-                "<size=45%><color=#8FA0AC>REALITY FRACTURE</color></size>\n" +
-                $"<size=38%><color=#62717D>DONMILLSON // v{ParadoxInfo.Version}</color></size>";
+                "<size=108%><b><color=#55D9D2>PARADOX</color></b> " +
+                "<color=#FF5A67>///</color></size>\n" +
+                $"<size=42%><color=#8B99A5>REALITY FRACTURE  •  DONMILLSON  •  v{ParadoxInfo.Version}</color></size>";
 
             text.alignment = TextAlignmentOptions.Center;
             text.richText = true;
             text.enableWordWrapping = false;
             text.fontStyle = FontStyles.Normal;
-            text.fontSize = 1.18f;
-            text.characterSpacing = 1.2f;
-            text.lineSpacing = -10f;
+            text.fontSize = 0.72f;
+            text.characterSpacing = 1.0f;
+            text.lineSpacing = -12f;
             text.color = Color.white;
-            text.outlineColor = new Color32(0, 7, 11, 235);
-            text.outlineWidth = 0.10f;
+            text.outlineColor = new Color32(0, 0, 0, 220);
+            text.outlineWidth = 0.08f;
             text.renderer.sortingOrder = baseOrder + 5;
-            text.transform.localPosition = new Vector3(0f, 0.03f, -0.08f);
+            text.transform.localPosition = new Vector3(0f, 0f, -0.05f);
 
             var rt = text.rectTransform;
             if (rt != null)
             {
                 rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(2.55f, 1.04f);
+                rt.sizeDelta = new Vector2(2.05f, 0.65f);
             }
 
             text.gameObject.SetActive(true);
-
-            ParadoxPlugin.Instance.Log.LogInfo(
-                "PARADOX edition badge attached to original Among Us logo.");
         }
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX main-menu branding failed: {e}");
+                $"PARADOX main-menu mark failed: {e}");
         }
     }
 
-    private static void CreateBadgePlate(Transform parent, int baseOrder)
+    private static void CreateAccent(Transform parent, int baseOrder)
     {
         var sprite = GetSolidSprite();
         if (sprite == null)
             return;
 
-        var shadowGo = new GameObject("PARADOX_BadgeShadow");
-        shadowGo.transform.SetParent(parent, false);
-        shadowGo.transform.localPosition = new Vector3(0.04f, -0.04f, 0.12f);
-        shadowGo.transform.localScale = new Vector3(2.58f, 1.06f, 1f);
-        var shadow = shadowGo.AddComponent<SpriteRenderer>();
-        shadow.sprite = sprite;
-        shadow.color = new Color32(0, 0, 0, 105);
-        shadow.sortingOrder = baseOrder + 1;
+        var lineGo = new GameObject("PARADOX_MarkLine");
+        lineGo.transform.SetParent(parent, false);
+        lineGo.transform.localPosition = new Vector3(0f, 0.31f, 0.04f);
+        lineGo.transform.localScale = new Vector3(1.55f, 0.018f, 1f);
 
-        var plateGo = new GameObject("PARADOX_BadgePlate");
-        plateGo.transform.SetParent(parent, false);
-        plateGo.transform.localPosition = new Vector3(0f, 0f, 0.10f);
-        plateGo.transform.localScale = new Vector3(2.52f, 1.00f, 1f);
-        var plate = plateGo.AddComponent<SpriteRenderer>();
-        plate.sprite = sprite;
-        plate.color = new Color32(6, 15, 20, 220);
-        plate.sortingOrder = baseOrder + 2;
+        var line = lineGo.AddComponent<SpriteRenderer>();
+        line.sprite = sprite;
+        line.color = new Color32(85, 217, 210, 190);
+        line.sortingOrder = baseOrder + 3;
 
-        var topLineGo = new GameObject("PARADOX_BadgeTopLine");
-        topLineGo.transform.SetParent(parent, false);
-        topLineGo.transform.localPosition = new Vector3(0f, 0.49f, 0.08f);
-        topLineGo.transform.localScale = new Vector3(2.52f, 0.035f, 1f);
-        var topLine = topLineGo.AddComponent<SpriteRenderer>();
-        topLine.sprite = sprite;
-        topLine.color = new Color32(85, 217, 210, 230);
-        topLine.sortingOrder = baseOrder + 3;
+        var redGo = new GameObject("PARADOX_MarkRed");
+        redGo.transform.SetParent(parent, false);
+        redGo.transform.localPosition = new Vector3(0.79f, 0.31f, 0.03f);
+        redGo.transform.localScale = new Vector3(0.09f, 0.028f, 1f);
 
-        var redMarkGo = new GameObject("PARADOX_BadgeRedMark");
-        redMarkGo.transform.SetParent(parent, false);
-        redMarkGo.transform.localPosition = new Vector3(1.20f, 0.40f, 0.06f);
-        redMarkGo.transform.localScale = new Vector3(0.08f, 0.14f, 1f);
-        var redMark = redMarkGo.AddComponent<SpriteRenderer>();
-        redMark.sprite = sprite;
-        redMark.color = new Color32(255, 86, 101, 245);
-        redMark.sortingOrder = baseOrder + 4;
+        var red = redGo.AddComponent<SpriteRenderer>();
+        red.sprite = sprite;
+        red.color = new Color32(255, 90, 103, 245);
+        red.sortingOrder = baseOrder + 4;
     }
 
     private static Sprite? GetSolidSprite()
@@ -158,10 +135,9 @@ public static class ParadoxBrandingPatch
                 new Vector2(0.5f, 0.5f),
                 1f);
         }
-        catch (Exception e)
+        catch
         {
-            ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX menu UI sprite creation failed: {e.Message}");
+            return null;
         }
 
         return _solidSprite;
@@ -177,7 +153,7 @@ public static class ParadoxBrandingPatch
             if (templateTransform != null)
             {
                 var clone = Object.Instantiate(templateTransform.gameObject, parent);
-                clone.name = "PARADOX_BadgeText";
+                clone.name = "PARADOX_MainMenuMarkText";
 
                 var translator = clone.GetComponent<TextTranslatorTMP>();
                 if (translator != null)
@@ -210,19 +186,9 @@ public static class ParadoxBrandingPatch
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX menu text template clone failed: {e.Message}");
+                $"PARADOX menu text clone failed: {e.Message}");
         }
 
-        try
-        {
-            var fallback = new GameObject("PARADOX_BadgeText");
-            fallback.transform.SetParent(parent, false);
-            fallback.transform.localPosition = Vector3.zero;
-            return fallback.AddComponent<TextMeshPro>();
-        }
-        catch
-        {
-            return null;
-        }
+        return null;
     }
 }
