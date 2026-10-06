@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Devourer, Nightmare, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Seer, Forensic, Stabilizer and Anomaly.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Devourer, Nightmare, Riftmaker, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Seer, Forensic, Stabilizer and Anomaly.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -28,7 +28,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Saboteur | Impostor | Enhanced sabotage-focused role. | Planned | Sabotage extensions and balancing |
 | Undertaker | Impostor | Interacts with/moves bodies to conceal evidence. | Planned | Body interaction and synchronization |
 | Silencer | Impostor | Restricts a target during discussion/meeting phases. | Planned | Meeting integration and sync |
-| Riftmaker | Impostor | Creates temporary rifts/portals for repositioning. | Planned | Portal system, map validation and sync |
+| Riftmaker | Impostor | Places a personal anchor and warps back to it on the next use. | Partial | Multiplayer/runtime verification and map-edge validation |
 | Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Spatial trace visualization and runtime verification |
 | Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | Real body-age/activity evidence and runtime verification |
 | Engineer X | Crewmate | Advanced technical/repair-oriented crewmate. | Planned | Final mechanic and implementation |
@@ -63,6 +63,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
 - Devourer can perform a synchronized consume kill and remove the resulting body.
 - Nightmare can apply a synchronized 7-second fear/vision distortion to a nearby player.
+- Riftmaker can place a synchronized personal anchor and warp back to it.
 - Guardian can place a synchronized one-hit protection on a nearby living player.
 - Chronologist can query the authoritative death timeline for the age of the latest death.
 - Detective can scan nearby players for recent violent activity based on authoritative death records.

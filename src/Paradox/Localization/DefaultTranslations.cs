@@ -88,7 +88,12 @@ public static class DefaultTranslations
         AddRoleName(l, "Saboteur", "Saboteur", "Sabotażysta");
         AddRoleName(l, "Undertaker", "Undertaker", "Grabarz");
         AddRoleName(l, "Silencer", "Silencer", "Wyciszacz");
-        AddRoleName(l, "Riftmaker", "Riftmaker", "Twórca Szczelin");
+        AddRole(l, "Riftmaker", "Riftmaker", "Twórca Szczelin",
+            "Place a personal rift anchor, then warp back to it on the next use.", "Ustaw osobistą kotwicę szczeliny, a przy kolejnym użyciu wróć do niej.");
+        Add(l, "role.Riftmaker.anchor", "ANCHOR", "KOTWICA");
+        Add(l, "role.Riftmaker.rift", "RIFT", "SZCZELINA");
+        Add(l, "role.Riftmaker.feedback.anchor", "Rift anchor placed.", "Kotwica szczeliny ustawiona.");
+        Add(l, "role.Riftmaker.feedback.warp", "Rift traversal complete.", "Przejście przez szczelinę zakończone.");
 
         AddRoleName(l, "EngineerX", "Engineer X", "Inżynier X");
         AddRole(l, "Guardian", "Guardian", "Strażnik",

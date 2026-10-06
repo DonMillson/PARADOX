@@ -24,5 +24,6 @@ public enum ParadoxRpcId : uint
     AnalystScan = 19,
     NightmareHaunt = 20,
     SeerReadAura = 21,
-    DevourerConsume = 22
+    DevourerConsume = 22,
+    RiftmakerWarp = 23
 }
