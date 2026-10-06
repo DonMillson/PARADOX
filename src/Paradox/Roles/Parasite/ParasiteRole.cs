@@ -83,6 +83,9 @@ public static class ParasiteRole
     public static bool IsInfected(byte playerId) =>
         Infections.ContainsKey(playerId);
 
+    public static bool RemoveSyncedInfection(byte playerId) =>
+        Infections.Remove(playerId);
+
     public static float CooldownRemaining(byte playerId, float now)
     {
         if (!CooldownEndsAt.TryGetValue(playerId, out var cooldownEnd))

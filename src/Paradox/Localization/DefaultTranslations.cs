@@ -34,7 +34,7 @@ public static class DefaultTranslations
         Add(l, "ui.menu.anomaly", "Anomaly +5", "Anomalia +5");
         Add(l, "ui.menu.thresholds", "Events at 25 / 50 / 75 / 100%", "Zdarzenia przy 25 / 50 / 75 / 100%");
         Add(l, "ui.language.english", "English", "Angielski");
-        Add(l, "ui.language.polish", "Polish", "Polski");
+        Add(l, "ui.language.polish", "Polski", "Polski");
 
         Add(l, "map.paradoxStation.name", "Paradox Station", "Stacja Paradoks");
         Add(l, "event.25", "Reality disturbance", "Zakłócenie rzeczywistości");
@@ -92,7 +92,12 @@ public static class DefaultTranslations
         Add(l, "role.Guardian.blocked", "Guardian protection blocked the attack.", "Ochrona Strażnika zablokowała atak.");
         AddRoleName(l, "Chronologist", "Chronologist", "Chronolog");
         AddRoleName(l, "Detective", "Detective", "Detektyw");
-        AddRoleName(l, "Medic", "Medic", "Medyk");
+        AddRole(l, "Medic", "Medic", "Medyk",
+            "Scan nearby players and cure active Parasite infections.", "Badaj pobliskich graczy i usuwaj aktywne infekcje Pasożyta.");
+        Add(l, "role.Medic.ability", "SCAN", "BADAJ");
+        Add(l, "role.Medic.feedback.healthy", "Scan complete: no active Parasite infection detected.", "Badanie zakończone: nie wykryto aktywnej infekcji Pasożyta.");
+        Add(l, "role.Medic.feedback.cured", "Scan complete: Parasite infection detected and removed.", "Badanie zakończone: wykryto i usunięto infekcję Pasożyta.");
+        Add(l, "role.Medic.feedback.target", "A Medic removed your Parasite infection.", "Medyk usunął twoją infekcję Pasożyta.");
         AddRoleName(l, "Tracker", "Tracker", "Tropiciel");
         AddRoleName(l, "Locksmith", "Locksmith", "Ślusarz");
         AddRoleName(l, "Analyst", "Analyst", "Analityk");

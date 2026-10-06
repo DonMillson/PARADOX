@@ -4,6 +4,7 @@ using Paradox.Roles.Parasite;
 using Paradox.Roles.Cleaner;
 using Paradox.Roles.Witness;
 using Paradox.Roles.Guardian;
+using Paradox.Roles.Medic;
 using Paradox.Roles.Stabilizer;
 using Paradox.Roles.Anomaly;
 using Paradox.Roles;
@@ -52,6 +53,7 @@ public static class ParadoxGameplayPatches
         CleanerRole.Reset();
         WitnessRole.Reset();
         GuardianRole.ResetRuntime();
+        MedicRole.ResetRuntime();
         StabilizerRole.ResetRuntime();
         AnomalyRole.ResetRuntime();
     }
