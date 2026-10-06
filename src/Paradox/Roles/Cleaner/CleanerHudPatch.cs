@@ -1,3 +1,4 @@
+using Paradox.Core;
 using HarmonyLib;
 using Paradox.Settings;
 using UnityEngine;
@@ -49,6 +50,7 @@ public static class CleanerHudPatch
             ParadoxRoleSettings.CleanerCooldownSeconds);
 
         var canUse = local.CanMove &&
+                     !ParadoxEventRuntime.RoleAbilitiesBlocked &&
                      remaining <= 0f &&
                      CurrentBody != null;
 
