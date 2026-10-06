@@ -8,6 +8,7 @@ public static class InitialRolePool
         RoleId.Parasite,
         RoleId.Cleaner,
         RoleId.Devourer,
+        RoleId.Corruptor,
         RoleId.Nightmare,
         RoleId.Riftmaker
     };
@@ -29,6 +30,7 @@ public static class InitialRolePool
 
     public static IReadOnlyList<RoleId> Neutral { get; } = new[]
     {
-        RoleId.Anomaly
+        RoleId.Anomaly,
+        RoleId.Survivor
     };
 }

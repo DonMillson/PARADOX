@@ -73,7 +73,11 @@ public static class DefaultTranslations
         Add(l, "role.Cleaner.ability", "CLEAN", "USUN");
         AddRoleName(l, "Blackmailer", "Blackmailer", "Szantażysta");
         AddRoleName(l, "Illusionist", "Illusionist", "Iluzjonista");
-        AddRoleName(l, "Corruptor", "Corruptor", "Deprawator");
+        AddRole(l, "Corruptor", "Corruptor", "Deprawator",
+            "Corrupt a nearby player and block their special role ability temporarily.", "Deprawuj pobliskiego gracza i czasowo blokuj jego specjalną zdolność roli.");
+        Add(l, "role.Corruptor.ability", "CORRUPT", "DEPRAWUJ");
+        Add(l, "role.Corruptor.feedback.source", "Target corrupted for {seconds}s.", "Cel skażony na {seconds}s.");
+        Add(l, "role.Corruptor.feedback.target", "Your special role ability is corrupted.", "Twoja specjalna zdolność roli została skażona.");
         AddRole(l, "Devourer", "Devourer", "Pożeracz",
             "Consume a nearby victim; the kill leaves no reportable body.", "Pożeraj pobliską ofiarę; po zabójstwie nie pozostaje ciało do zgłoszenia.");
         Add(l, "role.Devourer.ability", "DEVOUR", "POŻRYJ");
@@ -150,7 +154,9 @@ public static class DefaultTranslations
         AddRoleName(l, "Forgotten", "Forgotten", "Zapomniany");
         AddRoleName(l, "Collector", "Collector", "Kolekcjoner");
         AddRoleName(l, "BountyHunter", "Bounty Hunter", "Łowca Nagród");
-        AddRoleName(l, "Survivor", "Survivor", "Ocalały");
+        AddRole(l, "Survivor", "Survivor", "Ocalały",
+            "Survive until the match ends to join the winners.", "Przetrwaj do końca meczu, aby dołączyć do zwycięzców.");
+        Add(l, "role.Survivor.win", "SURVIVOR ESCAPED", "OCALAŁY PRZETRWAŁ");
         AddRoleName(l, "Revenant", "Revenant", "Powracający");
         AddRoleName(l, "JesterX", "Jester X", "Błazen X");
         AddRoleName(l, "Phantom", "Phantom", "Fantom");

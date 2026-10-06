@@ -10,6 +10,7 @@ public static class ParadoxRoleSettings
         [RoleId.Parasite] = true,
         [RoleId.Cleaner] = true,
         [RoleId.Devourer] = true,
+        [RoleId.Corruptor] = true,
         [RoleId.Nightmare] = true,
         [RoleId.Riftmaker] = true,
         [RoleId.Observer] = true,
@@ -23,7 +24,8 @@ public static class ParadoxRoleSettings
         [RoleId.Seer] = true,
         [RoleId.Forensic] = true,
         [RoleId.Stabilizer] = true,
-        [RoleId.Anomaly] = true
+        [RoleId.Anomaly] = true,
+        [RoleId.Survivor] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -32,6 +34,7 @@ public static class ParadoxRoleSettings
         [RoleId.Parasite] = 100,
         [RoleId.Cleaner] = 100,
         [RoleId.Devourer] = 100,
+        [RoleId.Corruptor] = 100,
         [RoleId.Nightmare] = 100,
         [RoleId.Riftmaker] = 100,
         [RoleId.Observer] = 100,
@@ -45,7 +48,8 @@ public static class ParadoxRoleSettings
         [RoleId.Seer] = 100,
         [RoleId.Forensic] = 100,
         [RoleId.Stabilizer] = 100,
-        [RoleId.Anomaly] = 100
+        [RoleId.Anomaly] = 100,
+        [RoleId.Survivor] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -92,6 +96,8 @@ public static class ParadoxRoleSettings
 
     public static float CleanerCooldownSeconds { get; set; } = 25f;
     public static float DevourerCooldownSeconds { get; set; } = 35f;
+    public static float CorruptorDurationSeconds { get; set; } = 10f;
+    public static float CorruptorCooldownSeconds { get; set; } = 30f;
     public static float NightmareDurationSeconds { get; set; } = 7f;
     public static float NightmareCooldownSeconds { get; set; } = 30f;
     public static float RiftmakerAnchorDelaySeconds { get; set; } = 2f;
@@ -116,6 +122,7 @@ public static class ParadoxRoleSettings
         RoleId.Parasite or
         RoleId.Cleaner or
         RoleId.Devourer or
+        RoleId.Corruptor or
         RoleId.Nightmare or
         RoleId.Riftmaker or
         RoleId.Observer or
@@ -129,7 +136,8 @@ public static class ParadoxRoleSettings
         RoleId.Seer or
         RoleId.Forensic or
         RoleId.Stabilizer or
-        RoleId.Anomaly;
+        RoleId.Anomaly or
+        RoleId.Survivor;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
@@ -191,6 +199,8 @@ public static class ParadoxRoleSettings
         ParasiteCooldownSeconds = 30f;
         CleanerCooldownSeconds = 25f;
         DevourerCooldownSeconds = 35f;
+        CorruptorDurationSeconds = 10f;
+        CorruptorCooldownSeconds = 30f;
         NightmareDurationSeconds = 7f;
         NightmareCooldownSeconds = 30f;
         RiftmakerAnchorDelaySeconds = 2f;

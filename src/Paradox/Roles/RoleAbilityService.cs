@@ -10,10 +10,11 @@ public static class RoleAbilityService
         if (source == null || !AmongUsClient.Instance.AmHost)
             return false;
 
-        if (ParadoxEventRuntime.RoleAbilitiesBlocked)
+        if (ParadoxEventRuntime.RoleAbilitiesBlocked ||
+            Paradox.Roles.Corruptor.CorruptorRole.IsCorrupted(source.PlayerId))
         {
             ParadoxPlugin.Instance.Log.LogInfo(
-                $"PARADOX ability blocked by 50% Reality Distortion: player {source.PlayerId}, role {role}.");
+                $"PARADOX ability blocked: player {source.PlayerId}, role {role}.");
             return false;
         }
 
