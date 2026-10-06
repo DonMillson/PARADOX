@@ -54,6 +54,9 @@ public static class ParadoxLobbySettingsPatch
             if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
                 return;
 
+            if (ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish)
+                ParadoxFontSupport.EnsurePolishGlyphs();
+
             CreateTab(__instance);
             CreateTabButton(__instance);
             BuildRows(__instance);
@@ -151,6 +154,9 @@ public static class ParadoxLobbySettingsPatch
     {
         if (_menu == null || _tab == null)
             return;
+
+        if (ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish)
+            ParadoxFontSupport.EnsurePolishGlyphs();
 
         _menu.ChangeTab(-1, false);
 
