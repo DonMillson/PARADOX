@@ -33,4 +33,10 @@ public sealed class DoppelgangerState
         TargetPlayerId = null;
         DisguiseEndsAt = 0f;
     }
+
+    public void CancelStart()
+    {
+        ClearDisguise();
+        CooldownEndsAt = 0f;
+    }
 }
