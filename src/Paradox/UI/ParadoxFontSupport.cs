@@ -171,8 +171,16 @@ public static class ParadoxFontSupport
         if (_polishFont == null)
             return;
 
-        if (text.font == null || text.font.Pointer != _polishFont.Pointer)
-            text.font = _polishFont;
+        try
+        {
+            if (text.font == null || text.font.Pointer != _polishFont.Pointer)
+                text.font = _polishFont;
+        }
+        catch (Exception e)
+        {
+            ParadoxPlugin.Instance.Log.LogWarning(
+                $"PARADOX could not apply Polish font to {text.name}: {e.Message}");
+        }
     }
 
     public static bool SupportsPolish(TMP_FontAsset? font)
