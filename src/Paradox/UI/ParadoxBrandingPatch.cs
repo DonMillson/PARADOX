@@ -16,7 +16,7 @@ public static class ParadoxBrandingPatch
             return;
 
         var gameObject = new GameObject(ObjectName);
-        Object.DontDestroyOnLoad(gameObject);
+        UnityEngine.Object.DontDestroyOnLoad(gameObject);
 
         var text = gameObject.AddComponent<TextMeshPro>();
         text.text = $"PARADOX v{ParadoxInfo.Version} — by DonMillson";
