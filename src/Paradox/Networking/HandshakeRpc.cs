@@ -33,5 +33,15 @@ public sealed class HandshakeRpc : PlayerCustomRpc<ParadoxPlugin, HandshakeRpc.D
         var compatibility = ParadoxPlugin.Clients.GetCompatibility(player.OwnerId);
         Plugin.Log.LogInfo(
             $"PARADOX handshake from client {player.OwnerId}: {data.ModVersion}, protocol {data.ProtocolVersion}, {compatibility}");
+
+        // A newly joined modded client has just announced itself. If we are the
+        // host, rebroadcast the current role pool/chances so every PARADOX client
+        // renders the same lobby summary.
+        if (AmongUsClient.Instance != null &&
+            AmongUsClient.Instance.AmHost &&
+            player.OwnerId != AmongUsClient.Instance.HostId)
+        {
+            ParadoxNetwork.BroadcastRoleSettings();
+        }
     }
 }
