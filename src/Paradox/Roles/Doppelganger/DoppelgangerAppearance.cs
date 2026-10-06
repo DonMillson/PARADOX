@@ -33,10 +33,10 @@ public static class DoppelgangerAppearance
         var data = player.Data;
         return new DoppelgangerOutfit(
             data.PlayerName,
-            (byte)data.ColorId,
-            data.HatId,
-            data.SkinId,
-            data.PetId);
+            (byte)data.DefaultOutfit.ColorId,
+            data.DefaultOutfit.HatId,
+            data.DefaultOutfit.SkinId,
+            data.DefaultOutfit.PetId);
     }
 
     private static void Apply(PlayerControl player, DoppelgangerOutfit outfit)
