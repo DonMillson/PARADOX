@@ -15,6 +15,7 @@ public static class InitialRolePool
         RoleId.Witness,
         RoleId.Guardian,
         RoleId.Medic,
+        RoleId.Tracker,
         RoleId.Stabilizer
     };
 

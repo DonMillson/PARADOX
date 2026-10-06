@@ -98,7 +98,11 @@ public static class DefaultTranslations
         Add(l, "role.Medic.feedback.healthy", "Scan complete: no active Parasite infection detected.", "Badanie zakończone: nie wykryto aktywnej infekcji Pasożyta.");
         Add(l, "role.Medic.feedback.cured", "Scan complete: Parasite infection detected and removed.", "Badanie zakończone: wykryto i usunięto infekcję Pasożyta.");
         Add(l, "role.Medic.feedback.target", "A Medic removed your Parasite infection.", "Medyk usunął twoją infekcję Pasożyta.");
-        AddRoleName(l, "Tracker", "Tracker", "Tropiciel");
+        AddRole(l, "Tracker", "Tracker", "Tropiciel",
+            "Track a selected player's live position for a short time.", "Śledź przez krótki czas aktualną pozycję wybranego gracza.");
+        Add(l, "role.Tracker.ability", "TRACK", "ŚLEDŹ");
+        Add(l, "role.Tracker.active", "TRACK {distance}", "ŚLAD {distance}");
+        Add(l, "role.Tracker.feedback", "Target acquired for {seconds}s.", "Cel namierzony na {seconds}s.");
         AddRoleName(l, "Locksmith", "Locksmith", "Ślusarz");
         AddRoleName(l, "Analyst", "Analyst", "Analityk");
         AddRoleName(l, "Technician", "Technician", "Technik");

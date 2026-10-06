@@ -16,5 +16,6 @@ public enum ParadoxRpcId : uint
     AnomalyPulse = 11,
     GuardianProtect = 12,
     StabilizerPulse = 13,
-    MedicScan = 14
+    MedicScan = 14,
+    TrackerTrack = 15
 }

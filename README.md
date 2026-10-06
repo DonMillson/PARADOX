@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Medic, Stabilizer and Anomaly.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Medic, Tracker, Stabilizer and Anomaly.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -36,7 +36,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Chronologist | Crewmate | Uses timing/history information to investigate events. | Planned | Event history system and UI |
 | Detective | Crewmate | Investigates players/events for evidence. | Planned | Evidence model, UI and balancing |
 | Medic | Crewmate | Scans nearby players and cures active Parasite infections. | Partial | Multiplayer/runtime verification and balance tuning |
-| Tracker | Crewmate | Tracks a selected player's position/activity. | Planned | Tracking UI and synchronization |
+| Tracker | Crewmate | Tracks a selected player’s live position for 18 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Locksmith | Crewmate | Interacts with doors/locks and map access. | Planned | Door/map integration |
 | Analyst | Crewmate | Analyses match data to reveal limited information. | Planned | Data sources, UI and balancing |
 | Technician | Crewmate | Gains enhanced interaction with systems/sabotages. | Planned | System hooks and balancing |
@@ -63,6 +63,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
 - Guardian can place a synchronized one-hit protection on a nearby living player.
 - Medic can scan nearby living players and remove an active Parasite infection.
+- Tracker can lock onto a nearby living player and display live distance for 18 seconds.
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
 - Host-side initial role assignment for implemented Impostor, Crewmate and Neutral roles. Anomaly can occupy one vanilla crewmate slot while keeping its own neutral objective and custom win flow.
