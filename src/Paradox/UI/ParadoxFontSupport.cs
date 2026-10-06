@@ -6,9 +6,8 @@ namespace Paradox.UI;
 
 /// <summary>
 /// Reliable Polish font support for PARADOX UI.
-/// Among Us' baked TMP atlases contain only part of Latin Extended, so fallback
-/// assets shipped by the game still render boxes for letters such as ę/ł/ż.
-/// On Windows we build a dynamic TMP font from a system font that contains Polish.
+/// Builds a dynamic TMP font from a Windows font family and applies it directly
+/// to PARADOX labels when Polish is selected.
 /// </summary>
 public static class ParadoxFontSupport
 {
@@ -37,64 +36,40 @@ public static class ParadoxFontSupport
         {
             var families = new[]
             {
-                ("Arial", "Regular"),
-                ("Segoe UI", "Regular"),
-                ("Tahoma", "Regular"),
-                ("Calibri", "Regular")
+                "Arial",
+                "Segoe UI",
+                "Tahoma",
+                "Calibri"
             };
 
-            foreach (var candidate in families)
+            foreach (var family in families)
             {
+                Font? osFont = null;
                 TMP_FontAsset? asset = null;
 
                 try
                 {
-                    asset = TMP_FontAsset.CreateFontAsset(candidate.Item1, candidate.Item2, 64);
-                }
-                catch (Exception e)
-                {
-                    ParadoxPlugin.Instance.Log.LogWarning(
-                        $"PARADOX could not create TMP font {candidate.Item1}: {e.Message}");
-                }
+                    osFont = Font.CreateDynamicFontFromOSFont(family, 64);
+                    if (osFont == null)
+                        continue;
 
-                if (TryAccept(asset, candidate.Item1))
-                    return;
-            }
-
-            var paths = new[]
-            {
-                @"C:\Windows\Fonts\arial.ttf",
-                @"C:\Windows\Fonts\segoeui.ttf",
-                @"C:\Windows\Fonts\tahoma.ttf",
-                @"C:\Windows\Fonts\calibri.ttf"
-            };
-
-            foreach (var path in paths)
-            {
-                if (!File.Exists(path))
-                    continue;
-
-                TMP_FontAsset? asset = null;
-
-                try
-                {
-                    // AU 2026 exposes the public 7-argument path overload.
                     asset = TMP_FontAsset.CreateFontAsset(
-                        path,
-                        0,
+                        osFont,
                         64,
                         6,
                         GlyphRenderMode.SDFAA,
                         1024,
-                        1024);
+                        1024,
+                        AtlasPopulationMode.Dynamic,
+                        true);
                 }
                 catch (Exception e)
                 {
                     ParadoxPlugin.Instance.Log.LogWarning(
-                        $"PARADOX could not create TMP font from {path}: {e.Message}");
+                        $"PARADOX could not create TMP font {family}: {e.Message}");
                 }
 
-                if (TryAccept(asset, path))
+                if (TryAccept(asset, family))
                     return;
             }
 
