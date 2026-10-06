@@ -28,11 +28,13 @@ public static class WitnessReportPatch
         if (body == null || !WitnessRole.TryCreateClue(__instance, body, out var clue))
             return;
 
-        var localizer = Localization.DefaultTranslations.Create();
-        var message = localizer.Get(clue.LocalizationKey);
+        var message = ParadoxPlugin.Localizer.Get(clue.LocalizationKey);
+        var title = ParadoxPlugin.Localizer.Get("role.Witness.clue.title");
 
         ParadoxPlugin.Instance.Log.LogInfo($"Witness clue: {message}");
-        // Current Among Us no longer exposes NotificationPopper.AddItem.
-        // Keep the clue in the log until the 2026-compatible HUD adapter is wired.
+
+        var hud = HudManager.Instance;
+        if (hud != null)
+            hud.ShowPopUp($"PARADOX — {title}: {message}");
     }
 }

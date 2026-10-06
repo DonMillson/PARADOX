@@ -29,8 +29,8 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Undertaker | Impostor | Interacts with/moves bodies to conceal evidence. | Planned | Body interaction and synchronization |
 | Silencer | Impostor | Restricts a target during discussion/meeting phases. | Planned | Meeting integration and sync |
 | Riftmaker | Impostor | Creates temporary rifts/portals for repositioning. | Planned | Portal system, map validation and sync |
-| Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Final HUD, readable trace feedback, runtime verification |
-| Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | 2026-compatible clue HUD, real body-age/activity evidence |
+| Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Spatial trace visualization and runtime verification |
+| Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | Real body-age/activity evidence and runtime verification |
 | Engineer X | Crewmate | Advanced technical/repair-oriented crewmate. | Planned | Final mechanic and implementation |
 | Guardian | Crewmate | Protects another player from danger. | Planned | Protection ability, cooldown and sync |
 | Chronologist | Crewmate | Uses timing/history information to investigate events. | Planned | Event history system and UI |
@@ -72,7 +72,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 1. Runtime-test Doppelgänger ability UX, host validation, synchronized disguise timer/cooldown and restoration.
 2. Runtime-test Parasite target/ability UX, infection feedback and host-side RPC validation.
-3. Restore Witness and Observer HUD on the 2026 API.
+3. Runtime-test Witness/Observer HUD and replace placeholder clues/traces with real match evidence.
 4. Implement Anomaly objective and neutral win condition.
 5. Add host settings UI for role pool, spawn chances, cooldowns, Meter and events.
 6. Complete PARADOX STATION gameplay map and tasks.

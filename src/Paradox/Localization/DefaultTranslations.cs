@@ -59,8 +59,10 @@ public static class DefaultTranslations
             "Drive the Paradox Meter toward 100%.", "Doprowadź Miernik Paradoksu do 100%.");
         AddRole(l, "Observer", "Observer", "Obserwator",
             "Detect traces left by unusual abilities.", "Wykrywaj ślady pozostawione przez niezwykłe zdolności.");
+        Add(l, "role.Observer.trace", "Observer: ability trace detected (player {player}).", "Obserwator: wykryto ślad użycia zdolności (gracz {player}).");
         AddRole(l, "Witness", "Witness", "Świadek",
             "Discover an incomplete clue near a body.", "Odkryj niepełną wskazówkę przy znalezionym ciele.");
+        Add(l, "role.Witness.clue.title", "WITNESS CLUE", "WSKAZÓWKA ŚWIADKA");
 
         AddRoleName(l, "Puppeteer", "Puppeteer", "Lalkarz");
         AddRole(l, "Cleaner", "Cleaner", "Czyściciel",

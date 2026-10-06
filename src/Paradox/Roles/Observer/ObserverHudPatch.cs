@@ -25,8 +25,10 @@ public static class ObserverHudPatch
         }
 
         var newest = traces[traces.Count - 1];
-        __instance.ShowPopUp(
-            $"PARADOX — Observer: ability trace detected (player {newest.SourcePlayerId}).");
+        var message = ParadoxPlugin.Localizer.Get("role.Observer.trace")
+            .Replace("{player}", newest.SourcePlayerId.ToString());
+
+        __instance.ShowPopUp($"PARADOX — {message}");
 
         _lastVisibleTraceCount = traces.Count;
     }
