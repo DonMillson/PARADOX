@@ -163,7 +163,7 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         _roleSummary.enabled = true;
         _roleSummary.text = string.Empty;
-        _roleSummary.fontSize = 2.15f;
+        _roleSummary.fontSize = 1.48f;
         _roleSummary.alignment = TextAlignmentOptions.TopLeft;
         _roleSummary.autoSizeTextContainer = false;
         _roleSummary.richText = true;
@@ -177,15 +177,15 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (rt != null)
         {
             rt.pivot = new Vector2(0f, 1f);
-            rt.sizeDelta = new Vector2(5.8f, 4.4f);
+            rt.sizeDelta = new Vector2(4.35f, 3.15f);
         }
 
         if (instance.StartButton != null)
             go.layer = instance.StartButton.gameObject.layer;
 
         _roleSummaryCollider = go.AddComponent<BoxCollider2D>();
-        _roleSummaryCollider.size = new Vector2(5.8f, 4.4f);
-        _roleSummaryCollider.offset = new Vector2(2.9f, -2.2f);
+        _roleSummaryCollider.size = new Vector2(4.35f, 3.15f);
+        _roleSummaryCollider.offset = new Vector2(2.175f, -1.575f);
         _roleSummaryCollider.isTrigger = true;
 
         _roleSummaryButton = go.AddComponent<PassiveButton>();
