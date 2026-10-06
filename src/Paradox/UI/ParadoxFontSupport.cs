@@ -8,7 +8,7 @@ namespace Paradox.UI;
 /// Reliable Polish font support for PARADOX UI.
 /// Among Us' baked TMP atlases contain only part of Latin Extended, so fallback
 /// assets shipped by the game still render boxes for letters such as ę/ł/ż.
-/// On Windows we build a dynamic TMP font from a system TTF that contains Polish.
+/// On Windows we build a dynamic TMP font from a system font that contains Polish.
 /// </summary>
 public static class ParadoxFontSupport
 {
@@ -35,7 +35,33 @@ public static class ParadoxFontSupport
 
         try
         {
-            var candidates = new[]
+            var families = new[]
+            {
+                ("Arial", "Regular"),
+                ("Segoe UI", "Regular"),
+                ("Tahoma", "Regular"),
+                ("Calibri", "Regular")
+            };
+
+            foreach (var candidate in families)
+            {
+                TMP_FontAsset? asset = null;
+
+                try
+                {
+                    asset = TMP_FontAsset.CreateFontAsset(candidate.Item1, candidate.Item2, 64);
+                }
+                catch (Exception e)
+                {
+                    ParadoxPlugin.Instance.Log.LogWarning(
+                        $"PARADOX could not create TMP font {candidate.Item1}: {e.Message}");
+                }
+
+                if (TryAccept(asset, candidate.Item1))
+                    return;
+            }
+
+            var paths = new[]
             {
                 @"C:\Windows\Fonts\arial.ttf",
                 @"C:\Windows\Fonts\segoeui.ttf",
@@ -43,7 +69,7 @@ public static class ParadoxFontSupport
                 @"C:\Windows\Fonts\calibri.ttf"
             };
 
-            foreach (var path in candidates)
+            foreach (var path in paths)
             {
                 if (!File.Exists(path))
                     continue;
@@ -52,6 +78,7 @@ public static class ParadoxFontSupport
 
                 try
                 {
+                    // AU 2026 exposes the public 7-argument path overload.
                     asset = TMP_FontAsset.CreateFontAsset(
                         path,
                         0,
@@ -59,9 +86,7 @@ public static class ParadoxFontSupport
                         6,
                         GlyphRenderMode.SDFAA,
                         1024,
-                        1024,
-                        AtlasPopulationMode.Dynamic,
-                        true);
+                        1024);
                 }
                 catch (Exception e)
                 {
@@ -69,43 +94,48 @@ public static class ParadoxFontSupport
                         $"PARADOX could not create TMP font from {path}: {e.Message}");
                 }
 
-                if (asset == null)
-                    continue;
-
-                asset.name = "PARADOX Polish Dynamic";
-                asset.hideFlags = HideFlags.HideAndDontSave;
-
-                // Force the glyphs into the dynamic atlas now instead of waiting for
-                // the first rendered Polish label.
-                try
-                {
-                    asset.TryAddCharacters(PolishCharacters);
-                }
-                catch
-                {
-                    // Dynamic TMP can still add glyphs lazily while rendering.
-                }
-
-                if (!SupportsPolish(asset))
-                {
-                    UnityEngine.Object.Destroy(asset);
-                    continue;
-                }
-
-                _polishFont = asset;
-                ParadoxPlugin.Instance.Log.LogInfo(
-                    $"PARADOX Polish dynamic font ready: {path}");
-                return;
+                if (TryAccept(asset, path))
+                    return;
             }
 
             ParadoxPlugin.Instance.Log.LogError(
-                "PARADOX could not find a Windows font with Polish glyphs.");
+                "PARADOX could not create a Windows TMP font with Polish glyphs.");
         }
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogError(
                 $"PARADOX Polish font setup failed: {e}");
         }
+    }
+
+    private static bool TryAccept(TMP_FontAsset? asset, string source)
+    {
+        if (asset == null)
+            return false;
+
+        asset.name = "PARADOX Polish Dynamic";
+        asset.hideFlags = HideFlags.HideAndDontSave;
+
+        try
+        {
+            asset.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+            asset.TryAddCharacters(PolishCharacters);
+        }
+        catch
+        {
+            // Final validation below decides whether this asset is usable.
+        }
+
+        if (!SupportsPolish(asset))
+        {
+            UnityEngine.Object.Destroy(asset);
+            return false;
+        }
+
+        _polishFont = asset;
+        ParadoxPlugin.Instance.Log.LogInfo(
+            $"PARADOX Polish dynamic font ready: {source}");
+        return true;
     }
 
     public static void ApplyTo(TMP_Text? text)
