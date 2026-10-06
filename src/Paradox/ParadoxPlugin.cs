@@ -6,6 +6,7 @@ using Paradox.Localization;
 using Paradox.Networking;
 using Paradox.Roles;
 using Paradox.Settings;
+using Paradox.UI;
 using Reactor;
 
 namespace Paradox;
@@ -40,6 +41,9 @@ public partial class ParadoxPlugin : BasePlugin
     public void SetLanguage(Language language)
     {
         Localizer.CurrentLanguage = language;
+
+        if (language == Language.Polish)
+            ParadoxFontSupport.EnsurePolishGlyphs();
 
         if (_language != null)
             _language.Value = language;
@@ -81,6 +85,9 @@ public partial class ParadoxPlugin : BasePlugin
             "PARADOX interface language.");
 
         Localizer.CurrentLanguage = _language.Value;
+
+        if (Localizer.CurrentLanguage == Language.Polish)
+            ParadoxFontSupport.EnsurePolishGlyphs();
 
         foreach (var definition in RoleRegistry.All)
         {
