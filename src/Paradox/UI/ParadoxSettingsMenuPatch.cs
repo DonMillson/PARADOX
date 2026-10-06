@@ -411,9 +411,30 @@ public static class ParadoxSettingsMenuPatch
         if (button.buttonText == null)
             return;
 
-        var translator = button.buttonText.GetComponent<TextTranslatorTMP>();
-        if (translator != null)
-            translator.enabled = false;
+        // Current 2026 menu buttons can contain more than one TMP label.
+        // A cloned Quit button therefore kept a second "QUIT" label and it
+        // appeared on top of our PARADOX Settings button. Keep only the
+        // actual PassiveButton.buttonText and disable every inherited label.
+        foreach (var label in button.GetComponentsInChildren<TextMeshPro>(true))
+        {
+            if (label == null)
+                continue;
+
+            var translator = label.GetComponent<TextTranslatorTMP>();
+            if (translator != null)
+                translator.enabled = false;
+
+            if (label.Pointer != button.buttonText.Pointer)
+            {
+                label.gameObject.SetActive(false);
+                continue;
+            }
+
+            label.gameObject.SetActive(true);
+            label.text = text;
+            label.enableWordWrapping = false;
+            label.alignment = TextAlignmentOptions.Center;
+        }
 
         button.buttonText.text = text;
         button.buttonText.enableWordWrapping = false;
