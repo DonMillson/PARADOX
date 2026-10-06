@@ -1,3 +1,4 @@
+using Paradox.Core;
 using HarmonyLib;
 using Paradox.Settings;
 using UnityEngine;
@@ -50,6 +51,7 @@ public static class DoppelgangerHudPatch
         __instance.AbilityButton.SetCoolDown(displayedRemaining, displayedMaximum);
 
         var canUse = local.CanMove &&
+                     !ParadoxEventRuntime.RoleAbilitiesBlocked &&
                      !isDisguised &&
                      state.IsReady(now) &&
                      CurrentTarget != null;
