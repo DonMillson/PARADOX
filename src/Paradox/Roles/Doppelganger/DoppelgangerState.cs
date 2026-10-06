@@ -12,6 +12,11 @@ public sealed class DoppelgangerState
 
     public bool IsReady(float now) => now >= CooldownEndsAt;
 
+    public float CooldownRemaining(float now) => Math.Max(0f, CooldownEndsAt - now);
+
+    public float DisguiseRemaining(float now) =>
+        IsDisguised(now) ? Math.Max(0f, DisguiseEndsAt - now) : 0f;
+
     public DoppelgangerState(byte playerId)
     {
         PlayerId = playerId;
