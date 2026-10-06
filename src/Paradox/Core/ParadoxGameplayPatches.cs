@@ -9,6 +9,7 @@ using ParadoxChronologistRole = Paradox.Roles.Chronologist.ChronologistRole;
 using ParadoxDetectiveRole = Paradox.Roles.Detective.DetectiveRole;
 using Paradox.Roles.Medic;
 using ParadoxTrackerRole = Paradox.Roles.Tracker.TrackerRole;
+using ParadoxAnalystRole = Paradox.Roles.Analyst.AnalystRole;
 using Paradox.Roles.Forensic;
 using Paradox.Roles.Stabilizer;
 using Paradox.Roles.Anomaly;
