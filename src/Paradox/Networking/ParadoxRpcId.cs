@@ -19,5 +19,6 @@ public enum ParadoxRpcId : uint
     MedicScan = 14,
     TrackerTrack = 15,
     ForensicExamine = 16,
-    DetectiveScan = 17
+    DetectiveScan = 17,
+    ChronologistReadTimeline = 18
 }

@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Detective, Medic, Tracker, Forensic, Stabilizer and Anomaly.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Forensic, Stabilizer and Anomaly.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -33,7 +33,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | Real body-age/activity evidence and runtime verification |
 | Engineer X | Crewmate | Advanced technical/repair-oriented crewmate. | Planned | Final mechanic and implementation |
 | Guardian | Crewmate | Protects another player from one murder for 10 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
-| Chronologist | Crewmate | Uses timing/history information to investigate events. | Planned | Event history system and UI |
+| Chronologist | Crewmate | Reads the match timeline and reports how long ago the latest recorded death occurred. | Partial | Multiplayer/runtime verification and balance tuning |
 | Detective | Crewmate | Scans a nearby player for violent activity linked to deaths from the last 30 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Medic | Crewmate | Scans nearby players and cures active Parasite infections. | Partial | Multiplayer/runtime verification and balance tuning |
 | Tracker | Crewmate | Tracks a selected player’s live position for 18 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
@@ -62,6 +62,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - At 100%, the host selects and synchronizes one final event for every client: Reality Storm, Blackout or Null Field. Null Field jams special role abilities for 12 seconds.
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
 - Guardian can place a synchronized one-hit protection on a nearby living player.
+- Chronologist can query the authoritative death timeline for the age of the latest death.
 - Detective can scan nearby players for recent violent activity based on authoritative death records.
 - Medic can scan nearby living players and remove an active Parasite infection.
 - Tracker can lock onto a nearby living player and display live distance for 18 seconds.

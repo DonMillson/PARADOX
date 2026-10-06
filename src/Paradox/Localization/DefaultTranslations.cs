@@ -90,7 +90,11 @@ public static class DefaultTranslations
         Add(l, "role.Guardian.feedback.source", "Protection deployed.", "Ochrona aktywowana.");
         Add(l, "role.Guardian.feedback.target", "A Guardian is protecting you.", "Strażnik cię chroni.");
         Add(l, "role.Guardian.blocked", "Guardian protection blocked the attack.", "Ochrona Strażnika zablokowała atak.");
-        AddRoleName(l, "Chronologist", "Chronologist", "Chronolog");
+        AddRole(l, "Chronologist", "Chronologist", "Chronolog",
+            "Read the authoritative timeline to learn how long ago the latest death occurred.", "Odczytuj autorytatywną oś czasu, aby ustalić, ile czasu minęło od ostatniego zgonu.");
+        Add(l, "role.Chronologist.ability", "TIMELINE", "OŚ CZASU");
+        Add(l, "role.Chronologist.result", "Chronologist: latest death {seconds}s ago.", "Chronolog: ostatni zgon {seconds}s temu.");
+        Add(l, "role.Chronologist.none", "Chronologist: no death recorded yet.", "Chronolog: nie zarejestrowano jeszcze żadnego zgonu.");
         AddRole(l, "Detective", "Detective", "Detektyw",
             "Scan a nearby player for recent violent activity linked to recorded deaths.", "Badaj pobliskiego gracza pod kątem niedawnej gwałtownej aktywności powiązanej z zapisanymi zgonami.");
         Add(l, "role.Detective.ability", "INVESTIGATE", "ZBADAJ");

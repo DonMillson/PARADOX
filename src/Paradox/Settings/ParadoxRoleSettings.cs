@@ -12,6 +12,7 @@ public static class ParadoxRoleSettings
         [RoleId.Observer] = true,
         [RoleId.Witness] = true,
         [RoleId.Guardian] = true,
+        [RoleId.Chronologist] = true,
         [RoleId.Detective] = true,
         [RoleId.Medic] = true,
         [RoleId.Tracker] = true,
@@ -28,6 +29,7 @@ public static class ParadoxRoleSettings
         [RoleId.Observer] = 100,
         [RoleId.Witness] = 100,
         [RoleId.Guardian] = 100,
+        [RoleId.Chronologist] = 100,
         [RoleId.Detective] = 100,
         [RoleId.Medic] = 100,
         [RoleId.Tracker] = 100,
@@ -81,6 +83,7 @@ public static class ParadoxRoleSettings
     public static float CleanerCooldownSeconds { get; set; } = 25f;
     public static float GuardianProtectionDurationSeconds { get; set; } = 10f;
     public static float GuardianCooldownSeconds { get; set; } = 30f;
+    public static float ChronologistCooldownSeconds { get; set; } = 25f;
     public static float DetectiveCooldownSeconds { get; set; } = 30f;
     public static float DetectiveRecentActivitySeconds { get; set; } = 30f;
     public static float MedicCooldownSeconds { get; set; } = 25f;
@@ -98,6 +101,7 @@ public static class ParadoxRoleSettings
         RoleId.Observer or
         RoleId.Witness or
         RoleId.Guardian or
+        RoleId.Chronologist or
         RoleId.Detective or
         RoleId.Medic or
         RoleId.Tracker or
@@ -166,6 +170,7 @@ public static class ParadoxRoleSettings
         CleanerCooldownSeconds = 25f;
         GuardianProtectionDurationSeconds = 10f;
         GuardianCooldownSeconds = 30f;
+        ChronologistCooldownSeconds = 25f;
         DetectiveCooldownSeconds = 30f;
         DetectiveRecentActivitySeconds = 30f;
         MedicCooldownSeconds = 25f;
