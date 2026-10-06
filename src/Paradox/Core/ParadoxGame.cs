@@ -7,7 +7,11 @@ public static class ParadoxGame
 {
     public static ParadoxState State { get; } = new();
 
-    public static void Reset() => State.Reset();
+    public static void Reset()
+    {
+        State.Reset();
+        ParadoxEventRuntime.Reset();
+    }
 
     public static IReadOnlyList<ParadoxEvent> AddFrom(ParadoxMeterSource source) =>
         AddMeter(ParadoxMeterRules.AmountFor(source));
@@ -21,15 +25,20 @@ public static class ParadoxGame
         BroadcastMeter();
 
         foreach (var paradoxEvent in events)
+        {
             ParadoxPlugin.Instance.Log.LogInfo(
                 $"PARADOX threshold reached: {(int)paradoxEvent.Threshold}% ({paradoxEvent.LocalizationKey})");
+            ParadoxEventRuntime.Trigger(paradoxEvent);
+        }
 
         return events;
     }
 
     public static void ApplySyncedMeter(float meter)
     {
+        var previous = State.Meter;
         State.Set(meter);
+        ParadoxEventRuntime.TriggerCrossed(previous, State.Meter);
         ParadoxPlugin.Instance.Log.LogInfo($"Paradox Meter synchronized: {State.Meter:0.#}%");
     }
 
