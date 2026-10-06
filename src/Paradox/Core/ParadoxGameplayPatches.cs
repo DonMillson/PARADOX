@@ -3,6 +3,7 @@ using Paradox.Roles.Doppelganger;
 using Paradox.Roles.Parasite;
 using Paradox.Roles.Cleaner;
 using Paradox.Roles.Witness;
+using Paradox.Roles.Guardian;
 using Paradox.Roles.Anomaly;
 using Paradox.Roles;
 using HarmonyLib;
@@ -13,6 +14,16 @@ namespace Paradox.Core;
 public static class ParadoxGameplayPatches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
+    [HarmonyPrefix]
+    public static bool MurderPlayerPrefix(PlayerControl target, MurderResultFlags resultFlags)
+    {
+        if ((resultFlags & MurderResultFlags.Succeeded) == 0)
+            return true;
+
+        return !GuardianRole.TryBlockMurder(target);
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
     [HarmonyPostfix]
     public static void MurderPlayerPostfix(PlayerControl __instance, PlayerControl target, MurderResultFlags resultFlags)
     {
@@ -20,6 +31,9 @@ public static class ParadoxGameplayPatches
             return;
 
         if ((resultFlags & MurderResultFlags.Succeeded) == 0)
+            return;
+
+        if (target.Data == null || !target.Data.IsDead)
             return;
 
         ParadoxGame.AddFrom(ParadoxMeterSource.Kill);
@@ -36,6 +50,7 @@ public static class ParadoxGameplayPatches
         ParasiteRole.Reset();
         CleanerRole.Reset();
         WitnessRole.Reset();
+        GuardianRole.ResetRuntime();
         AnomalyRole.ResetRuntime();
     }
 }

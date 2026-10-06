@@ -84,7 +84,12 @@ public static class DefaultTranslations
         AddRoleName(l, "Riftmaker", "Riftmaker", "Twórca Szczelin");
 
         AddRoleName(l, "EngineerX", "Engineer X", "Inżynier X");
-        AddRoleName(l, "Guardian", "Guardian", "Strażnik");
+        AddRole(l, "Guardian", "Guardian", "Strażnik",
+            "Protect a nearby player from one murder for a short time.", "Chroń pobliskiego gracza przed jednym zabójstwem przez krótki czas.");
+        Add(l, "role.Guardian.ability", "PROTECT", "CHROŃ");
+        Add(l, "role.Guardian.feedback.source", "Protection deployed.", "Ochrona aktywowana.");
+        Add(l, "role.Guardian.feedback.target", "A Guardian is protecting you.", "Strażnik cię chroni.");
+        Add(l, "role.Guardian.blocked", "Guardian protection blocked the attack.", "Ochrona Strażnika zablokowała atak.");
         AddRoleName(l, "Chronologist", "Chronologist", "Chronolog");
         AddRoleName(l, "Detective", "Detective", "Detektyw");
         AddRoleName(l, "Medic", "Medic", "Medyk");

@@ -32,7 +32,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Spatial trace visualization and runtime verification |
 | Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | Real body-age/activity evidence and runtime verification |
 | Engineer X | Crewmate | Advanced technical/repair-oriented crewmate. | Planned | Final mechanic and implementation |
-| Guardian | Crewmate | Protects another player from danger. | Planned | Protection ability, cooldown and sync |
+| Guardian | Crewmate | Protects another player from one murder for 10 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Chronologist | Crewmate | Uses timing/history information to investigate events. | Planned | Event history system and UI |
 | Detective | Crewmate | Investigates players/events for evidence. | Planned | Evidence model, UI and balancing |
 | Medic | Crewmate | Protects or medically inspects players. | Planned | Final mechanic and implementation |
