@@ -67,6 +67,7 @@ public static class ParadoxGameplayPatches
         ParadoxDetectiveRole.ResetRuntime();
         MedicRole.ResetRuntime();
         ParadoxTrackerRole.ResetRuntime();
+        ParadoxAnalystRole.ResetRuntime();
         ForensicRole.ResetRuntime();
         StabilizerRole.ResetRuntime();
         AnomalyRole.ResetRuntime();
