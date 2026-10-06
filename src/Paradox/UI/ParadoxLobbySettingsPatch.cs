@@ -174,6 +174,7 @@ public static class ParadoxLobbySettingsPatch
         if (_menu.MenuDescriptionText != null)
         {
             DestroyTranslator(_menu.MenuDescriptionText);
+            ParadoxFontSupport.ApplyTo(_menu.MenuDescriptionText);
             _menu.MenuDescriptionText.text = ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish
                 ? "Ustawienia PARADOX. Host wybiera aktywne role, szanse pojawienia, język i mechaniki moda."
                 : "PARADOX settings. The host controls enabled roles, spawn chances, language and mod mechanics.";
@@ -265,6 +266,7 @@ public static class ParadoxLobbySettingsPatch
 
         header.name = $"PARADOX_Header_{title}";
         DestroyTranslator(header.Title);
+        ParadoxFontSupport.ApplyTo(header.Title);
         header.Title.text = title;
 
         var maskLayer = GameOptionsMenu.MASK_LAYER;
@@ -295,6 +297,8 @@ public static class ParadoxLobbySettingsPatch
         row.OnValueChanged = new Action<OptionBehaviour>(_ => { });
 
         DestroyTranslator(row.TitleText);
+        ParadoxFontSupport.ApplyTo(row.TitleText);
+        ParadoxFontSupport.ApplyTo(row.ValueText);
         row.TitleText.text = definition.Title;
 
         if (definition.Kind == RowKind.Role)
@@ -317,6 +321,9 @@ public static class ParadoxLobbySettingsPatch
         {
             var row = item.Row;
             var definition = item.Definition;
+
+            ParadoxFontSupport.ApplyTo(row.TitleText);
+            ParadoxFontSupport.ApplyTo(row.ValueText);
 
             row.TitleText.text = definition.Kind == RowKind.Role
                 ? ParadoxPlugin.Localizer.Get($"role.{definition.Role}.name")
@@ -556,6 +563,8 @@ public static class ParadoxLobbySettingsPatch
                 return true;
 
             DestroyTranslator(__instance.TitleText);
+            ParadoxFontSupport.ApplyTo(__instance.TitleText);
+            ParadoxFontSupport.ApplyTo(__instance.ValueText);
             __instance.TitleText.text = definition.Title;
             RefreshRows();
             return false;
