@@ -190,8 +190,8 @@ public static class ParadoxLobbyRoleSummaryPatch
             go.layer = instance.StartButton.gameObject.layer;
 
         _roleSummaryCollider = go.AddComponent<BoxCollider2D>();
-        _roleSummaryCollider.size = new Vector2(1.92f, 1.08f);
-        _roleSummaryCollider.offset = new Vector2(0.83f, -0.44f);
+        _roleSummaryCollider.size = new Vector2(1.92f, 0.90f);
+        _roleSummaryCollider.offset = new Vector2(0.83f, -0.35f);
         _roleSummaryCollider.isTrigger = true;
 
         _roleSummaryButton = go.AddComponent<PassiveButton>();
@@ -221,8 +221,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var frameGo = new GameObject("PARADOX_RoleCardFrame");
         frameGo.transform.SetParent(parent, false);
-        frameGo.transform.localPosition = new Vector3(0.96f, -0.56f, 0.10f);
-        frameGo.transform.localScale = new Vector3(1.92f, 1.12f, 1f);
+        frameGo.transform.localPosition = new Vector3(0.96f, -0.47f, 0.10f);
+        frameGo.transform.localScale = new Vector3(1.92f, 0.94f, 1f);
         _frame = frameGo.AddComponent<SpriteRenderer>();
         _frame.sprite = sprite;
         _frame.color = new Color32(70, 215, 210, 150);
@@ -230,8 +230,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var panelGo = new GameObject("PARADOX_RoleCardPanel");
         panelGo.transform.SetParent(parent, false);
-        panelGo.transform.localPosition = new Vector3(0.96f, -0.56f, 0.08f);
-        panelGo.transform.localScale = new Vector3(1.86f, 1.06f, 1f);
+        panelGo.transform.localPosition = new Vector3(0.96f, -0.47f, 0.08f);
+        panelGo.transform.localScale = new Vector3(1.86f, 0.88f, 1f);
         _panel = panelGo.AddComponent<SpriteRenderer>();
         _panel.sprite = sprite;
         _panel.color = new Color32(7, 15, 22, 220);
@@ -239,8 +239,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var accentGo = new GameObject("PARADOX_RoleCardAccent");
         accentGo.transform.SetParent(parent, false);
-        accentGo.transform.localPosition = new Vector3(0.055f, -0.56f, 0.05f);
-        accentGo.transform.localScale = new Vector3(0.035f, 0.94f, 1f);
+        accentGo.transform.localPosition = new Vector3(0.055f, -0.47f, 0.05f);
+        accentGo.transform.localScale = new Vector3(0.035f, 0.76f, 1f);
         _accent = accentGo.AddComponent<SpriteRenderer>();
         _accent.sprite = sprite;
         _accent.color = new Color32(255, 90, 90, 255);
@@ -325,8 +325,7 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            "<size=92%><color=#55D9D2><b>PARADOX</b></color>  <color=#667783>///</color></size>",
-            $"<size=74%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{_pageIndex + 1}/3  ></color></size>"
+            $"<size=76%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{_pageIndex + 1}/3  ></color></size>"
         };
 
         var roles = RoleRegistry.All
