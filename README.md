@@ -44,7 +44,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Dispatcher | Crewmate | Provides team-oriented information/coordination tools. | Planned | Final mechanic, HUD and sync |
 | Forensic | Crewmate | Examines bodies/scenes for stronger forensic evidence. | Planned | Death/evidence history and UI |
 | Stabilizer | Crewmate | Counteracts Paradox/anomaly effects and helps control the Meter. | Planned | Meter interaction and balancing |
-| Anomaly | Neutral | Core neutral role tied to Paradox/anomaly mechanics. | Partial | Neutral objective, win condition, ability/UI and assignment |
+| Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forgotten | Neutral | Progresses through a hidden/forgotten identity objective. | Planned | Final objective and win condition |
 | Collector | Neutral | Collects designated objectives/resources to win. | Planned | Collectible system and win condition |
 | Bounty Hunter | Neutral | Receives targets/bounties and progresses by eliminating/completing them. | Planned | Target selection, win condition and sync |
@@ -62,7 +62,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - At 100%, the host selects and synchronizes one final event for every client: Reality Storm, Blackout or Null Field. Null Field jams special role abilities for 12 seconds.
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
-- Host-side initial role assignment. Doppelgänger and Parasite independently respect Enabled and SpawnChance; if neither qualifies, the player remains a vanilla Impostor.
+- Host-side initial role assignment for implemented Impostor, Crewmate and Neutral roles. Anomaly can occupy one vanilla crewmate slot while keeping its own neutral objective and custom win flow.
 - English/Polish localization foundation.
 - PARADOX STATION map architecture/skeleton.
 - Match-end state reset for implemented MVP roles.
@@ -73,7 +73,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 1. Runtime-test Doppelgänger ability UX, host validation, synchronized disguise timer/cooldown and restoration.
 2. Runtime-test Parasite target/ability UX, infection feedback and host-side RPC validation.
 3. Runtime-test Witness/Observer HUD and replace placeholder clues/traces with real match evidence.
-4. Implement Anomaly objective and neutral win condition.
+4. Runtime-test Anomaly neutral assignment, Reality Rupture ability and 100% custom win condition.
 5. Add host settings UI for role pool, spawn chances, cooldowns, Meter and events.
 6. Complete PARADOX STATION gameplay map and tasks.
 7. Expand the Paradox event pool and continue implementing registered roles after runtime verification of the synchronized 100% event.
