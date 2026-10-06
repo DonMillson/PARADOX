@@ -10,6 +10,7 @@ using ParadoxDetectiveRole = Paradox.Roles.Detective.DetectiveRole;
 using Paradox.Roles.Medic;
 using ParadoxTrackerRole = Paradox.Roles.Tracker.TrackerRole;
 using ParadoxAnalystRole = Paradox.Roles.Analyst.AnalystRole;
+using ParadoxSeerRole = Paradox.Roles.Seer.SeerRole;
 using Paradox.Roles.Forensic;
 using Paradox.Roles.Stabilizer;
 using Paradox.Roles.Anomaly;
@@ -71,6 +72,7 @@ public static class ParadoxGameplayPatches
         MedicRole.ResetRuntime();
         ParadoxTrackerRole.ResetRuntime();
         ParadoxAnalystRole.ResetRuntime();
+        ParadoxSeerRole.ResetRuntime();
         ForensicRole.ResetRuntime();
         StabilizerRole.ResetRuntime();
         AnomalyRole.ResetRuntime();
