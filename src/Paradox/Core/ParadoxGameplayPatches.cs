@@ -2,6 +2,7 @@ using Paradox.Roles.Observer;
 using Paradox.Roles.Doppelganger;
 using Paradox.Roles.Parasite;
 using Paradox.Roles.Cleaner;
+using ParadoxDevourerRole = Paradox.Roles.Devourer.DevourerRole;
 using ParadoxNightmareRole = Paradox.Roles.Nightmare.NightmareRole;
 using Paradox.Roles.Witness;
 using Paradox.Roles.Guardian;
@@ -64,6 +65,7 @@ public static class ParadoxGameplayPatches
         DoppelgangerRole.Reset();
         ParasiteRole.Reset();
         CleanerRole.Reset();
+        ParadoxDevourerRole.ResetRuntime();
         ParadoxNightmareRole.ResetRuntime();
         WitnessRole.Reset();
         GuardianRole.ResetRuntime();
