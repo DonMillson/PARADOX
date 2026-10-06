@@ -62,25 +62,12 @@ public static class ParadoxSettingsMenuPatch
 
         ParadoxButton.OnClick.AddListener((Action)(() =>
         {
-            __instance.ChangeTab(-1, false);
+            __instance.GameSettingsTab.gameObject.SetActive(false);
+            __instance.RoleSettingsTab.gameObject.SetActive(false);
             ParadoxTab.gameObject.SetActive(true);
             __instance.MenuDescriptionText.text = "PARADOX role and gameplay settings";
             ParadoxButton.SelectButton(true);
         }));
-    }
-
-    [HarmonyPatch(nameof(GameSettingMenu.ChangeTab))]
-    [HarmonyPrefix]
-    public static void ChangeTabPrefix(bool previewOnly)
-    {
-        if (previewOnly)
-            return;
-
-        if (ParadoxTab)
-            ParadoxTab.gameObject.SetActive(false);
-
-        if (ParadoxButton)
-            ParadoxButton.SelectButton(false);
     }
 
     private static void AddFloatOption(
