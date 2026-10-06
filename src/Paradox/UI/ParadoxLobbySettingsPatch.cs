@@ -310,6 +310,23 @@ public static class ParadoxLobbySettingsPatch
         row.SetUpFromData(row.data, GameOptionsMenu.MASK_LAYER);
         row.OnValueChanged = new Action<OptionBehaviour>(_ => { });
 
+        // Current Among Us builds do not reliably route cloned StringOption
+        // arrow clicks back through Increase/Decrease. Wire our own listeners
+        // directly so changing language/role chance always works.
+        if (row.PlusBtn != null)
+        {
+            row.PlusBtn.OnClick = new();
+            row.PlusBtn.OnClick.AddListener((Action)(() => CycleForward(definition)));
+            row.PlusBtn.SetButtonEnableState(true);
+        }
+
+        if (row.MinusBtn != null)
+        {
+            row.MinusBtn.OnClick = new();
+            row.MinusBtn.OnClick.AddListener((Action)(() => CycleBackward(definition)));
+            row.MinusBtn.SetButtonEnableState(true);
+        }
+
         DestroyTranslator(row.TitleText);
         row.TitleText.text = definition.Title;
 
