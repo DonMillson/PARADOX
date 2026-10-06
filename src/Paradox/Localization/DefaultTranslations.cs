@@ -34,7 +34,7 @@ public static class DefaultTranslations
         Add(l, "ui.menu.anomaly", "Anomaly +5", "Anomalia +5");
         Add(l, "ui.menu.thresholds", "Events at 25 / 50 / 75 / 100%", "Zdarzenia przy 25 / 50 / 75 / 100%");
         Add(l, "ui.language.english", "English", "Angielski");
-        Add(l, "ui.language.polish", "Polski", "Polski");
+        Add(l, "ui.language.polish", "Polish", "Polski");
 
         Add(l, "map.paradoxStation.name", "Paradox Station", "Stacja Paradoks");
         Add(l, "event.25", "Reality disturbance", "Zakłócenie rzeczywistości");
