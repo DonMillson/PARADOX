@@ -8,14 +8,16 @@ using Object = UnityEngine.Object;
 namespace Paradox.UI;
 
 /// <summary>
-/// Compact role/chance summary shown directly in the hosted lobby.
-/// It is intentionally independent from the lobby settings controls so it cannot
-/// interfere with the + / - buttons.
+/// Clickable PARADOX role/chance summary shown directly in the hosted lobby.
+/// Only one faction is shown at a time so the lobby is not covered by one long list.
+/// The panel is independent from the settings + / - controls.
 /// </summary>
 [HarmonyPatch(typeof(GameStartManager))]
 public static class ParadoxLobbyRoleSummaryPatch
 {
     private static TextMeshPro? _roleSummary;
+    private static PassiveButton? _pageButton;
+    private static int _pageIndex;
     private static float _nextRefresh;
 
     [HarmonyPatch(nameof(GameStartManager.Start))]
@@ -29,8 +31,10 @@ public static class ParadoxLobbyRoleSummaryPatch
             if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
                 return;
 
-            if (__instance.PlayerCounter == null)
+            if (__instance.PlayerCounter == null || __instance.StartButton == null)
                 return;
+
+            _pageIndex = 0;
 
             _roleSummary = Object.Instantiate(
                 __instance.PlayerCounter,
@@ -38,16 +42,36 @@ public static class ParadoxLobbyRoleSummaryPatch
 
             _roleSummary.name = "PARADOX_LobbyRoleSummary";
             _roleSummary.text = string.Empty;
-            _roleSummary.fontSize = 1.55f;
+            _roleSummary.fontSize = 1.65f;
             _roleSummary.alignment = TextAlignmentOptions.TopRight;
             _roleSummary.autoSizeTextContainer = false;
             _roleSummary.richText = true;
             _roleSummary.color = Color.white;
             _roleSummary.transform.localPosition = new Vector3(4.65f, 2.25f, -10f);
             _roleSummary.transform.localScale = Vector3.one;
-            _roleSummary.rectTransform.sizeDelta = new Vector2(5.2f, 6.2f);
+            _roleSummary.rectTransform.sizeDelta = new Vector2(5.2f, 4.25f);
+
+            _pageButton = Object.Instantiate(
+                __instance.StartButton,
+                __instance.StartButton.transform.parent);
+
+            _pageButton.name = "PARADOX_LobbyRolePageButton";
+            _pageButton.transform.localPosition = new Vector3(4.15f, -2.15f, -5f);
+            _pageButton.transform.localScale = Vector3.one * 0.55f;
+            _pageButton.OnClick = new();
+            _pageButton.OnClick.AddListener((Action)(NextPage));
+
+            if (_pageButton.buttonText != null)
+            {
+                var translator = _pageButton.buttonText.GetComponent<TextTranslatorTMP>();
+                if (translator != null)
+                    Object.DestroyImmediate(translator);
+            }
 
             ParadoxFontSupport.ApplyTo(_roleSummary);
+            if (_pageButton.buttonText != null)
+                ParadoxFontSupport.ApplyTo(_pageButton.buttonText);
+
             Refresh();
         }
         catch (Exception e)
@@ -79,6 +103,8 @@ public static class ParadoxLobbyRoleSummaryPatch
         try
         {
             ParadoxFontSupport.ApplyTo(_roleSummary);
+            if (_pageButton?.buttonText != null)
+                ParadoxFontSupport.ApplyTo(_pageButton.buttonText);
             Refresh();
         }
         catch (Exception e)
@@ -88,37 +114,45 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
     }
 
+    private static void NextPage()
+    {
+        _pageIndex = (_pageIndex + 1) % 3;
+        Refresh();
+    }
+
     private static void Refresh()
     {
         if (_roleSummary == null)
             return;
 
         var polish = ParadoxPlugin.Localizer.CurrentLanguage == Localization.Language.Polish;
+        var faction = _pageIndex switch
+        {
+            0 => RoleFaction.Impostor,
+            1 => RoleFaction.Crewmate,
+            _ => RoleFaction.Neutral
+        };
+
+        var color = faction switch
+        {
+            RoleFaction.Impostor => "#FF5A5A",
+            RoleFaction.Crewmate => "#55CFE8",
+            _ => "#E7C64B"
+        };
+
+        var factionName = faction switch
+        {
+            RoleFaction.Impostor => polish ? "IMPOSTORZY" : "IMPOSTORS",
+            RoleFaction.Crewmate => polish ? "ZAŁOGA" : "CREWMATES",
+            _ => polish ? "NEUTRALNI" : "NEUTRALS"
+        };
+
         var lines = new List<string>
         {
             "<color=#55D9D2><b>PARADOX</b></color>",
-            polish ? "<b>ROLE W TEJ GRZE</b>" : "<b>ROLES THIS GAME</b>"
+            $"<color={color}><b>{factionName}</b></color>   <color=#AAAAAA>{_pageIndex + 1}/3</color>"
         };
 
-        AppendFaction(lines, RoleFaction.Impostor, "#FF5A5A",
-            polish ? "IMPOSTORZY" : "IMPOSTORS");
-        AppendFaction(lines, RoleFaction.Crewmate, "#55CFE8",
-            polish ? "ZAŁOGA" : "CREWMATES");
-        AppendFaction(lines, RoleFaction.Neutral, "#E7C64B",
-            polish ? "NEUTRALNI" : "NEUTRALS");
-
-        if (lines.Count == 2)
-            lines.Add(polish ? "<color=#AAAAAA>Brak aktywnych ról</color>" : "<color=#AAAAAA>No active roles</color>");
-
-        _roleSummary.text = string.Join("\n", lines);
-    }
-
-    private static void AppendFaction(
-        List<string> lines,
-        RoleFaction faction,
-        string color,
-        string header)
-    {
         var roles = RoleRegistry.All
             .Where(definition =>
                 definition.Faction == faction &&
@@ -127,15 +161,32 @@ public static class ParadoxLobbyRoleSummaryPatch
             .ToArray();
 
         if (roles.Length == 0)
-            return;
-
-        lines.Add($"\n<color={color}><b>{header}</b></color>");
-
-        foreach (var definition in roles)
         {
-            var name = ParadoxPlugin.Localizer.Get(definition.NameKey);
-            var chance = ParadoxRoleSettings.GetSpawnChance(definition.Id);
-            lines.Add($"<color={color}>•</color> {name}  <b>{chance}%</b>");
+            lines.Add(polish
+                ? "<color=#AAAAAA>Brak aktywnych ról</color>"
+                : "<color=#AAAAAA>No active roles</color>");
+        }
+        else
+        {
+            foreach (var definition in roles)
+            {
+                var name = ParadoxPlugin.Localizer.Get(definition.NameKey);
+                var chance = ParadoxRoleSettings.GetSpawnChance(definition.Id);
+                lines.Add($"<color={color}>•</color> {name}  <b>{chance}%</b>");
+            }
+        }
+
+        lines.Add(polish
+            ? "\n<color=#888888>Kliknij przycisk, aby zmienić kategorię</color>"
+            : "\n<color=#888888>Click the button to change category</color>");
+
+        _roleSummary.text = string.Join("\n", lines);
+
+        if (_pageButton?.buttonText != null)
+        {
+            _pageButton.buttonText.text = polish
+                ? $"ROLE  {_pageIndex + 1}/3  >"
+                : $"ROLES  {_pageIndex + 1}/3  >";
         }
     }
 
@@ -144,7 +195,12 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (_roleSummary != null)
             Object.Destroy(_roleSummary.gameObject);
 
+        if (_pageButton != null)
+            Object.Destroy(_pageButton.gameObject);
+
         _roleSummary = null;
+        _pageButton = null;
+        _pageIndex = 0;
         _nextRefresh = 0f;
     }
 }
