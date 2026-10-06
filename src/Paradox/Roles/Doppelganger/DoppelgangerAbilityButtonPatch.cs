@@ -1,4 +1,6 @@
 using HarmonyLib;
+using Paradox.Networking;
+using Reactor.Networking.Rpc;
 
 namespace Paradox.Roles.Doppelganger;
 
@@ -12,7 +14,6 @@ public static class DoppelgangerAbilityButtonPatch
         if (local == null || !DoppelgangerRole.IsDoppelganger(local.PlayerId))
             return true;
 
-        // Only intercept the actual HUD ability button used by the local player.
         if (HudManager.Instance == null || __instance != HudManager.Instance.AbilityButton)
             return true;
 
@@ -20,10 +21,17 @@ public static class DoppelgangerAbilityButtonPatch
         if (target == null)
             return false;
 
-        // For the host this executes immediately. Client-to-host activation will be
-        // routed through the PARADOX RPC layer in the next networking step.
         if (AmongUsClient.Instance.AmHost)
+        {
             DoppelgangerRole.TryDisguise(local, target);
+        }
+        else
+        {
+            Rpc<UseRoleAbilityRpc>.Instance.Send(
+                local,
+                new UseRoleAbilityRpc.Data(target.PlayerId),
+                immediately: true);
+        }
 
         return false;
     }
