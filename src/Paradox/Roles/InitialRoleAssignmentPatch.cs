@@ -1,4 +1,6 @@
 using HarmonyLib;
+using Paradox.Settings;
+using UnityEngine;
 
 namespace Paradox.Roles;
 
@@ -24,6 +26,16 @@ public static class InitialRoleAssignmentPatch
             if (player.Data.Role.IsImpostor)
             {
                 var role = InitialRolePool.Impostor[impostorIndex % InitialRolePool.Impostor.Count];
+
+                if (role == RoleId.Doppelganger)
+                {
+                    if (!ParadoxRoleSettings.DoppelgangerEnabled ||
+                        Random.Range(0, 100) >= ParadoxRoleSettings.DoppelgangerSpawnChancePercent)
+                    {
+                        role = RoleId.Parasite;
+                    }
+                }
+
                 RoleAssignment.Assign(player, role);
                 impostorIndex++;
                 continue;
