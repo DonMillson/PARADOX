@@ -15,7 +15,8 @@ public static class InitialRoleAssignmentPatch
 
         RoleAssignment.Reset();
 
-        var enabledImpostorRoles = BuildEnabledImpostorPool();
+        var enabledImpostorRoles = BuildEnabledPool(InitialRolePool.Impostor);
+        var enabledCrewRoles = BuildEnabledPool(InitialRolePool.Crewmate);
         var impostorIndex = 0;
         var crewIndex = 0;
 
@@ -26,8 +27,6 @@ public static class InitialRoleAssignmentPatch
 
             if (player.Data.Role.IsImpostor)
             {
-                // If every PARADOX impostor role is disabled or fails its spawn roll,
-                // leave this player as a vanilla impostor instead of forcing a disabled role.
                 if (enabledImpostorRoles.Count > 0)
                 {
                     var role = enabledImpostorRoles[impostorIndex % enabledImpostorRoles.Count];
@@ -38,9 +37,12 @@ public static class InitialRoleAssignmentPatch
                 continue;
             }
 
-            var crewRole = InitialRolePool.Crewmate[crewIndex % InitialRolePool.Crewmate.Count];
-            RoleAssignment.Assign(player, crewRole);
-            crewIndex++;
+            if (enabledCrewRoles.Count > 0)
+            {
+                var crewRole = enabledCrewRoles[crewIndex % enabledCrewRoles.Count];
+                RoleAssignment.Assign(player, crewRole);
+                crewIndex++;
+            }
         }
 
         // First playable pass keeps vanilla factions intact.
@@ -49,20 +51,17 @@ public static class InitialRoleAssignmentPatch
             $"PARADOX initial roles assigned: {PlayerRoleRegistry.All.Count} players.");
     }
 
-    private static List<RoleId> BuildEnabledImpostorPool()
+    private static List<RoleId> BuildEnabledPool(IReadOnlyList<RoleId> source)
     {
         var roles = new List<RoleId>();
 
-        if (ParadoxRoleSettings.DoppelgangerEnabled &&
-            PassesSpawnRoll(ParadoxRoleSettings.DoppelgangerSpawnChancePercent))
+        foreach (var role in source)
         {
-            roles.Add(RoleId.Doppelganger);
-        }
+            if (!ParadoxRoleSettings.IsEnabled(role))
+                continue;
 
-        if (ParadoxRoleSettings.ParasiteEnabled &&
-            PassesSpawnRoll(ParadoxRoleSettings.ParasiteSpawnChancePercent))
-        {
-            roles.Add(RoleId.Parasite);
+            if (PassesSpawnRoll(ParadoxRoleSettings.GetSpawnChance(role)))
+                roles.Add(role);
         }
 
         return roles;
