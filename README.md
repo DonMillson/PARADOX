@@ -1,14 +1,77 @@
 # PARADOX
 
-Original Among Us mod project.
+Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release), targeting its supported Among Us 16.0.5–17.4 range.
 
-## Stage 0 — Build pipeline
-This repository currently contains a minimal C# foundation used to verify automatic DLL compilation with GitHub Actions.
+## Development status
 
-Planned architecture:
-- PARADOX Core
-- PC adapter
-- Android adapter
-- shared role/state protocol
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. The first gameplay MVP focuses on Doppelgänger, Parasite, Anomaly, Observer, Witness and the Paradox Meter.
 
-First gameplay MVP: Doppelgänger, Parasite, Anomaly, Observer, Witness and the Paradox Meter.
+Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end playable; **Planned** = registered design slot, gameplay implementation still required.
+
+## Role table
+
+| Role | Faction | Intended gameplay / ability | Status | Still required |
+|---|---|---|---|---|
+| Doppelgänger | Impostor | Copies another player's appearance temporarily, then restores the original outfit. | Partial | Ability button, target selection, final multiplayer/runtime verification |
+| Parasite | Impostor | Infects a target; after the infection timer completes, the victim is killed. | Partial | Ability button, target UX, infection feedback, runtime verification |
+| Puppeteer | Impostor | Temporarily manipulates another player's actions/movement. | Planned | Full implementation and synchronization |
+| Cleaner | Impostor | Removes a dead body to deny report/evidence. | Planned | Full implementation and synchronization |
+| Blackmailer | Impostor | Temporarily prevents a selected player from communicating normally. | Planned | Full implementation, meeting integration |
+| Illusionist | Impostor | Creates deceptive visual information/decoys. | Planned | Full implementation and client sync |
+| Corruptor | Impostor | Corrupts players or systems to create harmful effects. | Planned | Final mechanic, implementation and sync |
+| Devourer | Impostor | Removes/consumes a victim with a specialized kill mechanic. | Planned | Final mechanic and implementation |
+| Timebreaker | Impostor | Temporarily disrupts time-related gameplay. | Planned | Final mechanic, safe networking model |
+| Nightmare | Impostor | Applies fear/vision disruption to selected players. | Planned | Full implementation and effects |
+| Shapeshifter X | Impostor | Advanced transformation-oriented impostor role distinct from Doppelgänger. | Planned | Final unique mechanic and implementation |
+| Saboteur | Impostor | Enhanced sabotage-focused role. | Planned | Sabotage extensions and balancing |
+| Undertaker | Impostor | Interacts with/moves bodies to conceal evidence. | Planned | Body interaction and synchronization |
+| Silencer | Impostor | Restricts a target during discussion/meeting phases. | Planned | Meeting integration and sync |
+| Riftmaker | Impostor | Creates temporary rifts/portals for repositioning. | Planned | Portal system, map validation and sync |
+| Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Final HUD, readable trace feedback, runtime verification |
+| Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | 2026-compatible clue HUD, real body-age/activity evidence |
+| Engineer X | Crewmate | Advanced technical/repair-oriented crewmate. | Planned | Final mechanic and implementation |
+| Guardian | Crewmate | Protects another player from danger. | Planned | Protection ability, cooldown and sync |
+| Chronologist | Crewmate | Uses timing/history information to investigate events. | Planned | Event history system and UI |
+| Detective | Crewmate | Investigates players/events for evidence. | Planned | Evidence model, UI and balancing |
+| Medic | Crewmate | Protects or medically inspects players. | Planned | Final mechanic and implementation |
+| Tracker | Crewmate | Tracks a selected player's position/activity. | Planned | Tracking UI and synchronization |
+| Locksmith | Crewmate | Interacts with doors/locks and map access. | Planned | Door/map integration |
+| Analyst | Crewmate | Analyses match data to reveal limited information. | Planned | Data sources, UI and balancing |
+| Technician | Crewmate | Gains enhanced interaction with systems/sabotages. | Planned | System hooks and balancing |
+| Seer | Crewmate | Receives limited supernatural/information clues. | Planned | Final clue rules and implementation |
+| Dispatcher | Crewmate | Provides team-oriented information/coordination tools. | Planned | Final mechanic, HUD and sync |
+| Forensic | Crewmate | Examines bodies/scenes for stronger forensic evidence. | Planned | Death/evidence history and UI |
+| Stabilizer | Crewmate | Counteracts Paradox/anomaly effects and helps control the Meter. | Planned | Meter interaction and balancing |
+| Anomaly | Neutral | Core neutral role tied to Paradox/anomaly mechanics. | Partial | Neutral objective, win condition, ability/UI and assignment |
+| Forgotten | Neutral | Progresses through a hidden/forgotten identity objective. | Planned | Final objective and win condition |
+| Collector | Neutral | Collects designated objectives/resources to win. | Planned | Collectible system and win condition |
+| Bounty Hunter | Neutral | Receives targets/bounties and progresses by eliminating/completing them. | Planned | Target selection, win condition and sync |
+| Survivor | Neutral | Wins primarily by surviving until the required end state. | Planned | Win-condition integration |
+| Revenant | Neutral | Death/return-themed neutral role with a second-state mechanic. | Planned | Revival/state rules and win condition |
+| Jester X | Neutral | Attempts to get voted out under its own victory rules. | Planned | Meeting/vote win-condition integration |
+| Phantom | Neutral | Uses stealth/intangibility-oriented mechanics. | Planned | Final ability, visibility rules and sync |
+| Opportunist | Neutral | Wins by satisfying an opportunistic end-game survival condition. | Planned | End-game win-condition integration |
+| Harbinger | Neutral | Advances a dangerous Paradox-related objective toward a special victory. | Planned | Objective, Meter interaction and win condition |
+
+## Implemented foundation
+
+- Paradox Meter 0–100 with one-time thresholds at 25/50/75/100.
+- Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
+- Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
+- Host-side initial role assignment. Doppelgänger and Parasite independently respect Enabled and SpawnChance; if neither qualifies, the player remains a vanilla Impostor.
+- English/Polish localization foundation.
+- PARADOX STATION map architecture/skeleton.
+- Match-end state reset for implemented MVP roles.
+- GitHub Actions Release build producing Paradox.dll.
+
+## Next milestones
+
+1. Finish Doppelgänger end-to-end ability UX and runtime synchronization.
+2. Finish Parasite target/ability UX and infection feedback.
+3. Restore Witness and Observer HUD on the 2026 API.
+4. Implement Anomaly objective and neutral win condition.
+5. Add host settings UI for role pool, spawn chances, cooldowns, Meter and events.
+6. Complete PARADOX STATION gameplay map and tasks.
+7. Expand Paradox events, then implement the remaining registered roles.
+8. Harden multiplayer RPC validation and perform multi-client runtime tests.
+9. Android adapter and cosmetic-only Founder/Premium features after the PC gameplay core is stable.
