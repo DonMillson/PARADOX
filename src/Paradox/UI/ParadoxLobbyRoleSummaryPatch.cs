@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Paradox.Networking;
 using Paradox.Roles;
 using Paradox.Settings;
 using TMPro;
@@ -8,9 +9,9 @@ using Object = UnityEngine.Object;
 namespace Paradox.UI;
 
 /// <summary>
-/// Clickable PARADOX role/chance summary shown directly in the hosted lobby.
-/// Only one faction is shown at a time. The existing text panel itself is clickable;
-/// we do not clone the lobby Start button because that can interfere with lobby UI state.
+/// PARADOX role/chance summary shown directly in the lobby for every PARADOX client.
+/// One faction is shown at a time; clicking the panel cycles Impostor/Crewmate/Neutral.
+/// Host settings are synchronized through SyncRoleSettingRpc.
 /// </summary>
 [HarmonyPatch(typeof(GameStartManager))]
 public static class ParadoxLobbyRoleSummaryPatch
@@ -29,35 +30,53 @@ public static class ParadoxLobbyRoleSummaryPatch
         {
             DestroySummary();
 
-            if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+            if (AmongUsClient.Instance == null)
                 return;
 
-            if (__instance.PlayerCounter == null)
+            TextMeshPro? template = __instance.GameStartText;
+            if (template == null)
+                template = __instance.PlayerCounter;
+
+            if (template == null)
                 return;
 
             _pageIndex = 0;
 
-            _roleSummary = Object.Instantiate(
-                __instance.PlayerCounter,
-                __instance.PlayerCounter.transform.parent);
-
+            // Parent to the GameStartManager root, not PlayerCounter's right-side
+            // lobby-info panel. The 2026 UI clips children of that panel.
+            _roleSummary = Object.Instantiate(template, __instance.transform);
             _roleSummary.name = "PARADOX_LobbyRoleSummary";
+            _roleSummary.gameObject.SetActive(true);
+
+            var translator = _roleSummary.GetComponent<TextTranslatorTMP>();
+            if (translator != null)
+                Object.DestroyImmediate(translator);
+
             _roleSummary.text = string.Empty;
-            _roleSummary.fontSize = 1.65f;
-            _roleSummary.alignment = TextAlignmentOptions.TopRight;
+            _roleSummary.fontSize = 1.7f;
+            _roleSummary.alignment = TextAlignmentOptions.TopLeft;
             _roleSummary.autoSizeTextContainer = false;
             _roleSummary.richText = true;
             _roleSummary.color = Color.white;
-            _roleSummary.transform.localPosition = new Vector3(4.65f, 2.25f, -10f);
             _roleSummary.transform.localScale = Vector3.one;
-            _roleSummary.rectTransform.sizeDelta = new Vector2(5.2f, 4.25f);
+            _roleSummary.rectTransform.sizeDelta = new Vector2(5.3f, 4.2f);
 
-            // Make only our own summary panel clickable. No cloning of StartButton.
+            // Anchor beside the room, above the WAITING FOR PLAYERS area.
+            // This stays inside the visible 16:9 lobby and clear of the 2026
+            // right-side Room Settings panel.
+            var anchor = __instance.GameStartText != null
+                ? __instance.GameStartText.transform.localPosition
+                : template.transform.localPosition;
+
+            _roleSummary.transform.localPosition =
+                anchor + new Vector3(-5.25f, 4.15f, -2f);
+
             if (__instance.StartButton != null)
                 _roleSummary.gameObject.layer = __instance.StartButton.gameObject.layer;
 
             _roleSummaryCollider = _roleSummary.gameObject.AddComponent<BoxCollider2D>();
-            _roleSummaryCollider.size = new Vector2(5.2f, 4.25f);
+            _roleSummaryCollider.size = new Vector2(5.3f, 4.2f);
+            _roleSummaryCollider.offset = new Vector2(2.65f, -2.1f);
             _roleSummaryCollider.isTrigger = true;
 
             _roleSummaryButton = _roleSummary.gameObject.AddComponent<PassiveButton>();
@@ -72,11 +91,19 @@ public static class ParadoxLobbyRoleSummaryPatch
 
             ParadoxFontSupport.ApplyTo(_roleSummary);
             Refresh();
+
+            // Host publishes the authoritative role pool/chances. Clients update
+            // their local lobby panel when the RPCs arrive.
+            if (AmongUsClient.Instance.AmHost)
+                ParadoxNetwork.BroadcastRoleSettings();
+
+            ParadoxPlugin.Instance.Log.LogInfo(
+                "PARADOX lobby role summary created for local client.");
         }
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
-                $"PARADOX could not create lobby role summary: {e.Message}");
+                $"PARADOX could not create lobby role summary: {e}");
             DestroySummary();
         }
     }
@@ -88,7 +115,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (_roleSummary == null)
             return;
 
-        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+        if (AmongUsClient.Instance == null)
         {
             DestroySummary();
             return;
@@ -97,7 +124,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (Time.realtimeSinceStartup < _nextRefresh)
             return;
 
-        _nextRefresh = Time.realtimeSinceStartup + 0.5f;
+        _nextRefresh = Time.realtimeSinceStartup + 0.35f;
 
         try
         {
@@ -146,7 +173,7 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            "<color=#55D9D2><b>PARADOX</b></color>",
+            "<color=#55D9D2><b>PARADOX — ROLE</b></color>",
             $"<color={color}><b>{factionName}</b></color>   <color=#AAAAAA>{_pageIndex + 1}/3  ></color>"
         };
 
@@ -174,8 +201,8 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
 
         lines.Add(polish
-            ? "\n<color=#888888>Kliknij panel, aby zmienić kategorię</color>"
-            : "\n<color=#888888>Click panel to change category</color>");
+            ? "\n<color=#888888>Kliknij listę, aby zmienić kategorię</color>"
+            : "\n<color=#888888>Click the list to change category</color>");
 
         _roleSummary.text = string.Join("\n", lines);
     }
