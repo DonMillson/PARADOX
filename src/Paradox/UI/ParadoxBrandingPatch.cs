@@ -21,6 +21,9 @@ public static class ParadoxBrandingPatch
     {
         try
         {
+            if (__instance.quitButton != null)
+                __instance.quitButton.gameObject.SetActive(false);
+
             if (_root != null)
                 Object.Destroy(_root);
 
@@ -36,17 +39,19 @@ public static class ParadoxBrandingPatch
             _root.transform.localRotation = Quaternion.identity;
             _root.transform.localScale = Vector3.one;
 
-            if (logo != null)
+            // Place the PARADOX mark in the empty black area to the right
+            // of the vanilla menu. Viewport placement keeps it away from PLAY /
+            // INVENTORY / SHOP regardless of the LeftPanel/Sizer scaling.
+            var cam = Camera.main;
+            if (cam != null)
             {
-                // Use world space from the real AU logo, but parent the mark to
-                // MainMenuManager itself. This avoids the stretched Sizer scale
-                // that previously created the huge cyan line / oversized badge.
-                _root.transform.position =
-                    logo.position + new Vector3(1.15f, -0.48f, -0.45f);
+                var world = cam.ViewportToWorldPoint(new Vector3(0.405f, 0.535f, 10f));
+                world.z = logo != null ? logo.position.z - 0.45f : -8f;
+                _root.transform.position = world;
             }
             else
             {
-                _root.transform.localPosition = new Vector3(-3.0f, 1.55f, -8f);
+                _root.transform.localPosition = new Vector3(-0.8f, 0.15f, -8f);
             }
 
             var logoRenderer = logo?.GetComponent<SpriteRenderer>();
@@ -59,17 +64,18 @@ public static class ParadoxBrandingPatch
                 return;
 
             text.text =
-                "<size=108%><b><color=#55D9D2>PARADOX</color></b> " +
+                "<size=116%><b><color=#55D9D2>PARA</color><color=#F4F7FA>DO</color><color=#FF5A67>X</color></b> " +
                 "<color=#FF5A67>///</color></size>\n" +
-                $"<size=42%><color=#8B99A5>REALITY FRACTURE  •  DONMILLSON  •  v{ParadoxInfo.Version}</color></size>";
+                "<size=45%><color=#A8B4BE>REALITY FRACTURE</color></size>\n" +
+                $"<size=38%><color=#6F7D88>DONMILLSON  //  v{ParadoxInfo.Version}</color></size>";
 
             text.alignment = TextAlignmentOptions.Center;
             text.richText = true;
             text.enableWordWrapping = false;
             text.fontStyle = FontStyles.Normal;
-            text.fontSize = 0.72f;
+            text.fontSize = 0.82f;
             text.characterSpacing = 1.0f;
-            text.lineSpacing = -12f;
+            text.lineSpacing = -10f;
             text.color = Color.white;
             text.outlineColor = new Color32(0, 0, 0, 220);
             text.outlineWidth = 0.08f;
@@ -80,7 +86,7 @@ public static class ParadoxBrandingPatch
             if (rt != null)
             {
                 rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(2.05f, 0.65f);
+                rt.sizeDelta = new Vector2(2.35f, 0.90f);
             }
 
             text.gameObject.SetActive(true);
@@ -100,8 +106,8 @@ public static class ParadoxBrandingPatch
 
         var lineGo = new GameObject("PARADOX_MarkLine");
         lineGo.transform.SetParent(parent, false);
-        lineGo.transform.localPosition = new Vector3(0f, 0.31f, 0.04f);
-        lineGo.transform.localScale = new Vector3(1.55f, 0.018f, 1f);
+        lineGo.transform.localPosition = new Vector3(0f, 0.39f, 0.04f);
+        lineGo.transform.localScale = new Vector3(1.25f, 0.018f, 1f);
 
         var line = lineGo.AddComponent<SpriteRenderer>();
         line.sprite = sprite;
@@ -110,8 +116,8 @@ public static class ParadoxBrandingPatch
 
         var redGo = new GameObject("PARADOX_MarkRed");
         redGo.transform.SetParent(parent, false);
-        redGo.transform.localPosition = new Vector3(0.79f, 0.31f, 0.03f);
-        redGo.transform.localScale = new Vector3(0.09f, 0.028f, 1f);
+        redGo.transform.localPosition = new Vector3(0.67f, 0.39f, 0.03f);
+        redGo.transform.localScale = new Vector3(0.10f, 0.030f, 1f);
 
         var red = redGo.AddComponent<SpriteRenderer>();
         red.sprite = sprite;
