@@ -29,6 +29,6 @@ public static class ParasiteUpdatePatch
             __instance.Data == null || __instance.Data.IsDead)
             return;
 
-        source.MurderPlayer(__instance);
+        source.MurderPlayer(__instance, MurderResultFlags.Succeeded);
     }
 }
