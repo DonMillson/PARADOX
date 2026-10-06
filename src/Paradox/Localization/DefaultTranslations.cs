@@ -54,7 +54,9 @@ public static class DefaultTranslations
             "Discover an incomplete clue near a body.", "Odkryj niepełną wskazówkę przy znalezionym ciele.");
 
         AddRoleName(l, "Puppeteer", "Puppeteer", "Lalkarz");
-        AddRoleName(l, "Cleaner", "Cleaner", "Czyściciel");
+        AddRole(l, "Cleaner", "Cleaner", "Czyściciel",
+            "Remove nearby bodies before the crew can report them.", "Usuwaj pobliskie ciała, zanim załoga zdąży je zgłosić.");
+        Add(l, "role.Cleaner.ability", "CLEAN", "USUN");
         AddRoleName(l, "Blackmailer", "Blackmailer", "Szantażysta");
         AddRoleName(l, "Illusionist", "Illusionist", "Iluzjonista");
         AddRoleName(l, "Corruptor", "Corruptor", "Deprawator");
