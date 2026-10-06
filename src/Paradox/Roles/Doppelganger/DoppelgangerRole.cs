@@ -62,8 +62,14 @@ public static class DoppelgangerRole
             return;
 
         if (!States.TryGetValue(player.PlayerId, out var state) ||
-            !state.TargetPlayerId.HasValue ||
-            state.IsDisguised(Time.time))
+            !state.TargetPlayerId.HasValue)
+            return;
+
+        // Death cancels the active disguise immediately. Otherwise restore the
+        // original outfit as soon as the configured disguise duration expires.
+        var disguiseExpired = !state.IsDisguised(Time.time);
+        var playerDied = player.Data == null || player.Data.IsDead;
+        if (!disguiseExpired && !playerDied)
             return;
 
         DoppelgangerAppearance.Restore(player);
