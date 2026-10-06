@@ -5,11 +5,13 @@ using UnityEngine;
 namespace Paradox.UI;
 
 /// <summary>
-/// Adds a Latin Extended fallback to Among Us TMP fonts so Polish diacritics
-/// (ą ć ę ł ń ó ś ź ż and uppercase variants) render in PARADOX UI.
+/// Adds fallbacks from fonts already shipped with Among Us.
+/// The lobby rows use a different TMP font than category headers, so a font can
+/// render "OGÓLNE" correctly while rows still show tofu squares for ł/ż/ś.
 /// </summary>
 public static class ParadoxFontSupport
 {
+    private const string PolishCharacters = "ąćęłńóśźżĄĆĘŁŃÓŚŹŻ";
     private static bool _configured;
 
     public static void EnsurePolishGlyphs()
@@ -31,62 +33,126 @@ public static class ParadoxFontSupport
                     continue;
 
                 var font = obj.Cast<TMP_FontAsset>();
-                if (font != null)
+                if (font != null && !fonts.Any(existing => existing.Pointer == font.Pointer))
                     fonts.Add(font);
             }
 
-            TMP_FontAsset? fallback = null;
+            if (fonts.Count == 0)
+                return;
 
-            foreach (var font in fonts)
+            // Find fonts that REALLY contain the glyphs in their own atlas.
+            // Do not trust a hard-coded Noto font name: its baked AU atlas can omit Latin Extended.
+            var missing = new HashSet<char>(PolishCharacters);
+            var selected = new List<TMP_FontAsset>();
+
+            foreach (var font in fonts
+                         .OrderByDescending(FontPreference)
+                         .ThenByDescending(font => CountDirectPolishGlyphs(font)))
             {
-                if (font.name == "NotoSansJP-Regular SDF")
+                var contributes = false;
+
+                foreach (var character in missing.ToArray())
                 {
-                    fallback = font;
-                    break;
+                    if (!HasDirectGlyph(font, character))
+                        continue;
+
+                    missing.Remove(character);
+                    contributes = true;
                 }
+
+                if (contributes)
+                    selected.Add(font);
+
+                if (missing.Count == 0)
+                    break;
             }
 
-            if (fallback == null)
-            {
-                fallback = fonts.FirstOrDefault(font =>
-                    font.name == "NotoSansSC-Regular SDF" ||
-                    font.name == "NotoSansKR-Regular SDF");
-            }
-
-            if (fallback == null)
+            if (selected.Count == 0)
             {
                 ParadoxPlugin.Instance.Log.LogWarning(
-                    "PARADOX Polish font fallback not found. Polish diacritics may be missing.");
+                    "PARADOX found no loaded Among Us font containing Polish Latin Extended glyphs.");
                 return;
             }
 
             foreach (var font in fonts)
             {
-                if (font == fallback || font.fallbackFontAssetTable == null)
+                if (font.fallbackFontAssetTable == null)
                     continue;
 
-                var exists = false;
-                foreach (var existing in font.fallbackFontAssetTable)
+                foreach (var fallback in selected)
                 {
-                    if (existing == fallback)
-                    {
-                        exists = true;
-                        break;
-                    }
-                }
+                    if (font.Pointer == fallback.Pointer)
+                        continue;
 
-                if (!exists)
-                    font.fallbackFontAssetTable.Add(fallback);
+                    var exists = false;
+                    foreach (var existing in font.fallbackFontAssetTable)
+                    {
+                        if (existing != null && existing.Pointer == fallback.Pointer)
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists)
+                        font.fallbackFontAssetTable.Add(fallback);
+                }
+            }
+
+            if (missing.Count > 0)
+            {
+                ParadoxPlugin.Instance.Log.LogWarning(
+                    $"PARADOX Polish fallback is partial. Missing glyphs: {new string(missing.ToArray())}");
+                return;
             }
 
             _configured = true;
             ParadoxPlugin.Instance.Log.LogInfo(
-                $"PARADOX Polish glyph fallback enabled: {fallback.name}");
+                $"PARADOX Polish glyph fallback ready: {string.Join(", ", selected.Select(font => font.name))}");
         }
         catch (Exception e)
         {
             ParadoxPlugin.Instance.Log.LogWarning(
                 $"PARADOX could not configure Polish font fallback: {e}");
         }
+    }
+
+    private static int CountDirectPolishGlyphs(TMP_FontAsset font)
+    {
+        var count = 0;
+
+        foreach (var character in PolishCharacters)
+        {
+            if (HasDirectGlyph(font, character))
+                count++;
+        }
+
+        return count;
+    }
+
+    private static bool HasDirectGlyph(TMP_FontAsset font, char character)
+    {
+        try
+        {
+            return font.HasCharacter(character, false, false);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static int FontPreference(TMP_FontAsset font)
+    {
+        var name = font.name ?? string.Empty;
+
+        if (name.Contains("Barlow", StringComparison.OrdinalIgnoreCase))
+            return 4;
+        if (name.Contains("LiberationSans", StringComparison.OrdinalIgnoreCase))
+            return 3;
+        if (name.Contains("NotoSans", StringComparison.OrdinalIgnoreCase))
+            return 2;
+
+        return 1;
     }
 }
