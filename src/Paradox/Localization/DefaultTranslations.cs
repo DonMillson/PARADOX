@@ -44,6 +44,9 @@ public static class DefaultTranslations
         Add(l, "event.75", "Critical instability", "Krytyczna niestabilność");
         Add(l, "event.75.detail", "Reality collapses into heavy flicker and role abilities are jammed for 8 seconds.", "Rzeczywistość wpada w silne zakłócenia, a umiejętności ról są zablokowane na 8 sekund.");
         Add(l, "event.100", "PARADOX EVENT", "ZDARZENIE PARADOKSU");
+        Add(l, "event.100.realityStorm", "Reality Storm: violent reality pulses and camera instability for 10 seconds.", "Burza Rzeczywistości: gwałtowne pulsowanie obrazu i niestabilna kamera przez 10 sekund.");
+        Add(l, "event.100.blackout", "Blackout: visibility collapses into a deep global blackout for 10 seconds.", "Blackout: widoczność zapada się w głęboką globalną ciemność na 10 sekund.");
+        Add(l, "event.100.nullField", "Null Field: reality darkens and all special role abilities are jammed for 12 seconds.", "Pole Zerowe: rzeczywistość ciemnieje, a wszystkie specjalne umiejętności ról są zablokowane na 12 sekund.");
 
         AddRole(l, "Doppelganger", "Doppelgänger", "Sobowtór",
             "Copy another player's identity temporarily.", "Tymczasowo skopiuj tożsamość innego gracza.");

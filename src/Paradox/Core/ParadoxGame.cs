@@ -28,6 +28,13 @@ public static class ParadoxGame
         {
             ParadoxPlugin.Instance.Log.LogInfo(
                 $"PARADOX threshold reached: {(int)paradoxEvent.Threshold}% ({paradoxEvent.LocalizationKey})");
+
+            if (paradoxEvent.Threshold == ParadoxThreshold.Event)
+            {
+                TriggerFinalEvent();
+                continue;
+            }
+
             ParadoxEventRuntime.Trigger(paradoxEvent);
         }
 
@@ -51,6 +58,21 @@ public static class ParadoxGame
         Rpc<SyncParadoxMeterRpc>.Instance.Send(
             player,
             new SyncParadoxMeterRpc.Data(State.Meter),
+            immediately: true);
+    }
+
+    private static void TriggerFinalEvent()
+    {
+        var finalEvent = ParadoxFinalEventSelector.Pick();
+        ParadoxEventRuntime.TriggerFinal(finalEvent);
+
+        var player = PlayerControl.LocalPlayer;
+        if (player == null)
+            return;
+
+        Rpc<TriggerParadoxFinalEventRpc>.Instance.Send(
+            player,
+            new TriggerParadoxFinalEventRpc.Data((byte)finalEvent),
             immediately: true);
     }
 }

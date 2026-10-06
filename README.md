@@ -8,7 +8,7 @@ The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Th
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end playable; **Planned** = registered design slot, gameplay implementation still required.
 
-Current Paradox threshold runtime: 25%, 50% and 75% are implemented in code; in-game runtime verification is still required before the 100% randomized final event is added.
+Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronized randomized 100% final event are implemented in code; in-game runtime verification is still required.
 
 ## Role table
 
@@ -59,6 +59,7 @@ Current Paradox threshold runtime: 25%, 50% and 75% are implemented in code; in-
 
 - Paradox Meter 0–100 with one-time thresholds at 25/50/75/100.
 - Runtime threshold effects implemented for 25% Reality Disturbance, 50% Reality Distortion and 75% Critical Instability; the 50% and 75% events temporarily jam special role abilities.
+- At 100%, the host selects and synchronizes one final event for every client: Reality Storm, Blackout or Null Field. Null Field jams special role abilities for 12 seconds.
 - Meter sources include successful kills and role/anomaly actions; failed/protected murder attempts no longer count as kills.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
 - Host-side initial role assignment. Doppelgänger and Parasite independently respect Enabled and SpawnChance; if neither qualifies, the player remains a vanilla Impostor.
@@ -75,6 +76,6 @@ Current Paradox threshold runtime: 25%, 50% and 75% are implemented in code; in-
 4. Implement Anomaly objective and neutral win condition.
 5. Add host settings UI for role pool, spawn chances, cooldowns, Meter and events.
 6. Complete PARADOX STATION gameplay map and tasks.
-7. Implement the synchronized randomized 100% PARADOX EVENT, then expand the remaining event pool and registered roles.
+7. Expand the Paradox event pool and continue implementing registered roles after runtime verification of the synchronized 100% event.
 8. Harden multiplayer RPC validation and perform multi-client runtime tests.
 9. Android adapter and cosmetic-only Founder/Premium features after the PC gameplay core is stable.

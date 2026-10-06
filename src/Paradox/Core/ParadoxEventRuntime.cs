@@ -9,12 +9,14 @@ namespace Paradox.Core;
 /// 25% = Reality Disturbance (visual interference + light camera shake).
 /// 50% = Reality Distortion (stronger interference + 6s role-ability jam).
 /// 75% = Critical Instability (heavy interference + intermittent blackout + 8s role-ability jam).
+/// 100% = a host-selected synchronized final Paradox Event.
 /// </summary>
 public static class ParadoxEventRuntime
 {
     private static readonly HashSet<ParadoxThreshold> Triggered = new();
 
     private static ParadoxThreshold _activeThreshold = ParadoxThreshold.None;
+    private static ParadoxFinalEventType? _activeFinalEvent;
     private static float _effectStartedAt;
     private static float _effectEndsAt;
 
@@ -24,8 +26,10 @@ public static class ParadoxEventRuntime
     private static bool _shakeCaptured;
 
     public static bool RoleAbilitiesBlocked =>
-        _activeThreshold is ParadoxThreshold.Distortion or ParadoxThreshold.Instability &&
-        Time.time < _effectEndsAt;
+        Time.time < _effectEndsAt &&
+        (_activeThreshold is ParadoxThreshold.Distortion or ParadoxThreshold.Instability ||
+         (_activeThreshold == ParadoxThreshold.Event &&
+          _activeFinalEvent == ParadoxFinalEventType.NullField));
 
     public static void Trigger(ParadoxEvent paradoxEvent)
     {
@@ -51,6 +55,31 @@ public static class ParadoxEventRuntime
 
         ParadoxPlugin.Instance.Log.LogInfo(
             $"PARADOX runtime event started: {(int)paradoxEvent.Threshold}% for {duration:0.#}s.");
+    }
+
+    public static void TriggerFinal(ParadoxFinalEventType finalEvent)
+    {
+        if (!Triggered.Add(ParadoxThreshold.Event))
+            return;
+
+        var duration = finalEvent switch
+        {
+            ParadoxFinalEventType.RealityStorm => 10f,
+            ParadoxFinalEventType.Blackout => 10f,
+            ParadoxFinalEventType.NullField => 12f,
+            _ => 10f
+        };
+
+        _activeThreshold = ParadoxThreshold.Event;
+        _activeFinalEvent = finalEvent;
+        _effectStartedAt = Time.time;
+        _effectEndsAt = Time.time + duration;
+
+        TryShowFinalNotification(finalEvent);
+        ApplyInitialCameraShake();
+
+        ParadoxPlugin.Instance.Log.LogInfo(
+            $"PARADOX 100% final event started: {finalEvent} for {duration:0.#}s.");
     }
 
     public static void TriggerCrossed(float previousMeter, float currentMeter)
@@ -124,6 +153,35 @@ public static class ParadoxEventRuntime
         }
     }
 
+    private static void TryShowFinalNotification(ParadoxFinalEventType finalEvent)
+    {
+        try
+        {
+            var hud = HudManager.Instance;
+            if (hud == null || hud.Notifier == null)
+                return;
+
+            var detailKey = finalEvent switch
+            {
+                ParadoxFinalEventType.RealityStorm => "event.100.realityStorm",
+                ParadoxFinalEventType.Blackout => "event.100.blackout",
+                ParadoxFinalEventType.NullField => "event.100.nullField",
+                _ => "event.100"
+            };
+
+            var title = ParadoxPlugin.Localizer.Get("event.100");
+            var detail = ParadoxPlugin.Localizer.Get(detailKey);
+
+            hud.Notifier.AddDisconnectMessage(
+                $"PARADOX 100% — {title}\n{detail}");
+        }
+        catch (Exception e)
+        {
+            ParadoxPlugin.Instance.Log.LogWarning(
+                $"PARADOX final event notification failed: {e.Message}");
+        }
+    }
+
     private static void EnsureOverlay(HudManager hud)
     {
         if (_overlay != null)
@@ -176,10 +234,43 @@ public static class ParadoxEventRuntime
             return;
         }
 
-        var criticalPulse = (Mathf.Sin(elapsed * 16f) + 1f) * 0.5f;
-        var deepViolet = new Color(0.45f, 0.02f, 0.62f, 0.20f + pulse * 0.14f);
-        var blackout = new Color(0.01f, 0.00f, 0.03f, 0.28f + criticalPulse * 0.22f);
-        _overlay.color = Color.Lerp(deepViolet, blackout, criticalPulse);
+        if (_activeThreshold == ParadoxThreshold.Instability)
+        {
+            var criticalPulse = (Mathf.Sin(elapsed * 16f) + 1f) * 0.5f;
+            var deepViolet = new Color(0.45f, 0.02f, 0.62f, 0.20f + pulse * 0.14f);
+            var blackout = new Color(0.01f, 0.00f, 0.03f, 0.28f + criticalPulse * 0.22f);
+            _overlay.color = Color.Lerp(deepViolet, blackout, criticalPulse);
+            return;
+        }
+
+        switch (_activeFinalEvent)
+        {
+            case ParadoxFinalEventType.RealityStorm:
+            {
+                var stormPulse = (Mathf.Sin(elapsed * 20f) + 1f) * 0.5f;
+                var hot = new Color(1.00f, 0.02f, 0.18f, 0.22f + stormPulse * 0.16f);
+                var cold = new Color(0.02f, 0.85f, 1.00f, 0.18f + (1f - stormPulse) * 0.14f);
+                _overlay.color = Color.Lerp(hot, cold, stormPulse);
+                break;
+            }
+            case ParadoxFinalEventType.Blackout:
+            {
+                var blackoutPulse = (Mathf.Sin(elapsed * 7f) + 1f) * 0.5f;
+                _overlay.color = new Color(0f, 0f, 0f, 0.52f + blackoutPulse * 0.20f);
+                break;
+            }
+            case ParadoxFinalEventType.NullField:
+            {
+                var nullPulse = (Mathf.Sin(elapsed * 13f) + 1f) * 0.5f;
+                var nullViolet = new Color(0.28f, 0.00f, 0.42f, 0.28f + nullPulse * 0.16f);
+                var nullBlack = new Color(0.01f, 0.00f, 0.02f, 0.38f + (1f - nullPulse) * 0.14f);
+                _overlay.color = Color.Lerp(nullViolet, nullBlack, nullPulse);
+                break;
+            }
+            default:
+                _overlay.color = new Color(0.35f, 0.00f, 0.45f, 0.25f);
+                break;
+        }
     }
 
     private static void ApplyInitialCameraShake()
@@ -213,6 +304,13 @@ public static class ParadoxEventRuntime
 
         var amount = _activeThreshold switch
         {
+            ParadoxThreshold.Event => _activeFinalEvent switch
+            {
+                ParadoxFinalEventType.RealityStorm => 0.075f,
+                ParadoxFinalEventType.Blackout => 0.012f,
+                ParadoxFinalEventType.NullField => 0.045f,
+                _ => 0.040f
+            },
             ParadoxThreshold.Instability => 0.055f,
             ParadoxThreshold.Distortion => 0.035f,
             _ => 0.018f
@@ -234,6 +332,7 @@ public static class ParadoxEventRuntime
 
         _shakeCaptured = false;
         _activeThreshold = ParadoxThreshold.None;
+        _activeFinalEvent = null;
         _effectStartedAt = 0f;
         _effectEndsAt = 0f;
     }
@@ -267,6 +366,7 @@ public static class ParadoxEventRuntime
         _overlay = null;
         _shakeCaptured = false;
         _activeThreshold = ParadoxThreshold.None;
+        _activeFinalEvent = null;
         _effectStartedAt = 0f;
         _effectEndsAt = 0f;
         Triggered.Clear();
