@@ -152,7 +152,11 @@ public static class DefaultTranslations
         Add(l, "role.Stabilizer.feedback", "Reality stabilized: Paradox Meter -{amount}.", "Rzeczywistość ustabilizowana: Miernik Paradoksu -{amount}.");
 
         AddRoleName(l, "Forgotten", "Forgotten", "Zapomniany");
-        AddRoleName(l, "Collector", "Collector", "Kolekcjoner");
+        AddRole(l, "Collector", "Collector", "Kolekcjoner",
+            "Collect unique samples from three living players to claim a solo victory.", "Zbierz unikalne próbki od trzech żywych graczy, aby odnieść samodzielne zwycięstwo.");
+        Add(l, "role.Collector.ability", "SAMPLE {count}/{required}", "PRÓBKA {count}/{required}");
+        Add(l, "role.Collector.feedback", "Sample secured: {count}/{required}.", "Próbka zdobyta: {count}/{required}.");
+        Add(l, "role.Collector.win", "COLLECTOR WINS", "KOLEKCJONER WYGRYWA");
         AddRole(l, "BountyHunter", "Bounty Hunter", "Łowca Nagród",
             "Hunt the assigned bounty target. Eliminating the correct target grants a solo victory.", "Poluj na wyznaczony cel. Eliminacja właściwego celu daje samodzielne zwycięstwo.");
         Add(l, "role.BountyHunter.ability", "EXECUTE", "ELIMINUJ");
