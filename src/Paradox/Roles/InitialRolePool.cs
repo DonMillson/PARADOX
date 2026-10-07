@@ -34,6 +34,7 @@ public static class InitialRolePool
         RoleId.BountyHunter,
         RoleId.Survivor,
         RoleId.Opportunist,
-        RoleId.Harbinger
+        RoleId.Harbinger,
+        RoleId.Collector
     };
 }
