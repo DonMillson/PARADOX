@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Blackmailer, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger and Collector.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Blackmailer, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Silencer, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -27,7 +27,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Shapeshifter X | Impostor | Swaps the visible identities of the Shapeshifter and a nearby player for 12 seconds. | Partial | Multiplayer/runtime verification and appearance edge cases |
 | Saboteur | Impostor | Arms the next real sabotage to add +4 extra Paradox instability. | Partial | Multiplayer/runtime verification and balance tuning |
 | Undertaker | Impostor | Picks up a nearby body, carries it and drops it elsewhere. | Partial | Multiplayer/runtime verification and body-position edge cases |
-| Silencer | Impostor | Restricts a target during discussion/meeting phases. | Planned | Meeting integration and sync |
+| Silencer | Impostor | Marks a nearby player and rejects their vote during the next meeting. | Partial | Multiplayer/runtime verification and meeting UI feedback |
 | Riftmaker | Impostor | Places a personal anchor and warps back to it on the next use. | Partial | Multiplayer/runtime verification and map-edge validation |
 | Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Spatial trace visualization and runtime verification |
 | Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | Real body-age/activity evidence and runtime verification |

@@ -18,6 +18,7 @@ public static class ParadoxRoleSettings
         [RoleId.Riftmaker] = true,
         [RoleId.Saboteur] = true,
         [RoleId.Undertaker] = true,
+        [RoleId.Silencer] = true,
         [RoleId.Timebreaker] = true,
         [RoleId.Illusionist] = true,
         [RoleId.Observer] = true,
@@ -59,6 +60,7 @@ public static class ParadoxRoleSettings
         [RoleId.Riftmaker] = 100,
         [RoleId.Saboteur] = 100,
         [RoleId.Undertaker] = 100,
+        [RoleId.Silencer] = 100,
         [RoleId.Timebreaker] = 100,
         [RoleId.Illusionist] = 100,
         [RoleId.Observer] = 100,
@@ -145,6 +147,7 @@ public static class ParadoxRoleSettings
     public static float SaboteurCooldownSeconds { get; set; } = 30f;
     public static float SaboteurBonusMeter { get; set; } = 4f;
     public static float UndertakerCooldownSeconds { get; set; } = 20f;
+    public static float SilencerCooldownSeconds { get; set; } = 35f;
     public static float UndertakerCarryOffsetY { get; set; } = -0.45f;
     public static float TimebreakerDurationSeconds { get; set; } = 4f;
     public static float TimebreakerCooldownSeconds { get; set; } = 30f;
@@ -197,6 +200,7 @@ public static class ParadoxRoleSettings
         RoleId.Riftmaker or
         RoleId.Saboteur or
         RoleId.Undertaker or
+        RoleId.Silencer or
         RoleId.Timebreaker or
         RoleId.Illusionist or
         RoleId.Observer or
@@ -298,6 +302,7 @@ public static class ParadoxRoleSettings
         SaboteurCooldownSeconds = 30f;
         SaboteurBonusMeter = 4f;
         UndertakerCooldownSeconds = 20f;
+        SilencerCooldownSeconds = 35f;
         UndertakerCarryOffsetY = -0.45f;
         TimebreakerDurationSeconds = 4f;
         TimebreakerCooldownSeconds = 30f;

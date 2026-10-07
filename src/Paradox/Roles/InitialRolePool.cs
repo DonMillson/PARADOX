@@ -16,6 +16,7 @@ public static class InitialRolePool
         RoleId.Riftmaker,
         RoleId.Saboteur,
         RoleId.Undertaker,
+        RoleId.Silencer,
         RoleId.Timebreaker,
         RoleId.Illusionist
     };
