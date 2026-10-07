@@ -30,6 +30,7 @@ using ParadoxHarbingerRole = Paradox.Roles.Harbinger.HarbingerRole;
 using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
 using ParadoxForgottenRole = Paradox.Roles.Forgotten.ForgottenRole;
 using ParadoxRevenantRole = Paradox.Roles.Revenant.RevenantRole;
+using ParadoxJesterXRole = Paradox.Roles.JesterX.JesterXRole;
 using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using ParadoxDispatcherRole = Paradox.Roles.Dispatcher.DispatcherRole;
 using ParadoxLocksmithRole = Paradox.Roles.Locksmith.LocksmithRole;
@@ -113,6 +114,7 @@ public static class ParadoxGameplayPatches
         ParadoxCollectorRole.ResetRuntime();
         ParadoxForgottenRole.ResetRuntime();
         ParadoxRevenantRole.ResetRuntime();
+        ParadoxJesterXRole.ResetRuntime();
         ParadoxEngineerXRole.ResetRuntime();
         ParadoxDispatcherRole.ResetRuntime();
         ParadoxLocksmithRole.ResetRuntime();

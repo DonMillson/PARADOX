@@ -37,6 +37,7 @@ public static class ParadoxRoleSettings
         [RoleId.BountyHunter] = true,
         [RoleId.Survivor] = true,
         [RoleId.Revenant] = true,
+        [RoleId.JesterX] = true,
         [RoleId.Opportunist] = true,
         [RoleId.Harbinger] = true,
         [RoleId.Collector] = true,
@@ -79,6 +80,7 @@ public static class ParadoxRoleSettings
         [RoleId.BountyHunter] = 100,
         [RoleId.Survivor] = 100,
         [RoleId.Revenant] = 100,
+        [RoleId.JesterX] = 100,
         [RoleId.Opportunist] = 100,
         [RoleId.Harbinger] = 100,
         [RoleId.Collector] = 100,
@@ -219,6 +221,7 @@ public static class ParadoxRoleSettings
         RoleId.BountyHunter or
         RoleId.Survivor or
         RoleId.Revenant or
+        RoleId.JesterX or
         RoleId.Opportunist or
         RoleId.Harbinger or
         RoleId.Collector or

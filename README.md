@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Blackmailer, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Silencer, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger and Collector.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Blackmailer, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Silencer, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Jester X, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -50,7 +50,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Bounty Hunter | Neutral | Receives a synchronized bounty target and wins immediately by eliminating that exact target. | Partial | Multiplayer/runtime verification and balance tuning |
 | Survivor | Neutral | Joins the winners if still alive when the match ends. | Partial | Multiplayer/runtime verification and end-screen presentation |
 | Revenant | Neutral | Returns once after death, then wins alone by surviving 20 seconds in the second life. | Partial | Multiplayer/runtime verification and end-condition edge cases |
-| Jester X | Neutral | Attempts to get voted out under its own victory rules. | Planned | Meeting/vote win-condition integration |
+| Jester X | Neutral | Wins immediately when voted out by the meeting. | Partial | Multiplayer/runtime verification and end-screen timing |
 | Phantom | Neutral | Uses stealth/intangibility-oriented mechanics. | Planned | Final ability, visibility rules and sync |
 | Opportunist | Neutral | Joins the winners if alive at match end while the Paradox Meter is at least 50%. | Partial | Multiplayer/runtime verification and balance tuning |
 | Harbinger | Neutral | Invokes three Omens, pushes the Paradox Meter and wins while alive once the Meter reaches at least 75%. | Partial | Multiplayer/runtime verification and balance tuning |

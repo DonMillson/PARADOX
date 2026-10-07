@@ -221,7 +221,9 @@ public static class DefaultTranslations
         Add(l, "role.Revenant.returning", "RETURNING IN {seconds}s", "POWRÓT ZA {seconds}s");
         Add(l, "role.Revenant.returned", "You returned. Survive for {seconds}s.", "Powróciłeś. Przetrwaj przez {seconds}s.");
         Add(l, "role.Revenant.win", "REVENANT ENDURES", "POWRACAJĄCY PRZETRWAŁ");
-        AddRoleName(l, "JesterX", "Jester X", "Błazen X");
+        AddRole(l, "JesterX", "Jester X", "Błazen X",
+            "Convince the crew to vote you out. Being exiled grants you an immediate solo victory.", "Przekonaj załogę, aby cię wyrzuciła. Wygnanie daje ci natychmiastowe samodzielne zwycięstwo.");
+        Add(l, "role.JesterX.win", "JESTER X WINS", "BŁAZEN X WYGRYWA");
         AddRoleName(l, "Phantom", "Phantom", "Fantom");
         AddRole(l, "Opportunist", "Opportunist", "Oportunista",
             "If you survive until the match ends while the Paradox Meter is at least 50%, you join the winners.", "Jeśli przeżyjesz do końca meczu przy Mierniku Paradoksu wynoszącym co najmniej 50%, dołączasz do zwycięzców.");
