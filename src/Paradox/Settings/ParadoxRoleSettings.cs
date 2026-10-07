@@ -38,6 +38,7 @@ public static class ParadoxRoleSettings
         [RoleId.Survivor] = true,
         [RoleId.Revenant] = true,
         [RoleId.JesterX] = true,
+        [RoleId.Phantom] = true,
         [RoleId.Opportunist] = true,
         [RoleId.Harbinger] = true,
         [RoleId.Collector] = true,
@@ -81,6 +82,7 @@ public static class ParadoxRoleSettings
         [RoleId.Survivor] = 100,
         [RoleId.Revenant] = 100,
         [RoleId.JesterX] = 100,
+        [RoleId.Phantom] = 100,
         [RoleId.Opportunist] = 100,
         [RoleId.Harbinger] = 100,
         [RoleId.Collector] = 100,
@@ -175,6 +177,9 @@ public static class ParadoxRoleSettings
     public static float OpportunistMeterThreshold { get; set; } = 50f;
     public static float RevenantReviveDelaySeconds { get; set; } = 2f;
     public static float RevenantSurvivalSeconds { get; set; } = 20f;
+    public static float PhantomPhaseDurationSeconds { get; set; } = 8f;
+    public static float PhantomCooldownSeconds { get; set; } = 30f;
+    public static int PhantomRequiredEscapes { get; set; } = 2;
     public static float HarbingerCooldownSeconds { get; set; } = 20f;
     public static int HarbingerRequiredOmens { get; set; } = 3;
     public static float HarbingerWinMeterThreshold { get; set; } = 75f;
@@ -222,6 +227,7 @@ public static class ParadoxRoleSettings
         RoleId.Survivor or
         RoleId.Revenant or
         RoleId.JesterX or
+        RoleId.Phantom or
         RoleId.Opportunist or
         RoleId.Harbinger or
         RoleId.Collector or
@@ -331,6 +337,9 @@ public static class ParadoxRoleSettings
         OpportunistMeterThreshold = 50f;
         RevenantReviveDelaySeconds = 2f;
         RevenantSurvivalSeconds = 20f;
+        PhantomPhaseDurationSeconds = 8f;
+        PhantomCooldownSeconds = 30f;
+        PhantomRequiredEscapes = 2;
         HarbingerCooldownSeconds = 20f;
         HarbingerRequiredOmens = 3;
         HarbingerWinMeterThreshold = 75f;

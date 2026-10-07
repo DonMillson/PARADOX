@@ -48,6 +48,7 @@ public static class InitialRolePool
         RoleId.Survivor,
         RoleId.Revenant,
         RoleId.JesterX,
+        RoleId.Phantom,
         RoleId.Opportunist,
         RoleId.Harbinger,
         RoleId.Collector

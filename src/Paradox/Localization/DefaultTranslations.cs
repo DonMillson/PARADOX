@@ -224,7 +224,13 @@ public static class DefaultTranslations
         AddRole(l, "JesterX", "Jester X", "Błazen X",
             "Convince the crew to vote you out. Being exiled grants you an immediate solo victory.", "Przekonaj załogę, aby cię wyrzuciła. Wygnanie daje ci natychmiastowe samodzielne zwycięstwo.");
         Add(l, "role.JesterX.win", "JESTER X WINS", "BŁAZEN X WYGRYWA");
-        AddRoleName(l, "Phantom", "Phantom", "Fantom");
+        AddRole(l, "Phantom", "Phantom", "Fantom",
+            "Phase out to become hidden and immune to murder briefly. Evade two murder attempts while phased to win alone.", "Wejdź w fazę, aby na krótko zniknąć i stać się odpornym na zabójstwo. Uniknij dwóch prób zabójstwa podczas fazy, aby wygrać samodzielnie.");
+        Add(l, "role.Phantom.ability", "PHASE", "FAZA");
+        Add(l, "role.Phantom.active", "PHASED {seconds}s", "FAZA {seconds}s");
+        Add(l, "role.Phantom.feedback", "Phase active for {seconds}s.", "Faza aktywna przez {seconds}s.");
+        Add(l, "role.Phantom.escape", "Murder evaded: {count}/{required}.", "Uniknięto zabójstwa: {count}/{required}.");
+        Add(l, "role.Phantom.win", "PHANTOM ESCAPES", "FANTOM UCIEKA");
         AddRole(l, "Opportunist", "Opportunist", "Oportunista",
             "If you survive until the match ends while the Paradox Meter is at least 50%, you join the winners.", "Jeśli przeżyjesz do końca meczu przy Mierniku Paradoksu wynoszącym co najmniej 50%, dołączasz do zwycięzców.");
         Add(l, "role.Opportunist.win", "OPPORTUNITY SECURED", "OKAZJA WYKORZYSTANA");

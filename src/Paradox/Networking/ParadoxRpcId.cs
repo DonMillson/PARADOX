@@ -43,5 +43,6 @@ public enum ParadoxRpcId : uint
     ForgottenMemory = 38,
     RevenantReturn = 39,
     BlackmailerMark = 40,
-    SilencerMark = 41
+    SilencerMark = 41,
+    PhantomPhase = 42
 }
