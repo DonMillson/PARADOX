@@ -56,6 +56,8 @@ public static class InitialRoleAssignmentPatch
             RoleAssignment.Assign(crew[i], role);
         }
 
+        Paradox.Roles.BountyHunter.BountyHunterRole.InitializeTargetsHost();
+
         ParadoxPlugin.Instance.Log.LogInfo(
             $"PARADOX initial roles assigned: {PlayerRoleRegistry.All.Count} players.");
     }

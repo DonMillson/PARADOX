@@ -17,6 +17,7 @@ using ParadoxSeerRole = Paradox.Roles.Seer.SeerRole;
 using Paradox.Roles.Forensic;
 using Paradox.Roles.Stabilizer;
 using Paradox.Roles.Anomaly;
+using ParadoxBountyHunterRole = Paradox.Roles.BountyHunter.BountyHunterRole;
 using Paradox.Roles;
 using HarmonyLib;
 
@@ -82,5 +83,6 @@ public static class ParadoxGameplayPatches
         ForensicRole.ResetRuntime();
         StabilizerRole.ResetRuntime();
         AnomalyRole.ResetRuntime();
+        ParadoxBountyHunterRole.ResetRuntime();
     }
 }
