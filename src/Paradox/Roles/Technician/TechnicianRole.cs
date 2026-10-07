@@ -1,6 +1,7 @@
 using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Roles.Corruptor;
+using Paradox.Roles.Saboteur;
 using Paradox.Settings;
 using Reactor.Networking.Rpc;
 using UnityEngine;
@@ -115,10 +116,13 @@ public static class TechnicianRole
         _lastSabotageSource = sourceId;
         _lastSabotageAmount = amount;
 
+        var overloadBonus =
+            SaboteurRole.TryConsumeOverloadForSabotage(sourceId);
+
         if (IsShieldActive)
         {
             ParadoxPlugin.Instance.Log.LogInfo(
-                $"Technician shield absorbed sabotage instability (source {sourceId}, amount {amount}).");
+                $"Technician shield absorbed sabotage instability (source {sourceId}, amount {amount}, overload {overloadBonus:0.#}).");
 
             BroadcastState(
                 _shieldOwner,
@@ -132,6 +136,9 @@ public static class TechnicianRole
         }
 
         ParadoxGame.AddFrom(ParadoxMeterSource.Sabotage);
+
+        if (overloadBonus > 0f)
+            ParadoxGame.AddMeter(overloadBonus);
     }
 
     private static void BroadcastState(
