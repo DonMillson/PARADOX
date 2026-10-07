@@ -95,7 +95,12 @@ public static class DefaultTranslations
         Add(l, "role.Saboteur.armed", "OVERLOAD ARMED", "PRZECIĄŻENIE GOTOWE");
         Add(l, "role.Saboteur.feedback.arm", "Next sabotage overloaded: +{amount} extra Paradox.", "Następny sabotaż przeciążony: +{amount} dodatkowego Paradoksu.");
         Add(l, "role.Saboteur.feedback.fire", "Overloaded sabotage triggered.", "Uruchomiono przeciążony sabotaż.");
-        AddRoleName(l, "Undertaker", "Undertaker", "Grabarz");
+        AddRole(l, "Undertaker", "Undertaker", "Grabarz",
+            "Pick up a nearby body, carry it with you, then drop it elsewhere.", "Podnieś pobliskie ciało, przenieś je ze sobą i odłóż w innym miejscu.");
+        Add(l, "role.Undertaker.pickup", "CARRY BODY", "PODNIEŚ CIAŁO");
+        Add(l, "role.Undertaker.drop", "DROP BODY", "ODŁÓŻ CIAŁO");
+        Add(l, "role.Undertaker.feedback.pickup", "Body secured.", "Ciało podniesione.");
+        Add(l, "role.Undertaker.feedback.drop", "Body dropped.", "Ciało odłożone.");
         AddRoleName(l, "Silencer", "Silencer", "Wyciszacz");
         AddRole(l, "Riftmaker", "Riftmaker", "Twórca Szczelin",
             "Place a personal rift anchor, then warp back to it on the next use.", "Ustaw osobistą kotwicę szczeliny, a przy kolejnym użyciu wróć do niej.");
