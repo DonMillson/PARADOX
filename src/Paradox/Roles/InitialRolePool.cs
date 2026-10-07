@@ -11,6 +11,7 @@ public static class InitialRolePool
         RoleId.Devourer,
         RoleId.Corruptor,
         RoleId.Nightmare,
+        RoleId.ShapeshifterX,
         RoleId.Riftmaker,
         RoleId.Saboteur,
         RoleId.Undertaker,

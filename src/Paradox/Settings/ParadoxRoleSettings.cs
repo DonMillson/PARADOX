@@ -13,6 +13,7 @@ public static class ParadoxRoleSettings
         [RoleId.Devourer] = true,
         [RoleId.Corruptor] = true,
         [RoleId.Nightmare] = true,
+        [RoleId.ShapeshifterX] = true,
         [RoleId.Riftmaker] = true,
         [RoleId.Saboteur] = true,
         [RoleId.Undertaker] = true,
@@ -50,6 +51,7 @@ public static class ParadoxRoleSettings
         [RoleId.Devourer] = 100,
         [RoleId.Corruptor] = 100,
         [RoleId.Nightmare] = 100,
+        [RoleId.ShapeshifterX] = 100,
         [RoleId.Riftmaker] = 100,
         [RoleId.Saboteur] = 100,
         [RoleId.Undertaker] = 100,
@@ -129,6 +131,8 @@ public static class ParadoxRoleSettings
     public static float CorruptorCooldownSeconds { get; set; } = 30f;
     public static float NightmareDurationSeconds { get; set; } = 7f;
     public static float NightmareCooldownSeconds { get; set; } = 30f;
+    public static float ShapeshifterXDurationSeconds { get; set; } = 12f;
+    public static float ShapeshifterXCooldownSeconds { get; set; } = 35f;
     public static float RiftmakerAnchorDelaySeconds { get; set; } = 2f;
     public static float RiftmakerCooldownSeconds { get; set; } = 25f;
     public static float SaboteurCooldownSeconds { get; set; } = 30f;
@@ -177,6 +181,7 @@ public static class ParadoxRoleSettings
         RoleId.Devourer or
         RoleId.Corruptor or
         RoleId.Nightmare or
+        RoleId.ShapeshifterX or
         RoleId.Riftmaker or
         RoleId.Saboteur or
         RoleId.Undertaker or
@@ -271,6 +276,8 @@ public static class ParadoxRoleSettings
         CorruptorCooldownSeconds = 30f;
         NightmareDurationSeconds = 7f;
         NightmareCooldownSeconds = 30f;
+        ShapeshifterXDurationSeconds = 12f;
+        ShapeshifterXCooldownSeconds = 35f;
         RiftmakerAnchorDelaySeconds = 2f;
         RiftmakerCooldownSeconds = 25f;
         SaboteurCooldownSeconds = 30f;

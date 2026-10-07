@@ -101,7 +101,11 @@ public static class DefaultTranslations
         Add(l, "role.Nightmare.ability", "HAUNT", "NAWIEDŹ");
         Add(l, "role.Nightmare.feedback.source", "Nightmare effect applied for {seconds}s.", "Efekt Koszmaru nałożony na {seconds}s.");
         Add(l, "role.Nightmare.feedback.target", "A nightmare closes in...", "Koszmar zaciska się wokół ciebie...");
-        AddRoleName(l, "ShapeshifterX", "Shapeshifter X", "Zmiennokształtny X");
+        AddRole(l, "ShapeshifterX", "Shapeshifter X", "Zmiennokształtny X",
+            "Swap your visible identity with a nearby player for a limited time.", "Zamień swoją widoczną tożsamość z pobliskim graczem na ograniczony czas.");
+        Add(l, "role.ShapeshifterX.ability", "SWAP", "ZAMIANA");
+        Add(l, "role.ShapeshifterX.feedback.source", "Identity swap active for {seconds}s.", "Zamiana tożsamości aktywna przez {seconds}s.");
+        Add(l, "role.ShapeshifterX.feedback.target", "Your identity has been swapped!", "Twoja tożsamość została zamieniona!");
         AddRole(l, "Saboteur", "Saboteur", "Sabotażysta",
             "Arm an Overload so your next real sabotage creates additional Paradox instability.", "Uzbrój Przeciążenie, aby twój następny prawdziwy sabotaż wywołał dodatkową niestabilność Paradoksu.");
         Add(l, "role.Saboteur.ability", "OVERLOAD", "PRZECIĄŻ");
