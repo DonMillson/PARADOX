@@ -11,7 +11,8 @@ public static class InitialRolePool
         RoleId.Corruptor,
         RoleId.Nightmare,
         RoleId.Riftmaker,
-        RoleId.Saboteur
+        RoleId.Saboteur,
+        RoleId.Undertaker
     };
 
     public static IReadOnlyList<RoleId> Crewmate { get; } = new[]
