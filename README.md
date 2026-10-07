@@ -41,7 +41,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Analyst | Crewmate | Reads limited live telemetry: alive players, recorded deaths, active ability traces and Paradox Meter. | Partial | Multiplayer/runtime verification and balance tuning |
 | Technician | Crewmate | Gains enhanced interaction with systems/sabotages. | Planned | System hooks and balancing |
 | Seer | Crewmate | Reads whether a nearby player has a fresh special-ability trace. | Partial | Multiplayer/runtime verification and balance tuning |
-| Dispatcher | Crewmate | Provides team-oriented information/coordination tools. | Planned | Final mechanic, HUD and sync |
+| Dispatcher | Crewmate | Runs a synchronized status sweep reporting living players, deaths and current Paradox instability. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forensic | Crewmate | Examines bodies for real death age and recent ability residue. | Partial | Multiplayer/runtime verification and balance tuning |
 | Stabilizer | Crewmate | Reduces the Paradox Meter by up to 10 per use. | Partial | Multiplayer/runtime verification and balance tuning |
 | Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
