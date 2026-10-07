@@ -26,6 +26,7 @@ using Paradox.Roles.Anomaly;
 using ParadoxBountyHunterRole = Paradox.Roles.BountyHunter.BountyHunterRole;
 using ParadoxHarbingerRole = Paradox.Roles.Harbinger.HarbingerRole;
 using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
+using ParadoxForgottenRole = Paradox.Roles.Forgotten.ForgottenRole;
 using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using ParadoxDispatcherRole = Paradox.Roles.Dispatcher.DispatcherRole;
 using ParadoxLocksmithRole = Paradox.Roles.Locksmith.LocksmithRole;
@@ -104,6 +105,7 @@ public static class ParadoxGameplayPatches
         ParadoxBountyHunterRole.ResetRuntime();
         ParadoxHarbingerRole.ResetRuntime();
         ParadoxCollectorRole.ResetRuntime();
+        ParadoxForgottenRole.ResetRuntime();
         ParadoxEngineerXRole.ResetRuntime();
         ParadoxDispatcherRole.ResetRuntime();
         ParadoxLocksmithRole.ResetRuntime();
