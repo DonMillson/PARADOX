@@ -31,7 +31,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Riftmaker | Impostor | Places a personal anchor and warps back to it on the next use. | Partial | Multiplayer/runtime verification and map-edge validation |
 | Observer | Crewmate | Detects/tracks role-ability activity through Observer traces. | Partial | Spatial trace visualization and runtime verification |
 | Witness | Crewmate | Receives clues when reporting/examining a body. | Partial | Real body-age/activity evidence and runtime verification |
-| Engineer X | Crewmate | Advanced technical/repair-oriented crewmate. | Planned | Final mechanic and implementation |
+| Engineer X | Crewmate | Uses a host-authoritative Emergency Stabilize ability to reduce dangerous Paradox instability. | Partial | Multiplayer/runtime verification and map-specific repair extensions |
 | Guardian | Crewmate | Protects another player from one murder for 10 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Chronologist | Crewmate | Reads the match timeline and reports how long ago the latest recorded death occurred. | Partial | Multiplayer/runtime verification and balance tuning |
 | Detective | Crewmate | Scans a nearby player for violent activity linked to deaths from the last 30 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
