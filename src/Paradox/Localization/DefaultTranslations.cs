@@ -76,7 +76,12 @@ public static class DefaultTranslations
         AddRole(l, "Cleaner", "Cleaner", "Czyściciel",
             "Remove nearby bodies before the crew can report them.", "Usuwaj pobliskie ciała, zanim załoga zdąży je zgłosić.");
         Add(l, "role.Cleaner.ability", "CLEAN", "USUN");
-        AddRoleName(l, "Blackmailer", "Blackmailer", "Szantażysta");
+        AddRole(l, "Blackmailer", "Blackmailer", "Szantażysta",
+            "Blackmail a nearby player so they cannot send chat messages during the next meeting.", "Szantażuj pobliskiego gracza, aby nie mógł wysyłać wiadomości podczas następnego spotkania.");
+        Add(l, "role.Blackmailer.ability", "BLACKMAIL", "SZANTAŻ");
+        Add(l, "role.Blackmailer.feedback.source", "Target blackmailed for the next meeting.", "Cel zaszantażowany na następne spotkanie.");
+        Add(l, "role.Blackmailer.feedback.target", "You were blackmailed. You cannot speak during this meeting.", "Zostałeś zaszantażowany. Nie możesz mówić podczas tego spotkania.");
+        Add(l, "role.Blackmailer.blocked", "BLACKMAILED — chat disabled.", "SZANTAŻ — czat zablokowany.");
         AddRole(l, "Illusionist", "Illusionist", "Iluzjonista",
             "Force a nearby player to wear another living player's appearance temporarily.", "Zmuś pobliskiego gracza do tymczasowego przyjęcia wyglądu innego żywego gracza.");
         Add(l, "role.Illusionist.ability", "MIRAGE", "MIRAŻ");

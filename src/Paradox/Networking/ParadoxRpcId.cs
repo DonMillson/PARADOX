@@ -41,5 +41,6 @@ public enum ParadoxRpcId : uint
     PuppeteerControl = 36,
     ShapeshifterXSwap = 37,
     ForgottenMemory = 38,
-    RevenantReturn = 39
+    RevenantReturn = 39,
+    BlackmailerMark = 40
 }

@@ -8,6 +8,7 @@ public static class InitialRolePool
         RoleId.Parasite,
         RoleId.Puppeteer,
         RoleId.Cleaner,
+        RoleId.Blackmailer,
         RoleId.Devourer,
         RoleId.Corruptor,
         RoleId.Nightmare,

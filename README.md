@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger and Collector.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Blackmailer, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -18,7 +18,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Parasite | Impostor | Infects a target; after the infection timer completes, the victim is killed. | Partial | Multiplayer/runtime verification and balance tuning |
 | Puppeteer | Impostor | Turns a nearby player into a marionette, freezing their own input and dragging them behind the Puppeteer for 6 seconds. | Partial | Multiplayer/runtime verification and movement edge cases |
 | Cleaner | Impostor | Removes a dead body to deny report/evidence. | Partial | Runtime verification and balance tuning |
-| Blackmailer | Impostor | Temporarily prevents a selected player from communicating normally. | Planned | Full implementation, meeting integration |
+| Blackmailer | Impostor | Marks a nearby player and blocks their outgoing chat during the next meeting. | Partial | Multiplayer/runtime verification and quick-chat edge cases |
 | Illusionist | Impostor | Temporarily forces a nearby player to appear as another living player. | Partial | Multiplayer/runtime verification and appearance-conflict edge cases |
 | Corruptor | Impostor | Blocks a nearby player’s special role ability for 10 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Devourer | Impostor | Consumes a nearby victim and removes the resulting body. | Partial | Multiplayer/runtime verification and balance tuning |

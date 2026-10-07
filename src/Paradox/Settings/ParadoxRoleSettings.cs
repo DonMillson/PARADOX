@@ -10,6 +10,7 @@ public static class ParadoxRoleSettings
         [RoleId.Parasite] = true,
         [RoleId.Puppeteer] = true,
         [RoleId.Cleaner] = true,
+        [RoleId.Blackmailer] = true,
         [RoleId.Devourer] = true,
         [RoleId.Corruptor] = true,
         [RoleId.Nightmare] = true,
@@ -50,6 +51,7 @@ public static class ParadoxRoleSettings
         [RoleId.Parasite] = 100,
         [RoleId.Puppeteer] = 100,
         [RoleId.Cleaner] = 100,
+        [RoleId.Blackmailer] = 100,
         [RoleId.Devourer] = 100,
         [RoleId.Corruptor] = 100,
         [RoleId.Nightmare] = 100,
@@ -130,6 +132,7 @@ public static class ParadoxRoleSettings
     }
 
     public static float CleanerCooldownSeconds { get; set; } = 25f;
+    public static float BlackmailerCooldownSeconds { get; set; } = 35f;
     public static float DevourerCooldownSeconds { get; set; } = 35f;
     public static float CorruptorDurationSeconds { get; set; } = 10f;
     public static float CorruptorCooldownSeconds { get; set; } = 30f;
@@ -186,6 +189,7 @@ public static class ParadoxRoleSettings
         RoleId.Parasite or
         RoleId.Puppeteer or
         RoleId.Cleaner or
+        RoleId.Blackmailer or
         RoleId.Devourer or
         RoleId.Corruptor or
         RoleId.Nightmare or
@@ -281,6 +285,7 @@ public static class ParadoxRoleSettings
         PuppeteerCooldownSeconds = 30f;
         PuppeteerFollowDistance = 0.85f;
         CleanerCooldownSeconds = 25f;
+        BlackmailerCooldownSeconds = 35f;
         DevourerCooldownSeconds = 35f;
         CorruptorDurationSeconds = 10f;
         CorruptorCooldownSeconds = 30f;
