@@ -31,7 +31,8 @@ public static class ParadoxRoleSettings
         [RoleId.Harbinger] = true,
         [RoleId.Collector] = true,
         [RoleId.EngineerX] = true,
-        [RoleId.Dispatcher] = true
+        [RoleId.Dispatcher] = true,
+        [RoleId.Locksmith] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -61,7 +62,8 @@ public static class ParadoxRoleSettings
         [RoleId.Harbinger] = 100,
         [RoleId.Collector] = 100,
         [RoleId.EngineerX] = 100,
-        [RoleId.Dispatcher] = 100
+        [RoleId.Dispatcher] = 100,
+        [RoleId.Locksmith] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -139,6 +141,8 @@ public static class ParadoxRoleSettings
     public static float EngineerXCooldownSeconds { get; set; } = 25f;
     public static float EngineerXStabilizeAmount { get; set; } = 8f;
     public static float DispatcherCooldownSeconds { get; set; } = 25f;
+    public static float LocksmithCooldownSeconds { get; set; } = 18f;
+    public static float LocksmithUseRange { get; set; } = 1.8f;
 
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
@@ -166,7 +170,8 @@ public static class ParadoxRoleSettings
         RoleId.Harbinger or
         RoleId.Collector or
         RoleId.EngineerX or
-        RoleId.Dispatcher;
+        RoleId.Dispatcher or
+        RoleId.Locksmith;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
@@ -259,5 +264,7 @@ public static class ParadoxRoleSettings
         EngineerXCooldownSeconds = 25f;
         EngineerXStabilizeAmount = 8f;
         DispatcherCooldownSeconds = 25f;
+        LocksmithCooldownSeconds = 18f;
+        LocksmithUseRange = 1.8f;
     }
 }

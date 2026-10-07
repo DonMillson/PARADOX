@@ -130,7 +130,10 @@ public static class DefaultTranslations
         Add(l, "role.Tracker.ability", "TRACK", "ŚLEDŹ");
         Add(l, "role.Tracker.active", "TRACK {distance}", "ŚLAD {distance}");
         Add(l, "role.Tracker.feedback", "Target acquired for {seconds}s.", "Cel namierzony na {seconds}s.");
-        AddRoleName(l, "Locksmith", "Locksmith", "Ślusarz");
+        AddRole(l, "Locksmith", "Locksmith", "Ślusarz",
+            "Open the nearest closed door within reach using a synchronized bypass.", "Otwórz najbliższe zamknięte drzwi w zasięgu za pomocą zsynchronizowanego obejścia.");
+        Add(l, "role.Locksmith.ability", "UNLOCK", "OTWÓRZ");
+        Add(l, "role.Locksmith.feedback", "Door override complete.", "Obejście zamka zakończone.");
         AddRole(l, "Analyst", "Analyst", "Analityk",
             "Analyze limited live match telemetry without identifying players.", "Analizuj ograniczoną telemetrię meczu bez identyfikowania graczy.");
         Add(l, "role.Analyst.ability", "ANALYZE", "ANALIZUJ");
