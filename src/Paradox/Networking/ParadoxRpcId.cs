@@ -30,5 +30,6 @@ public enum ParadoxRpcId : uint
     BountyHunterState = 25,
     HarbingerOmen = 26,
     CollectorSample = 27,
-    EngineerXRepair = 28
+    EngineerXRepair = 28,
+    DispatcherSweep = 29
 }
