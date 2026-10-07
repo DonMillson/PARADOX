@@ -11,6 +11,7 @@ using ParadoxUndertakerRole = Paradox.Roles.Undertaker.UndertakerRole;
 using ParadoxTimebreakerRole = Paradox.Roles.Timebreaker.TimebreakerRole;
 using ParadoxIllusionistRole = Paradox.Roles.Illusionist.IllusionistRole;
 using ParadoxPuppeteerRole = Paradox.Roles.Puppeteer.PuppeteerRole;
+using ParadoxBlackmailerRole = Paradox.Roles.Blackmailer.BlackmailerRole;
 using ParadoxShapeshifterXRole = Paradox.Roles.ShapeshifterX.ShapeshifterXRole;
 using Paradox.Roles.Witness;
 using Paradox.Roles.Guardian;
@@ -92,6 +93,7 @@ public static class ParadoxGameplayPatches
         ParadoxTimebreakerRole.ResetRuntime();
         ParadoxIllusionistRole.ResetRuntime();
         ParadoxPuppeteerRole.ResetRuntime();
+        ParadoxBlackmailerRole.ResetRuntime();
         ParadoxShapeshifterXRole.ResetRuntime();
         WitnessRole.Reset();
         GuardianRole.ResetRuntime();
