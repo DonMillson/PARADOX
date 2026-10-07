@@ -16,6 +16,7 @@ public static class ParadoxRoleSettings
         [RoleId.Saboteur] = true,
         [RoleId.Undertaker] = true,
         [RoleId.Timebreaker] = true,
+        [RoleId.Illusionist] = true,
         [RoleId.Observer] = true,
         [RoleId.Witness] = true,
         [RoleId.Guardian] = true,
@@ -51,6 +52,7 @@ public static class ParadoxRoleSettings
         [RoleId.Saboteur] = 100,
         [RoleId.Undertaker] = 100,
         [RoleId.Timebreaker] = 100,
+        [RoleId.Illusionist] = 100,
         [RoleId.Observer] = 100,
         [RoleId.Witness] = 100,
         [RoleId.Guardian] = 100,
@@ -130,6 +132,8 @@ public static class ParadoxRoleSettings
     public static float UndertakerCarryOffsetY { get; set; } = -0.45f;
     public static float TimebreakerDurationSeconds { get; set; } = 4f;
     public static float TimebreakerCooldownSeconds { get; set; } = 30f;
+    public static float IllusionistDurationSeconds { get; set; } = 10f;
+    public static float IllusionistCooldownSeconds { get; set; } = 30f;
     public static float GuardianProtectionDurationSeconds { get; set; } = 10f;
     public static float GuardianCooldownSeconds { get; set; } = 30f;
     public static float ChronologistCooldownSeconds { get; set; } = 25f;
@@ -171,6 +175,7 @@ public static class ParadoxRoleSettings
         RoleId.Saboteur or
         RoleId.Undertaker or
         RoleId.Timebreaker or
+        RoleId.Illusionist or
         RoleId.Observer or
         RoleId.Witness or
         RoleId.Guardian or
@@ -265,6 +270,8 @@ public static class ParadoxRoleSettings
         UndertakerCarryOffsetY = -0.45f;
         TimebreakerDurationSeconds = 4f;
         TimebreakerCooldownSeconds = 30f;
+        IllusionistDurationSeconds = 10f;
+        IllusionistCooldownSeconds = 30f;
         GuardianProtectionDurationSeconds = 10f;
         GuardianCooldownSeconds = 30f;
         ChronologistCooldownSeconds = 25f;

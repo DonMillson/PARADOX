@@ -72,7 +72,11 @@ public static class DefaultTranslations
             "Remove nearby bodies before the crew can report them.", "Usuwaj pobliskie ciała, zanim załoga zdąży je zgłosić.");
         Add(l, "role.Cleaner.ability", "CLEAN", "USUN");
         AddRoleName(l, "Blackmailer", "Blackmailer", "Szantażysta");
-        AddRoleName(l, "Illusionist", "Illusionist", "Iluzjonista");
+        AddRole(l, "Illusionist", "Illusionist", "Iluzjonista",
+            "Force a nearby player to wear another living player's appearance temporarily.", "Zmuś pobliskiego gracza do tymczasowego przyjęcia wyglądu innego żywego gracza.");
+        Add(l, "role.Illusionist.ability", "MIRAGE", "MIRAŻ");
+        Add(l, "role.Illusionist.feedback.source", "Mirage applied for {seconds}s.", "Miraż nałożony na {seconds}s.");
+        Add(l, "role.Illusionist.feedback.target", "Your identity has been distorted.", "Twoja tożsamość została zniekształcona.");
         AddRole(l, "Corruptor", "Corruptor", "Deprawator",
             "Corrupt a nearby player and block their special role ability temporarily.", "Deprawuj pobliskiego gracza i czasowo blokuj jego specjalną zdolność roli.");
         Add(l, "role.Corruptor.ability", "CORRUPT", "DEPRAWUJ");
