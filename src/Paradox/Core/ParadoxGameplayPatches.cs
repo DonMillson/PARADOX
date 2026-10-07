@@ -22,6 +22,7 @@ using ParadoxHarbingerRole = Paradox.Roles.Harbinger.HarbingerRole;
 using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
 using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using ParadoxDispatcherRole = Paradox.Roles.Dispatcher.DispatcherRole;
+using ParadoxLocksmithRole = Paradox.Roles.Locksmith.LocksmithRole;
 using Paradox.Roles;
 using HarmonyLib;
 
@@ -92,5 +93,6 @@ public static class ParadoxGameplayPatches
         ParadoxCollectorRole.ResetRuntime();
         ParadoxEngineerXRole.ResetRuntime();
         ParadoxDispatcherRole.ResetRuntime();
+        ParadoxLocksmithRole.ResetRuntime();
     }
 }
