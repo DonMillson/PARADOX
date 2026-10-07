@@ -79,3 +79,69 @@ public static class UndertakerHudPatch
             __instance.AbilityButton.SetDisabled();
     }
 }
+
+
+[HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
+public static class UndertakerAbilityButtonPatch
+{
+    [HarmonyPrefix]
+    public static bool DoClickPrefix(AbilityButton __instance)
+    {
+        var local = PlayerControl.LocalPlayer;
+
+        if (local == null ||
+            !UndertakerRole.IsUndertaker(local.PlayerId))
+            return true;
+
+        if (HudManager.Instance == null ||
+            __instance != HudManager.Instance.AbilityButton)
+            return true;
+
+        if (UndertakerRole.IsCarrying(local.PlayerId))
+        {
+            if (AmongUsClient.Instance != null &&
+                AmongUsClient.Instance.AmHost)
+            {
+                UndertakerRole.TryDrop(local);
+            }
+            else
+            {
+                Reactor.Networking.Rpc.Rpc<Paradox.Networking.UndertakerCarryBodyRpc>.Instance.Send(
+                    local,
+                    new Paradox.Networking.UndertakerCarryBodyRpc.Data(
+                        local.PlayerId,
+                        0,
+                        2,
+                        0f,
+                        0),
+                    immediately: true);
+            }
+
+            return false;
+        }
+
+        var targetBody = UndertakerHudPatch.CurrentBody;
+        if (targetBody == null)
+            return false;
+
+        if (AmongUsClient.Instance != null &&
+            AmongUsClient.Instance.AmHost)
+        {
+            UndertakerRole.TryPickup(local, targetBody);
+        }
+        else
+        {
+            Reactor.Networking.Rpc.Rpc<Paradox.Networking.UndertakerCarryBodyRpc>.Instance.Send(
+                local,
+                new Paradox.Networking.UndertakerCarryBodyRpc.Data(
+                    local.PlayerId,
+                    targetBody.ParentId,
+                    1,
+                    0f,
+                    0),
+                immediately: true);
+        }
+
+        return false;
+    }
+}
