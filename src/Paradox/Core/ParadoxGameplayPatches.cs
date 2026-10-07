@@ -31,6 +31,7 @@ using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
 using ParadoxForgottenRole = Paradox.Roles.Forgotten.ForgottenRole;
 using ParadoxRevenantRole = Paradox.Roles.Revenant.RevenantRole;
 using ParadoxJesterXRole = Paradox.Roles.JesterX.JesterXRole;
+using ParadoxPhantomRole = Paradox.Roles.Phantom.PhantomRole;
 using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using ParadoxDispatcherRole = Paradox.Roles.Dispatcher.DispatcherRole;
 using ParadoxLocksmithRole = Paradox.Roles.Locksmith.LocksmithRole;
@@ -49,6 +50,9 @@ public static class ParadoxGameplayPatches
     {
         if ((resultFlags & MurderResultFlags.Succeeded) == 0)
             return true;
+
+        if (ParadoxPhantomRole.TryBlockMurder(target))
+            return false;
 
         return !GuardianRole.TryBlockMurder(target);
     }
@@ -115,6 +119,7 @@ public static class ParadoxGameplayPatches
         ParadoxForgottenRole.ResetRuntime();
         ParadoxRevenantRole.ResetRuntime();
         ParadoxJesterXRole.ResetRuntime();
+        ParadoxPhantomRole.ResetRuntime();
         ParadoxEngineerXRole.ResetRuntime();
         ParadoxDispatcherRole.ResetRuntime();
         ParadoxLocksmithRole.ResetRuntime();
