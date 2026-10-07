@@ -37,5 +37,6 @@ public enum ParadoxRpcId : uint
     SaboteurOverload = 32,
     UndertakerCarryBody = 33,
     TimebreakerStasis = 34,
-    IllusionistMirage = 35
+    IllusionistMirage = 35,
+    PuppeteerControl = 36
 }

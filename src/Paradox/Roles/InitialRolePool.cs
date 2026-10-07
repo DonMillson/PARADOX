@@ -6,6 +6,7 @@ public static class InitialRolePool
     {
         RoleId.Doppelganger,
         RoleId.Parasite,
+        RoleId.Puppeteer,
         RoleId.Cleaner,
         RoleId.Devourer,
         RoleId.Corruptor,

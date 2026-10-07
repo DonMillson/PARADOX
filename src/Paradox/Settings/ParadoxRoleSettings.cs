@@ -8,6 +8,7 @@ public static class ParadoxRoleSettings
     {
         [RoleId.Doppelganger] = true,
         [RoleId.Parasite] = true,
+        [RoleId.Puppeteer] = true,
         [RoleId.Cleaner] = true,
         [RoleId.Devourer] = true,
         [RoleId.Corruptor] = true,
@@ -44,6 +45,7 @@ public static class ParadoxRoleSettings
     {
         [RoleId.Doppelganger] = 100,
         [RoleId.Parasite] = 100,
+        [RoleId.Puppeteer] = 100,
         [RoleId.Cleaner] = 100,
         [RoleId.Devourer] = 100,
         [RoleId.Corruptor] = 100,
@@ -105,6 +107,9 @@ public static class ParadoxRoleSettings
 
     public static float ParasiteInfectionDurationSeconds { get; set; } = 15f;
     public static float ParasiteCooldownSeconds { get; set; } = 30f;
+    public static float PuppeteerDurationSeconds { get; set; } = 6f;
+    public static float PuppeteerCooldownSeconds { get; set; } = 30f;
+    public static float PuppeteerFollowDistance { get; set; } = 0.85f;
 
     public static bool CleanerEnabled
     {
@@ -167,6 +172,7 @@ public static class ParadoxRoleSettings
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
         RoleId.Parasite or
+        RoleId.Puppeteer or
         RoleId.Cleaner or
         RoleId.Devourer or
         RoleId.Corruptor or
@@ -256,6 +262,9 @@ public static class ParadoxRoleSettings
         DoppelgangerCooldownSeconds = 30f;
         ParasiteInfectionDurationSeconds = 15f;
         ParasiteCooldownSeconds = 30f;
+        PuppeteerDurationSeconds = 6f;
+        PuppeteerCooldownSeconds = 30f;
+        PuppeteerFollowDistance = 0.85f;
         CleanerCooldownSeconds = 25f;
         DevourerCooldownSeconds = 35f;
         CorruptorDurationSeconds = 10f;

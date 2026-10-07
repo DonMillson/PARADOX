@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Devourer, Corruptor, Nightmare, Riftmaker, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Seer, Forensic, Stabilizer, Anomaly, Bounty Hunter, Survivor, Opportunist, Harbinger and Collector.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Devourer, Corruptor, Nightmare, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Bounty Hunter, Survivor, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -16,7 +16,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 |---|---|---|---|---|
 | Doppelgänger | Impostor | Copies another player's appearance temporarily, then restores the original outfit. | Partial | Final multiplayer/runtime verification and balance tuning |
 | Parasite | Impostor | Infects a target; after the infection timer completes, the victim is killed. | Partial | Multiplayer/runtime verification and balance tuning |
-| Puppeteer | Impostor | Temporarily manipulates another player's actions/movement. | Planned | Full implementation and synchronization |
+| Puppeteer | Impostor | Turns a nearby player into a marionette, freezing their own input and dragging them behind the Puppeteer for 6 seconds. | Partial | Multiplayer/runtime verification and movement edge cases |
 | Cleaner | Impostor | Removes a dead body to deny report/evidence. | Partial | Runtime verification and balance tuning |
 | Blackmailer | Impostor | Temporarily prevents a selected player from communicating normally. | Planned | Full implementation, meeting integration |
 | Illusionist | Impostor | Temporarily forces a nearby player to appear as another living player. | Partial | Multiplayer/runtime verification and appearance-conflict edge cases |
@@ -66,6 +66,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Saboteur can arm the next real sabotage for an extra +4 Paradox Meter; Technician shielding can absorb the overloaded instability.
 - Undertaker can carry and relocate a synchronized dead body.
 - Timebreaker can lock a nearby target in a synchronized 4-second temporal stasis.
+- Puppeteer can temporarily seize a nearby player's movement and drag the victim behind the controller.
 - Illusionist can temporarily replace a target’s visible identity with another living player’s appearance.
 - Nightmare can apply a synchronized 7-second fear/vision distortion to a nearby player.
 - Riftmaker can place a synchronized personal anchor and warp back to it.

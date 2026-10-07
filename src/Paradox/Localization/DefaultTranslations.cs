@@ -67,7 +67,12 @@ public static class DefaultTranslations
             "Discover an incomplete clue near a body.", "Odkryj niepełną wskazówkę przy znalezionym ciele.");
         Add(l, "role.Witness.clue.title", "WITNESS CLUE", "WSKAZÓWKA ŚWIADKA");
 
-        AddRoleName(l, "Puppeteer", "Puppeteer", "Lalkarz");
+        AddRole(l, "Puppeteer", "Puppeteer", "Lalkarz",
+            "Turn a nearby player into a marionette and drag them behind you for a few seconds.", "Zamień pobliskiego gracza w marionetkę i ciągnij go za sobą przez kilka sekund.");
+        Add(l, "role.Puppeteer.ability", "CONTROL", "KONTROLA");
+        Add(l, "role.Puppeteer.active", "PUPPET {seconds}s", "MARIONETKA {seconds}s");
+        Add(l, "role.Puppeteer.feedback.source", "Target controlled for {seconds}s.", "Cel kontrolowany przez {seconds}s.");
+        Add(l, "role.Puppeteer.feedback.target", "Your movement is controlled by the Puppeteer!", "Twój ruch jest kontrolowany przez Lalkarza!");
         AddRole(l, "Cleaner", "Cleaner", "Czyściciel",
             "Remove nearby bodies before the crew can report them.", "Usuwaj pobliskie ciała, zanim załoga zdąży je zgłosić.");
         Add(l, "role.Cleaner.ability", "CLEAN", "USUN");
