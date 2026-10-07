@@ -34,6 +34,7 @@ public static class ParadoxRoleSettings
         [RoleId.Forgotten] = true,
         [RoleId.BountyHunter] = true,
         [RoleId.Survivor] = true,
+        [RoleId.Revenant] = true,
         [RoleId.Opportunist] = true,
         [RoleId.Harbinger] = true,
         [RoleId.Collector] = true,
@@ -73,6 +74,7 @@ public static class ParadoxRoleSettings
         [RoleId.Forgotten] = 100,
         [RoleId.BountyHunter] = 100,
         [RoleId.Survivor] = 100,
+        [RoleId.Revenant] = 100,
         [RoleId.Opportunist] = 100,
         [RoleId.Harbinger] = 100,
         [RoleId.Collector] = 100,
@@ -163,6 +165,8 @@ public static class ParadoxRoleSettings
     public static int ForgottenRequiredMemories { get; set; } = 2;
     public static float BountyHunterCooldownSeconds { get; set; } = 25f;
     public static float OpportunistMeterThreshold { get; set; } = 50f;
+    public static float RevenantReviveDelaySeconds { get; set; } = 2f;
+    public static float RevenantSurvivalSeconds { get; set; } = 20f;
     public static float HarbingerCooldownSeconds { get; set; } = 20f;
     public static int HarbingerRequiredOmens { get; set; } = 3;
     public static float HarbingerWinMeterThreshold { get; set; } = 75f;
@@ -206,6 +210,7 @@ public static class ParadoxRoleSettings
         RoleId.Forgotten or
         RoleId.BountyHunter or
         RoleId.Survivor or
+        RoleId.Revenant or
         RoleId.Opportunist or
         RoleId.Harbinger or
         RoleId.Collector or
@@ -311,6 +316,8 @@ public static class ParadoxRoleSettings
         ForgottenRequiredMemories = 2;
         BountyHunterCooldownSeconds = 25f;
         OpportunistMeterThreshold = 50f;
+        RevenantReviveDelaySeconds = 2f;
+        RevenantSurvivalSeconds = 20f;
         HarbingerCooldownSeconds = 20f;
         HarbingerRequiredOmens = 3;
         HarbingerWinMeterThreshold = 75f;

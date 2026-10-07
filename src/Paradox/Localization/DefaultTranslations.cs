@@ -211,7 +211,11 @@ public static class DefaultTranslations
         AddRole(l, "Survivor", "Survivor", "Ocalały",
             "Survive until the match ends to join the winners.", "Przetrwaj do końca meczu, aby dołączyć do zwycięzców.");
         Add(l, "role.Survivor.win", "SURVIVOR ESCAPED", "OCALAŁY PRZETRWAŁ");
-        AddRoleName(l, "Revenant", "Revenant", "Powracający");
+        AddRole(l, "Revenant", "Revenant", "Powracający",
+            "Return once after death. Survive the second life long enough to claim a solo victory.", "Powróć raz po śmierci. Przetrwaj drugie życie wystarczająco długo, aby odnieść samodzielne zwycięstwo.");
+        Add(l, "role.Revenant.returning", "RETURNING IN {seconds}s", "POWRÓT ZA {seconds}s");
+        Add(l, "role.Revenant.returned", "You returned. Survive for {seconds}s.", "Powróciłeś. Przetrwaj przez {seconds}s.");
+        Add(l, "role.Revenant.win", "REVENANT ENDURES", "POWRACAJĄCY PRZETRWAŁ");
         AddRoleName(l, "JesterX", "Jester X", "Błazen X");
         AddRoleName(l, "Phantom", "Phantom", "Fantom");
         AddRole(l, "Opportunist", "Opportunist", "Oportunista",

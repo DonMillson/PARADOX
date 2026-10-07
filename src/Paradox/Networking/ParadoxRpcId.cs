@@ -40,5 +40,6 @@ public enum ParadoxRpcId : uint
     IllusionistMirage = 35,
     PuppeteerControl = 36,
     ShapeshifterXSwap = 37,
-    ForgottenMemory = 38
+    ForgottenMemory = 38,
+    RevenantReturn = 39
 }

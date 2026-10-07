@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Opportunist, Harbinger and Collector.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -49,7 +49,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Collector | Neutral | Collects unique samples from three different living players and wins immediately after completing the collection. | Partial | Multiplayer/runtime verification and balance tuning |
 | Bounty Hunter | Neutral | Receives a synchronized bounty target and wins immediately by eliminating that exact target. | Partial | Multiplayer/runtime verification and balance tuning |
 | Survivor | Neutral | Joins the winners if still alive when the match ends. | Partial | Multiplayer/runtime verification and end-screen presentation |
-| Revenant | Neutral | Death/return-themed neutral role with a second-state mechanic. | Planned | Revival/state rules and win condition |
+| Revenant | Neutral | Returns once after death, then wins alone by surviving 20 seconds in the second life. | Partial | Multiplayer/runtime verification and end-condition edge cases |
 | Jester X | Neutral | Attempts to get voted out under its own victory rules. | Planned | Meeting/vote win-condition integration |
 | Phantom | Neutral | Uses stealth/intangibility-oriented mechanics. | Planned | Final ability, visibility rules and sync |
 | Opportunist | Neutral | Joins the winners if alive at match end while the Paradox Meter is at least 50%. | Partial | Multiplayer/runtime verification and balance tuning |
@@ -83,7 +83,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Forensic can examine a nearby body using authoritative death-time evidence and recent ability traces.
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
-- Host-side initial role assignment for implemented Impostor, Crewmate and Neutral roles. Anomaly, Bounty Hunter, Survivor, Opportunist or Harbinger can occupy the neutral slot while keeping their own neutral objective/win flow.
+- Host-side initial role assignment for implemented Impostor, Crewmate and Neutral roles. Anomaly, Forgotten, Bounty Hunter, Survivor, Revenant, Opportunist, Harbinger or Collector can occupy the neutral slot while keeping their own neutral objective/win flow.
 - English/Polish localization foundation.
 - PARADOX STATION map architecture/skeleton.
 - Match-end state reset for implemented MVP roles.
