@@ -32,6 +32,7 @@ public static class InitialRolePool
     {
         RoleId.Anomaly,
         RoleId.BountyHunter,
-        RoleId.Survivor
+        RoleId.Survivor,
+        RoleId.Opportunist
     };
 }

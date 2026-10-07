@@ -165,7 +165,9 @@ public static class DefaultTranslations
         AddRoleName(l, "Revenant", "Revenant", "Powracający");
         AddRoleName(l, "JesterX", "Jester X", "Błazen X");
         AddRoleName(l, "Phantom", "Phantom", "Fantom");
-        AddRoleName(l, "Opportunist", "Opportunist", "Oportunista");
+        AddRole(l, "Opportunist", "Opportunist", "Oportunista",
+            "If you survive until the match ends while the Paradox Meter is at least 50%, you join the winners.", "Jeśli przeżyjesz do końca meczu przy Mierniku Paradoksu wynoszącym co najmniej 50%, dołączasz do zwycięzców.");
+        Add(l, "role.Opportunist.win", "OPPORTUNITY SECURED", "OKAZJA WYKORZYSTANA");
         AddRoleName(l, "Harbinger", "Harbinger", "Zwiastun");
 
         Add(l, "role.Witness.clue.bodyAge", "The body appears to be recent.", "Ciało wygląda na znalezione niedługo po śmierci.");

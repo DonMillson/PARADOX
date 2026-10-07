@@ -26,7 +26,8 @@ public static class ParadoxRoleSettings
         [RoleId.Stabilizer] = true,
         [RoleId.Anomaly] = true,
         [RoleId.BountyHunter] = true,
-        [RoleId.Survivor] = true
+        [RoleId.Survivor] = true,
+        [RoleId.Opportunist] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -51,7 +52,8 @@ public static class ParadoxRoleSettings
         [RoleId.Stabilizer] = 100,
         [RoleId.Anomaly] = 100,
         [RoleId.BountyHunter] = 100,
-        [RoleId.Survivor] = 100
+        [RoleId.Survivor] = 100,
+        [RoleId.Opportunist] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -119,6 +121,7 @@ public static class ParadoxRoleSettings
     public static float StabilizerReductionAmount { get; set; } = 10f;
     public static float AnomalyCooldownSeconds { get; set; } = 20f;
     public static float BountyHunterCooldownSeconds { get; set; } = 25f;
+    public static float OpportunistMeterThreshold { get; set; } = 50f;
 
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
@@ -141,7 +144,8 @@ public static class ParadoxRoleSettings
         RoleId.Stabilizer or
         RoleId.Anomaly or
         RoleId.BountyHunter or
-        RoleId.Survivor;
+        RoleId.Survivor or
+        RoleId.Opportunist;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
@@ -224,5 +228,6 @@ public static class ParadoxRoleSettings
         StabilizerReductionAmount = 10f;
         AnomalyCooldownSeconds = 20f;
         BountyHunterCooldownSeconds = 25f;
+        OpportunistMeterThreshold = 50f;
     }
 }
