@@ -34,5 +34,6 @@ public enum ParadoxRpcId : uint
     DispatcherSweep = 29,
     LocksmithOpenDoor = 30,
     TechnicianShield = 31,
-    SaboteurOverload = 32
+    SaboteurOverload = 32,
+    UndertakerCarryBody = 33
 }
