@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Devourer, Corruptor, Nightmare, Riftmaker, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Seer, Forensic, Stabilizer, Anomaly, Bounty Hunter, Survivor, Opportunist and Harbinger.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Cleaner, Devourer, Corruptor, Nightmare, Riftmaker, Observer, Witness, Guardian, Chronologist, Detective, Medic, Tracker, Analyst, Seer, Forensic, Stabilizer, Anomaly, Bounty Hunter, Survivor, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -46,7 +46,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Stabilizer | Crewmate | Reduces the Paradox Meter by up to 10 per use. | Partial | Multiplayer/runtime verification and balance tuning |
 | Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forgotten | Neutral | Progresses through a hidden/forgotten identity objective. | Planned | Final objective and win condition |
-| Collector | Neutral | Collects designated objectives/resources to win. | Planned | Collectible system and win condition |
+| Collector | Neutral | Collects unique samples from three different living players and wins immediately after completing the collection. | Partial | Multiplayer/runtime verification and balance tuning |
 | Bounty Hunter | Neutral | Receives a synchronized bounty target and wins immediately by eliminating that exact target. | Partial | Multiplayer/runtime verification and balance tuning |
 | Survivor | Neutral | Joins the winners if still alive when the match ends. | Partial | Multiplayer/runtime verification and end-screen presentation |
 | Revenant | Neutral | Death/return-themed neutral role with a second-state mechanic. | Planned | Revival/state rules and win condition |
