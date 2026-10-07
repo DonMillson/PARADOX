@@ -99,7 +99,10 @@ public static class DefaultTranslations
         Add(l, "role.Riftmaker.feedback.anchor", "Rift anchor placed.", "Kotwica szczeliny ustawiona.");
         Add(l, "role.Riftmaker.feedback.warp", "Rift traversal complete.", "Przejście przez szczelinę zakończone.");
 
-        AddRoleName(l, "EngineerX", "Engineer X", "Inżynier X");
+        AddRole(l, "EngineerX", "Engineer X", "Inżynier X",
+            "Use Emergency Stabilize to reduce dangerous Paradox instability.", "Użyj Awaryjnej Stabilizacji, aby zmniejszyć niebezpieczną niestabilność Paradoksu.");
+        Add(l, "role.EngineerX.ability", "EMERGENCY FIX", "NAPRAWA AWARYJNA");
+        Add(l, "role.EngineerX.feedback", "Emergency stabilization complete: Paradox Meter -{amount}.", "Awaryjna stabilizacja zakończona: Miernik Paradoksu -{amount}.");
         AddRole(l, "Guardian", "Guardian", "Strażnik",
             "Protect a nearby player from one murder for a short time.", "Chroń pobliskiego gracza przed jednym zabójstwem przez krótki czas.");
         Add(l, "role.Guardian.ability", "PROTECT", "CHROŃ");
