@@ -27,6 +27,7 @@ using ParadoxBountyHunterRole = Paradox.Roles.BountyHunter.BountyHunterRole;
 using ParadoxHarbingerRole = Paradox.Roles.Harbinger.HarbingerRole;
 using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
 using ParadoxForgottenRole = Paradox.Roles.Forgotten.ForgottenRole;
+using ParadoxRevenantRole = Paradox.Roles.Revenant.RevenantRole;
 using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using ParadoxDispatcherRole = Paradox.Roles.Dispatcher.DispatcherRole;
 using ParadoxLocksmithRole = Paradox.Roles.Locksmith.LocksmithRole;
@@ -68,6 +69,7 @@ public static class ParadoxGameplayPatches
             UnityEngine.Time.time);
 
         ParadoxGame.AddFrom(ParadoxMeterSource.Kill);
+        ParadoxRevenantRole.OnKilled(target);
     }
 
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
@@ -106,6 +108,7 @@ public static class ParadoxGameplayPatches
         ParadoxHarbingerRole.ResetRuntime();
         ParadoxCollectorRole.ResetRuntime();
         ParadoxForgottenRole.ResetRuntime();
+        ParadoxRevenantRole.ResetRuntime();
         ParadoxEngineerXRole.ResetRuntime();
         ParadoxDispatcherRole.ResetRuntime();
         ParadoxLocksmithRole.ResetRuntime();
