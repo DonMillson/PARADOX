@@ -82,7 +82,11 @@ public static class DefaultTranslations
             "Consume a nearby victim; the kill leaves no reportable body.", "Pożeraj pobliską ofiarę; po zabójstwie nie pozostaje ciało do zgłoszenia.");
         Add(l, "role.Devourer.ability", "DEVOUR", "POŻRYJ");
         Add(l, "role.Devourer.feedback", "Victim consumed. No body remains.", "Ofiara pożarta. Nie pozostało ciało.");
-        AddRoleName(l, "Timebreaker", "Timebreaker", "Łamacz Czasu");
+        AddRole(l, "Timebreaker", "Timebreaker", "Łamacz Czasu",
+            "Lock a nearby player in temporal stasis for a few seconds.", "Zamknij pobliskiego gracza w czasowej stazie na kilka sekund.");
+        Add(l, "role.Timebreaker.ability", "TIME LOCK", "BLOKADA CZASU");
+        Add(l, "role.Timebreaker.feedback.source", "Target frozen in time for {seconds}s.", "Cel zatrzymany w czasie na {seconds}s.");
+        Add(l, "role.Timebreaker.feedback.target", "Time has stopped around you.", "Czas zatrzymał się wokół ciebie.");
         AddRole(l, "Nightmare", "Nightmare", "Koszmar",
             "Haunt a nearby player with a short synchronized fear and vision-distortion effect.", "Nawiedzaj pobliskiego gracza krótkim, zsynchronizowanym efektem strachu i zaburzonej widoczności.");
         Add(l, "role.Nightmare.ability", "HAUNT", "NAWIEDŹ");

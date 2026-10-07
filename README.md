@@ -22,7 +22,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Illusionist | Impostor | Creates deceptive visual information/decoys. | Planned | Full implementation and client sync |
 | Corruptor | Impostor | Blocks a nearby player’s special role ability for 10 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Devourer | Impostor | Consumes a nearby victim and removes the resulting body. | Partial | Multiplayer/runtime verification and balance tuning |
-| Timebreaker | Impostor | Temporarily disrupts time-related gameplay. | Planned | Final mechanic, safe networking model |
+| Timebreaker | Impostor | Places a nearby player in synchronized movement stasis for 4 seconds. | Partial | Multiplayer/runtime verification and movement-state edge cases |
 | Nightmare | Impostor | Haunts a nearby player with a 7-second synchronized fear/vision distortion. | Partial | Multiplayer/runtime verification and balance tuning |
 | Shapeshifter X | Impostor | Advanced transformation-oriented impostor role distinct from Doppelgänger. | Planned | Final unique mechanic and implementation |
 | Saboteur | Impostor | Arms the next real sabotage to add +4 extra Paradox instability. | Partial | Multiplayer/runtime verification and balance tuning |
@@ -65,6 +65,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Corruptor can temporarily disable a nearby player’s special role ability.
 - Saboteur can arm the next real sabotage for an extra +4 Paradox Meter; Technician shielding can absorb the overloaded instability.
 - Undertaker can carry and relocate a synchronized dead body.
+- Timebreaker can lock a nearby target in a synchronized 4-second temporal stasis.
 - Nightmare can apply a synchronized 7-second fear/vision distortion to a nearby player.
 - Riftmaker can place a synchronized personal anchor and warp back to it.
 - Guardian can place a synchronized one-hit protection on a nearby living player.
