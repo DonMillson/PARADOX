@@ -138,7 +138,12 @@ public static class DefaultTranslations
             "Analyze limited live match telemetry without identifying players.", "Analizuj ograniczoną telemetrię meczu bez identyfikowania graczy.");
         Add(l, "role.Analyst.ability", "ANALYZE", "ANALIZUJ");
         Add(l, "role.Analyst.result", "Analyst: alive {alive} | deaths {deaths} | traces {traces} | meter {meter}%.", "Analityk: żywi {alive} | zgony {deaths} | ślady {traces} | miernik {meter}%.");
-        AddRoleName(l, "Technician", "Technician", "Technik");
+        AddRole(l, "Technician", "Technician", "Technik",
+            "Deploy a temporary system shield that prevents sabotage from adding instability to the Paradox Meter.", "Uruchom tymczasową osłonę systemową, która blokuje przyrost niestabilności Miernika Paradoksu z sabotaży.");
+        Add(l, "role.Technician.ability", "SYSTEM SHIELD", "OSŁONA SYSTEMU");
+        Add(l, "role.Technician.active", "SHIELD ACTIVE {seconds}s", "OSŁONA {seconds}s");
+        Add(l, "role.Technician.feedback", "System shield active for {seconds}s.", "Osłona systemowa aktywna przez {seconds}s.");
+        Add(l, "role.Technician.blockedSabotage", "Technician shield absorbed sabotage instability.", "Osłona Technika pochłonęła niestabilność sabotażu.");
         AddRole(l, "Seer", "Seer", "Wieszcz",
             "Read whether a nearby player has left a fresh special-ability trace.", "Odczytuj, czy pobliski gracz pozostawił świeży ślad użycia specjalnej zdolności.");
         Add(l, "role.Seer.ability", "READ AURA", "CZYTAJ AURĘ");

@@ -39,7 +39,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Tracker | Crewmate | Tracks a selected player’s live position for 18 seconds. | Partial | Multiplayer/runtime verification and balance tuning |
 | Locksmith | Crewmate | Opens the nearest closed door within range using a synchronized bypass. | Partial | Multiplayer/runtime verification and map-specific door edge cases |
 | Analyst | Crewmate | Reads limited live telemetry: alive players, recorded deaths, active ability traces and Paradox Meter. | Partial | Multiplayer/runtime verification and balance tuning |
-| Technician | Crewmate | Gains enhanced interaction with systems/sabotages. | Planned | System hooks and balancing |
+| Technician | Crewmate | Deploys a temporary system shield that prevents sabotage from adding +4 Paradox instability. | Partial | Multiplayer/runtime verification and balance tuning |
 | Seer | Crewmate | Reads whether a nearby player has a fresh special-ability trace. | Partial | Multiplayer/runtime verification and balance tuning |
 | Dispatcher | Crewmate | Runs a synchronized status sweep reporting living players, deaths and current Paradox instability. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forensic | Crewmate | Examines bodies for real death age and recent ability residue. | Partial | Multiplayer/runtime verification and balance tuning |
@@ -72,6 +72,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Tracker can lock onto a nearby living player and display live distance for 18 seconds.
 - Analyst can read limited host-authoritative live match telemetry without identifying players.
 - Locksmith can open the nearest closed door using a host-validated synchronized door index.
+- Technician can deploy a synchronized sabotage-instability shield; sabotage now has a real host-side +4 Paradox Meter hook.
 - Seer can inspect a nearby player for a fresh special-ability trace without revealing the exact role.
 - Forensic can examine a nearby body using authoritative death-time evidence and recent ability traces.
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.

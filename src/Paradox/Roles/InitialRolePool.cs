@@ -18,6 +18,7 @@ public static class InitialRolePool
         RoleId.EngineerX,
         RoleId.Dispatcher,
         RoleId.Locksmith,
+        RoleId.Technician,
         RoleId.Observer,
         RoleId.Witness,
         RoleId.Guardian,
