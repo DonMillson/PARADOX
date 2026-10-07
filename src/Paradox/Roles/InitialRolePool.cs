@@ -15,6 +15,7 @@ public static class InitialRolePool
 
     public static IReadOnlyList<RoleId> Crewmate { get; } = new[]
     {
+        RoleId.EngineerX,
         RoleId.Observer,
         RoleId.Witness,
         RoleId.Guardian,
