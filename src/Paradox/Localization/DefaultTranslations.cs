@@ -141,7 +141,10 @@ public static class DefaultTranslations
         Add(l, "role.Seer.ability", "READ AURA", "CZYTAJ AURĘ");
         Add(l, "role.Seer.result.disturbed", "Seer: the aura is DISTURBED by recent ability use.", "Wieszcz: aura jest ZABURZONA przez niedawne użycie zdolności.");
         Add(l, "role.Seer.result.calm", "Seer: the aura is calm.", "Wieszcz: aura jest spokojna.");
-        AddRoleName(l, "Dispatcher", "Dispatcher", "Dyspozytor");
+        AddRole(l, "Dispatcher", "Dispatcher", "Dyspozytor",
+            "Run a synchronized status sweep showing living players, deaths and Paradox instability.", "Uruchom zsynchronizowany przegląd stanu pokazujący żywych graczy, zgony i niestabilność Paradoksu.");
+        Add(l, "role.Dispatcher.ability", "STATUS SWEEP", "PRZEGLĄD STANU");
+        Add(l, "role.Dispatcher.feedback", "Status: {alive} alive, {dead} dead, Paradox {meter}%.", "Status: żywi {alive}, martwi {dead}, Paradoks {meter}%.");
         AddRole(l, "Forensic", "Forensic", "Kryminalistyk",
             "Examine a nearby body for real death-time evidence and recent ability residue.", "Badaj pobliskie ciało pod kątem rzeczywistego czasu śmierci i śladów niedawnych zdolności.");
         Add(l, "role.Forensic.ability", "EXAMINE", "ZBADAJ");
