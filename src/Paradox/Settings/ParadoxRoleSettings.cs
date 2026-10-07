@@ -27,7 +27,8 @@ public static class ParadoxRoleSettings
         [RoleId.Anomaly] = true,
         [RoleId.BountyHunter] = true,
         [RoleId.Survivor] = true,
-        [RoleId.Opportunist] = true
+        [RoleId.Opportunist] = true,
+        [RoleId.Harbinger] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -53,7 +54,8 @@ public static class ParadoxRoleSettings
         [RoleId.Anomaly] = 100,
         [RoleId.BountyHunter] = 100,
         [RoleId.Survivor] = 100,
-        [RoleId.Opportunist] = 100
+        [RoleId.Opportunist] = 100,
+        [RoleId.Harbinger] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -122,6 +124,10 @@ public static class ParadoxRoleSettings
     public static float AnomalyCooldownSeconds { get; set; } = 20f;
     public static float BountyHunterCooldownSeconds { get; set; } = 25f;
     public static float OpportunistMeterThreshold { get; set; } = 50f;
+    public static float HarbingerCooldownSeconds { get; set; } = 20f;
+    public static int HarbingerRequiredOmens { get; set; } = 3;
+    public static float HarbingerWinMeterThreshold { get; set; } = 75f;
+    public static float HarbingerBonusMeter { get; set; } = 3f;
 
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
@@ -145,7 +151,8 @@ public static class ParadoxRoleSettings
         RoleId.Anomaly or
         RoleId.BountyHunter or
         RoleId.Survivor or
-        RoleId.Opportunist;
+        RoleId.Opportunist or
+        RoleId.Harbinger;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
@@ -229,5 +236,9 @@ public static class ParadoxRoleSettings
         AnomalyCooldownSeconds = 20f;
         BountyHunterCooldownSeconds = 25f;
         OpportunistMeterThreshold = 50f;
+        HarbingerCooldownSeconds = 20f;
+        HarbingerRequiredOmens = 3;
+        HarbingerWinMeterThreshold = 75f;
+        HarbingerBonusMeter = 3f;
     }
 }

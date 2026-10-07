@@ -168,7 +168,12 @@ public static class DefaultTranslations
         AddRole(l, "Opportunist", "Opportunist", "Oportunista",
             "If you survive until the match ends while the Paradox Meter is at least 50%, you join the winners.", "Jeśli przeżyjesz do końca meczu przy Mierniku Paradoksu wynoszącym co najmniej 50%, dołączasz do zwycięzców.");
         Add(l, "role.Opportunist.win", "OPPORTUNITY SECURED", "OKAZJA WYKORZYSTANA");
-        AddRoleName(l, "Harbinger", "Harbinger", "Zwiastun");
+        AddRole(l, "Harbinger", "Harbinger", "Zwiastun",
+            "Invoke three Omens and survive until the Paradox Meter reaches at least 75% to claim a special victory.", "Przywołaj trzy Znaki i przeżyj, aż Miernik Paradoksu osiągnie co najmniej 75%, aby odnieść specjalne zwycięstwo.");
+        Add(l, "role.Harbinger.ability", "OMEN {count}/{required}", "ZNAK {count}/{required}");
+        Add(l, "role.Harbinger.feedback", "Omen invoked: {count}/{required}. Paradox Meter +{amount}.", "Przywołano Znak: {count}/{required}. Miernik Paradoksu +{amount}.");
+        Add(l, "role.Harbinger.ready", "The final Omen is complete. Reach 75% Paradox and survive.", "Ostatni Znak ukończony. Osiągnij 75% Paradoksu i przetrwaj.");
+        Add(l, "role.Harbinger.win", "HARBINGER WINS", "ZWIASTUN WYGRYWA");
 
         Add(l, "role.Witness.clue.bodyAge", "The body appears to be recent.", "Ciało wygląda na znalezione niedługo po śmierci.");
         Add(l, "role.Witness.clue.activity", "There are signs of recent activity nearby.", "W pobliżu widać ślady niedawnej aktywności.");

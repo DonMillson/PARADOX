@@ -33,6 +33,7 @@ public static class InitialRolePool
         RoleId.Anomaly,
         RoleId.BountyHunter,
         RoleId.Survivor,
-        RoleId.Opportunist
+        RoleId.Opportunist,
+        RoleId.Harbinger
     };
 }
