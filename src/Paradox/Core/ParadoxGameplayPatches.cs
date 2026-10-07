@@ -20,6 +20,7 @@ using Paradox.Roles.Anomaly;
 using ParadoxBountyHunterRole = Paradox.Roles.BountyHunter.BountyHunterRole;
 using ParadoxHarbingerRole = Paradox.Roles.Harbinger.HarbingerRole;
 using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
+using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using Paradox.Roles;
 using HarmonyLib;
 
@@ -88,5 +89,6 @@ public static class ParadoxGameplayPatches
         ParadoxBountyHunterRole.ResetRuntime();
         ParadoxHarbingerRole.ResetRuntime();
         ParadoxCollectorRole.ResetRuntime();
+        ParadoxEngineerXRole.ResetRuntime();
     }
 }
