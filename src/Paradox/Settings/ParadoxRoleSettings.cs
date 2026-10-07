@@ -31,6 +31,7 @@ public static class ParadoxRoleSettings
         [RoleId.Forensic] = true,
         [RoleId.Stabilizer] = true,
         [RoleId.Anomaly] = true,
+        [RoleId.Forgotten] = true,
         [RoleId.BountyHunter] = true,
         [RoleId.Survivor] = true,
         [RoleId.Opportunist] = true,
@@ -69,6 +70,7 @@ public static class ParadoxRoleSettings
         [RoleId.Forensic] = 100,
         [RoleId.Stabilizer] = 100,
         [RoleId.Anomaly] = 100,
+        [RoleId.Forgotten] = 100,
         [RoleId.BountyHunter] = 100,
         [RoleId.Survivor] = 100,
         [RoleId.Opportunist] = 100,
@@ -157,6 +159,8 @@ public static class ParadoxRoleSettings
     public static float StabilizerCooldownSeconds { get; set; } = 25f;
     public static float StabilizerReductionAmount { get; set; } = 10f;
     public static float AnomalyCooldownSeconds { get; set; } = 20f;
+    public static float ForgottenCooldownSeconds { get; set; } = 15f;
+    public static int ForgottenRequiredMemories { get; set; } = 2;
     public static float BountyHunterCooldownSeconds { get; set; } = 25f;
     public static float OpportunistMeterThreshold { get; set; } = 50f;
     public static float HarbingerCooldownSeconds { get; set; } = 20f;
@@ -199,6 +203,7 @@ public static class ParadoxRoleSettings
         RoleId.Forensic or
         RoleId.Stabilizer or
         RoleId.Anomaly or
+        RoleId.Forgotten or
         RoleId.BountyHunter or
         RoleId.Survivor or
         RoleId.Opportunist or
@@ -302,6 +307,8 @@ public static class ParadoxRoleSettings
         StabilizerCooldownSeconds = 25f;
         StabilizerReductionAmount = 10f;
         AnomalyCooldownSeconds = 20f;
+        ForgottenCooldownSeconds = 15f;
+        ForgottenRequiredMemories = 2;
         BountyHunterCooldownSeconds = 25f;
         OpportunistMeterThreshold = 50f;
         HarbingerCooldownSeconds = 20f;

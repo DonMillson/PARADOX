@@ -192,7 +192,11 @@ public static class DefaultTranslations
         Add(l, "role.Stabilizer.ability", "STABILIZE", "STABILIZUJ");
         Add(l, "role.Stabilizer.feedback", "Reality stabilized: Paradox Meter -{amount}.", "Rzeczywistość ustabilizowana: Miernik Paradoksu -{amount}.");
 
-        AddRoleName(l, "Forgotten", "Forgotten", "Zapomniany");
+        AddRole(l, "Forgotten", "Forgotten", "Zapomniany",
+            "Recover memories from unique dead bodies. Reclaim enough memories to win alone.", "Odzyskuj wspomnienia z różnych ciał. Zbierz wystarczającą liczbę wspomnień, aby wygrać samodzielnie.");
+        Add(l, "role.Forgotten.ability", "REMEMBER {count}/{required}", "WSPOMNIJ {count}/{required}");
+        Add(l, "role.Forgotten.feedback", "Memory recovered: {count}/{required}.", "Odzyskano wspomnienie: {count}/{required}.");
+        Add(l, "role.Forgotten.win", "FORGOTTEN REMEMBERS", "ZAPOMNIANY PAMIĘTA");
         AddRole(l, "Collector", "Collector", "Kolekcjoner",
             "Collect unique samples from three living players to claim a solo victory.", "Zbierz unikalne próbki od trzech żywych graczy, aby odnieść samodzielne zwycięstwo.");
         Add(l, "role.Collector.ability", "SAMPLE {count}/{required}", "PRÓBKA {count}/{required}");

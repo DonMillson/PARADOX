@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Bounty Hunter, Survivor, Opportunist, Harbinger and Collector.
+The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. Current gameplay MVP roles include Doppelgänger, Parasite, Puppeteer, Cleaner, Devourer, Corruptor, Nightmare, Shapeshifter X, Riftmaker, Illusionist, Timebreaker, Saboteur, Undertaker, Observer, Witness, Engineer X, Guardian, Chronologist, Detective, Medic, Tracker, Locksmith, Analyst, Technician, Seer, Dispatcher, Forensic, Stabilizer, Anomaly, Forgotten, Bounty Hunter, Survivor, Opportunist, Harbinger and Collector.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified; **Planned** = registered design slot, gameplay implementation still required.
 
@@ -45,7 +45,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Forensic | Crewmate | Examines bodies for real death age and recent ability residue. | Partial | Multiplayer/runtime verification and balance tuning |
 | Stabilizer | Crewmate | Reduces the Paradox Meter by up to 10 per use. | Partial | Multiplayer/runtime verification and balance tuning |
 | Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
-| Forgotten | Neutral | Progresses through a hidden/forgotten identity objective. | Planned | Final objective and win condition |
+| Forgotten | Neutral | Recovers memories from two unique dead bodies and wins immediately after completing the memory objective. | Partial | Multiplayer/runtime verification and balance tuning |
 | Collector | Neutral | Collects unique samples from three different living players and wins immediately after completing the collection. | Partial | Multiplayer/runtime verification and balance tuning |
 | Bounty Hunter | Neutral | Receives a synchronized bounty target and wins immediately by eliminating that exact target. | Partial | Multiplayer/runtime verification and balance tuning |
 | Survivor | Neutral | Joins the winners if still alive when the match ends. | Partial | Multiplayer/runtime verification and end-screen presentation |
