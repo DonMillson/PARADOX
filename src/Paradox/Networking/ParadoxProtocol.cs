@@ -2,7 +2,7 @@ namespace Paradox.Networking;
 
 public static class ParadoxProtocol
 {
-    public const int Version = 29;
+    public const int Version = 30;
 
     public static bool Supports(ParadoxMessageType type) =>
         Enum.IsDefined(typeof(ParadoxMessageType), type);
