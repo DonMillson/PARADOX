@@ -23,11 +23,9 @@ public static class EngineerXRole
         if(CooldownRemaining(source.PlayerId,now)>0f)return false;
         if(!RoleAbilityService.Use(source,RoleId.EngineerX))return false;
 
-        // MVP: an Engineer X stabilizes the emergency layer immediately.
-        // System-specific repair hooks stay isolated here for later map extensions.
         CooldownEndsAt[source.PlayerId]=now+ParadoxRoleSettings.EngineerXCooldownSeconds;
         if(ParadoxGame.State.Meter>0f)
-            ParadoxGame.AddMeter(-Math.Min(ParadoxRoleSettings.EngineerXStabilizeAmount,ParadoxGame.State.Meter));
+            ParadoxGame.ReduceMeter(ParadoxRoleSettings.EngineerXStabilizeAmount);
 
         ApplySyncedState(source.PlayerId,ParadoxRoleSettings.EngineerXCooldownSeconds);
         BroadcastAccepted(source.PlayerId);
