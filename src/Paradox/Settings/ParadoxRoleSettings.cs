@@ -14,6 +14,7 @@ public static class ParadoxRoleSettings
         [RoleId.Nightmare] = true,
         [RoleId.Riftmaker] = true,
         [RoleId.Saboteur] = true,
+        [RoleId.Undertaker] = true,
         [RoleId.Observer] = true,
         [RoleId.Witness] = true,
         [RoleId.Guardian] = true,
@@ -47,6 +48,7 @@ public static class ParadoxRoleSettings
         [RoleId.Nightmare] = 100,
         [RoleId.Riftmaker] = 100,
         [RoleId.Saboteur] = 100,
+        [RoleId.Undertaker] = 100,
         [RoleId.Observer] = 100,
         [RoleId.Witness] = 100,
         [RoleId.Guardian] = 100,
@@ -122,6 +124,8 @@ public static class ParadoxRoleSettings
     public static float RiftmakerCooldownSeconds { get; set; } = 25f;
     public static float SaboteurCooldownSeconds { get; set; } = 30f;
     public static float SaboteurBonusMeter { get; set; } = 4f;
+    public static float UndertakerCooldownSeconds { get; set; } = 20f;
+    public static float UndertakerCarryOffsetY { get; set; } = -0.45f;
     public static float GuardianProtectionDurationSeconds { get; set; } = 10f;
     public static float GuardianCooldownSeconds { get; set; } = 30f;
     public static float ChronologistCooldownSeconds { get; set; } = 25f;
@@ -161,6 +165,7 @@ public static class ParadoxRoleSettings
         RoleId.Nightmare or
         RoleId.Riftmaker or
         RoleId.Saboteur or
+        RoleId.Undertaker or
         RoleId.Observer or
         RoleId.Witness or
         RoleId.Guardian or
@@ -251,6 +256,8 @@ public static class ParadoxRoleSettings
         RiftmakerCooldownSeconds = 25f;
         SaboteurCooldownSeconds = 30f;
         SaboteurBonusMeter = 4f;
+        UndertakerCooldownSeconds = 20f;
+        UndertakerCarryOffsetY = -0.45f;
         GuardianProtectionDurationSeconds = 10f;
         GuardianCooldownSeconds = 30f;
         ChronologistCooldownSeconds = 25f;
