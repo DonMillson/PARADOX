@@ -89,7 +89,12 @@ public static class DefaultTranslations
         Add(l, "role.Nightmare.feedback.source", "Nightmare effect applied for {seconds}s.", "Efekt Koszmaru nałożony na {seconds}s.");
         Add(l, "role.Nightmare.feedback.target", "A nightmare closes in...", "Koszmar zaciska się wokół ciebie...");
         AddRoleName(l, "ShapeshifterX", "Shapeshifter X", "Zmiennokształtny X");
-        AddRoleName(l, "Saboteur", "Saboteur", "Sabotażysta");
+        AddRole(l, "Saboteur", "Saboteur", "Sabotażysta",
+            "Arm an Overload so your next real sabotage creates additional Paradox instability.", "Uzbrój Przeciążenie, aby twój następny prawdziwy sabotaż wywołał dodatkową niestabilność Paradoksu.");
+        Add(l, "role.Saboteur.ability", "OVERLOAD", "PRZECIĄŻ");
+        Add(l, "role.Saboteur.armed", "OVERLOAD ARMED", "PRZECIĄŻENIE GOTOWE");
+        Add(l, "role.Saboteur.feedback.arm", "Next sabotage overloaded: +{amount} extra Paradox.", "Następny sabotaż przeciążony: +{amount} dodatkowego Paradoksu.");
+        Add(l, "role.Saboteur.feedback.fire", "Overloaded sabotage triggered.", "Uruchomiono przeciążony sabotaż.");
         AddRoleName(l, "Undertaker", "Undertaker", "Grabarz");
         AddRoleName(l, "Silencer", "Silencer", "Wyciszacz");
         AddRole(l, "Riftmaker", "Riftmaker", "Twórca Szczelin",
