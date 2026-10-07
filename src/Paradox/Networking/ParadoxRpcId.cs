@@ -26,5 +26,6 @@ public enum ParadoxRpcId : uint
     SeerReadAura = 21,
     DevourerConsume = 22,
     RiftmakerWarp = 23,
-    CorruptorCorrupt = 24
+    CorruptorCorrupt = 24,
+    BountyHunterState = 25
 }

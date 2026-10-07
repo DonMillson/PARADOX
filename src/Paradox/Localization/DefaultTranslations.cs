@@ -153,7 +153,12 @@ public static class DefaultTranslations
 
         AddRoleName(l, "Forgotten", "Forgotten", "Zapomniany");
         AddRoleName(l, "Collector", "Collector", "Kolekcjoner");
-        AddRoleName(l, "BountyHunter", "Bounty Hunter", "Łowca Nagród");
+        AddRole(l, "BountyHunter", "Bounty Hunter", "Łowca Nagród",
+            "Hunt the assigned bounty target. Eliminating the correct target grants a solo victory.", "Poluj na wyznaczony cel. Eliminacja właściwego celu daje samodzielne zwycięstwo.");
+        Add(l, "role.BountyHunter.ability", "EXECUTE", "ELIMINUJ");
+        Add(l, "role.BountyHunter.target", "BOUNTY: {player}", "CEL: {player}");
+        Add(l, "role.BountyHunter.feedback.target", "New bounty: {player}.", "Nowy cel: {player}.");
+        Add(l, "role.BountyHunter.win", "BOUNTY HUNTER WINS", "ŁOWCA NAGRÓD WYGRYWA");
         AddRole(l, "Survivor", "Survivor", "Ocalały",
             "Survive until the match ends to join the winners.", "Przetrwaj do końca meczu, aby dołączyć do zwycięzców.");
         Add(l, "role.Survivor.win", "SURVIVOR ESCAPED", "OCALAŁY PRZETRWAŁ");
