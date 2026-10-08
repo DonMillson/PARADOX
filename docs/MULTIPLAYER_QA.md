@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.6.0-alpha.3)
+# PARADOX — multiplayer QA plan (0.6.0-alpha.4)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -9,6 +9,13 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 - Host settings are synchronized and all 40 roles are visible under their correct faction.
 - With all 40 roles enabled at 100%, run at least 10 consecutive matches with the same players. Confirm assignments vary (not fixed to roster/join order), no special role repeats within a faction until its eligible pool is exhausted, and each match assigns at most one Neutral role.
 - Set a test role to 0% and confirm it never spawns; set it back to 100% and verify it becomes eligible. Intermediate chance values are independent eligibility rolls, not guarantees of a specific player share.
+
+## PARADOX STATION solo lobby smoke test
+
+- Open a private lobby as the only player. Press F7 **before** starting a match; station floor, walls, rooms and consoles should be displayed. Walk with WASD and use F8 beside a yellow console.
+- Press F7 to exit. Confirm the player returns to the previous lobby position and the scene is removed.
+- Reenter, then have another player join. The solo preview must close safely; no custom station mode RPC should have been sent.
+- Solo preview is intentionally not a playable one-player Among Us game: roles, votes, task victory and standard game systems cannot be fully tested here.
 
 ## PARADOX STATION walkable scene alpha QA
 

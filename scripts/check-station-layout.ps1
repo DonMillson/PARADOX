@@ -73,4 +73,9 @@ if ($visited.Count -ne 12) { throw "Unreachable station rooms: $($visited.Count)
 if (-not $viewer.Contains('KeyCode.F6') -or -not $viewer.Contains('ParadoxStation.Corridors') -or -not $viewer.Contains('ParadoxStation.Vents')) {
     throw 'Station in-game blueprint viewer missing layout bindings.'
 }
-Write-Host 'PARADOX STATION: 12 reachable rooms, 16 unique corridors, 3 unique vents, 12 distinct tasks and F6 preview.'
+$runtime = Get-Content -Raw -Encoding UTF8 (Join-Path $root 'src/Paradox/Maps/ParadoxStationRuntime.cs')
+foreach ($required in @('IsSoloLobby()', 'enteringSoloLobby', '_soloLobbyPreview', 'RestoreHostPlayers()', 'ShipStatus.Instance == null')) {
+    if (-not $runtime.Contains($required)) { throw "Solo preview integration missing: $required" }
+}
+Write-Host 'PARADOX STATION: 12 reachable rooms, 16 corridors, 3 vents, 12 tasks, F6 blueprint and F7 solo-lobby mode.'
+

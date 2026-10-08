@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-**Current testing milestone: PARADOX 0.6.0-alpha.3.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.6.0-alpha.4.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -87,6 +87,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Host-side initial role assignment covers all 40 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
 - Lobby UI: role summary now shows six roles per page, cycles through faction pages with a click, and carries the PARADOX by DonMillson credit without a separate overlay obscuring Customize.
+- **Solo map test:** while alone as the host in a lobby, press **F7** to explore PARADOX STATION without starting a match. WASD moves, F8 advances yellow prototype consoles and F7 returns to the lobby. The solo preview is local-only (no station RPCs) and closes if another player joins. This is a geometry test, not a solo Among Us match.
 - PARADOX STATION experimental WALKABLE SCENE: during a match, host presses **F7** to create a procedural 12-room station with corridors, walls, labels, and 12 yellow console objectives (F8 near a console advances it; 3 steps each), plus F9 impostor-only host-validated travel between the three orange vent pairs. Host teleports players and can return them with F7; state/task progress is synchronized by host RPC. **F6** still shows the bilingual blueprint. This is an opt-in test arena within a vanilla ShipStatus, not a separately registered playable Among Us map; vanilla tasks, standard vent objects/animations and official map selection are not yet integrated. See [Station milestones](docs/PARADOX_STATION.md).
 - Match-end state reset for implemented MVP roles.
 - GitHub Actions checks all 40 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
@@ -105,7 +106,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 ## Testing build (Windows)
 
-1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.6.0-alpha.3` artifact.
+1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.6.0-alpha.4` artifact.
 2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
 3. All participating clients should use the same mod build and protocol (currently v40). Avoid mixing different PARADOX builds in one room.
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
