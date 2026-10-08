@@ -19,6 +19,9 @@ public static class ParadoxStationRuntime
     private static readonly Dictionary<byte, float> VentCooldownEndsAt = new();
 
     private static bool _soloLobbyPreview;
+    private static bool _cameraSaved;
+    private static Vector3 _previousCameraPosition;
+    private static Vector3 _previousCameraCenter;
 
     public static bool Active { get; private set; }
     public static int CompleteTasks => Steps.Count(x => x >= 3);
@@ -128,6 +131,9 @@ public static class ParadoxStationRuntime
                     player.NetTransform.SnapTo(ParadoxStationScene.Spawn + offset);
                     i++;
                 }
+
+                if (_soloLobbyPreview)
+                    MoveSoloLobbyCameraToStation();
             }
 
             Feedback(_soloLobbyPreview
@@ -142,6 +148,41 @@ public static class ParadoxStationRuntime
             Reset();
             Feedback("PARADOX STATION: prototype closed.");
         }
+    }
+
+    private static void MoveSoloLobbyCameraToStation()
+    {
+        var hud = HudManager.Instance;
+        var camera = hud != null ? hud.PlayerCam : null;
+        if (camera == null)
+            return;
+
+        var target = ParadoxStationScene.Spawn;
+        _previousCameraCenter = camera.centerPosition;
+        _previousCameraPosition = camera.transform.position;
+        _cameraSaved = true;
+
+        // Lobby cameras may be framed around the waiting room instead of
+        // following a player that has moved far into the test arena.
+        camera.centerPosition = new Vector3(
+            target.x, target.y, camera.centerPosition.z);
+        camera.transform.position = new Vector3(
+            target.x, target.y, _previousCameraPosition.z);
+    }
+
+    private static void RestoreSoloLobbyCamera()
+    {
+        if (!_cameraSaved)
+            return;
+
+        _cameraSaved = false;
+        var hud = HudManager.Instance;
+        var camera = hud != null ? hud.PlayerCam : null;
+        if (camera == null)
+            return;
+
+        camera.centerPosition = _previousCameraCenter;
+        camera.transform.position = _previousCameraPosition;
     }
 
     private static void RestoreHostPlayers()
@@ -396,6 +437,7 @@ public static class ParadoxStationRuntime
 
     public static void Reset()
     {
+        RestoreSoloLobbyCamera();
         Active = false;
         _soloLobbyPreview = false;
         ReturnPositions.Clear();
