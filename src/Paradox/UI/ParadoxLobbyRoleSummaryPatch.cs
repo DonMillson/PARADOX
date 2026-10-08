@@ -24,6 +24,8 @@ public static class ParadoxLobbyRoleSummaryPatch
     private static SpriteRenderer? _panel;
     private static SpriteRenderer? _accent;
     private static Sprite? _solidSprite;
+    // Fixed-height card: paginate instead of rendering 15 roles outside its border.
+    private const int RolesPerPage = 6;
     private static int _pageIndex;
     private static float _nextRefresh;
     private static bool _buildFailed;
@@ -282,8 +284,47 @@ public static class ParadoxLobbyRoleSummaryPatch
 
     private static void NextPage()
     {
-        _pageIndex = (_pageIndex + 1) % 3;
+        var total = PageCount(RoleFaction.Impostor) +
+                    PageCount(RoleFaction.Crewmate) +
+                    PageCount(RoleFaction.Neutral);
+        _pageIndex = (_pageIndex + 1) % total;
         Refresh();
+    }
+
+    private static int PageCount(RoleFaction faction)
+    {
+        var count = RoleRegistry.All.Count(definition =>
+            definition.Faction == faction &&
+            ParadoxRoleSettings.IsImplemented(definition.Id) &&
+            ParadoxRoleSettings.IsEnabled(definition.Id));
+        return Math.Max(1, (count + RolesPerPage - 1) / RolesPerPage);
+    }
+
+    private static RoleFaction CurrentPage(out int factionPage, out int pagesInFaction)
+    {
+        var impostorPages = PageCount(RoleFaction.Impostor);
+        var crewPages = PageCount(RoleFaction.Crewmate);
+        var neutralPages = PageCount(RoleFaction.Neutral);
+        var total = impostorPages + crewPages + neutralPages;
+        _pageIndex %= total;
+
+        if (_pageIndex < impostorPages)
+        {
+            factionPage = _pageIndex;
+            pagesInFaction = impostorPages;
+            return RoleFaction.Impostor;
+        }
+
+        if (_pageIndex < impostorPages + crewPages)
+        {
+            factionPage = _pageIndex - impostorPages;
+            pagesInFaction = crewPages;
+            return RoleFaction.Crewmate;
+        }
+
+        factionPage = _pageIndex - impostorPages - crewPages;
+        pagesInFaction = neutralPages;
+        return RoleFaction.Neutral;
     }
 
     private static void Refresh()
@@ -292,12 +333,7 @@ public static class ParadoxLobbyRoleSummaryPatch
             return;
 
         var polish = ParadoxPlugin.Localizer.CurrentLanguage == Localization.Language.Polish;
-        var faction = _pageIndex switch
-        {
-            0 => RoleFaction.Impostor,
-            1 => RoleFaction.Crewmate,
-            _ => RoleFaction.Neutral
-        };
+        var faction = CurrentPage(out var factionPage, out var pagesInFaction);
 
         var color = faction switch
         {
@@ -325,7 +361,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            $"<size=76%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{_pageIndex + 1}/3  ></color></size>"
+            "<size=59%><color=#59D4D2><b>PARADOX</b></color>  <color=#BDCBD4>BY DONMILLSON</color></size>",
+            $"<size=74%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{factionPage + 1}/{pagesInFaction}  ></color></size>"
         };
 
         var roles = RoleRegistry.All
@@ -343,7 +380,10 @@ public static class ParadoxLobbyRoleSummaryPatch
         }
         else
         {
-            foreach (var definition in roles)
+            // Six visible roles per page leave room for a title and category line.
+            foreach (var definition in roles
+                .Skip(factionPage * RolesPerPage)
+                .Take(RolesPerPage))
             {
                 var name = ParadoxPlugin.Localizer.Get(definition.NameKey);
                 var chance = ParadoxRoleSettings.GetSpawnChance(definition.Id);
@@ -354,8 +394,8 @@ public static class ParadoxLobbyRoleSummaryPatch
             }
         }
 
-        // The entire card is clickable; no permanent instruction line is needed.
-        // Keeping the content short makes the widget feel like HUD, not a debug overlay.
+        // Click the card to advance through faction pages. Never render a
+        // full 15-role faction into a short lobby widget.
 
         _roleSummary.text = string.Join("\n", lines);
     }
