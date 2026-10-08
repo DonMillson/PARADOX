@@ -17,8 +17,9 @@ public static class CollectorEndGamePatch
     {
         if(!WasCollectorWin)return;
         EndGameResult.CachedWinners=new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
+        var winnerId = NeutralWinnerResolver.Resolve(RoleId.Collector, CollectorRole.WinnerPlayerId);
         foreach(var p in PlayerControl.AllPlayerControls)
-            if(p!=null&&p.Data!=null&&p.PlayerId==CollectorRole.WinnerPlayerId)
+            if(p!=null&&p.Data!=null&&p.PlayerId==winnerId)
                 EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
     }
 }

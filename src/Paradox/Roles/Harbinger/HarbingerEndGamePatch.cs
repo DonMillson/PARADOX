@@ -26,11 +26,14 @@ public static class HarbingerEndGamePatch
         EndGameResult.CachedWinners =
             new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
 
+        var winnerId = NeutralWinnerResolver.Resolve(
+            RoleId.Harbinger, HarbingerRole.WinnerPlayerId);
+
         foreach (var player in PlayerControl.AllPlayerControls)
         {
             if (player == null ||
                 player.Data == null ||
-                player.PlayerId != HarbingerRole.WinnerPlayerId)
+                player.PlayerId != winnerId)
                 continue;
 
             EndGameResult.CachedWinners.Add(

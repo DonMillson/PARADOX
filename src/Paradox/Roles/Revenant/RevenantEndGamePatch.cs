@@ -29,11 +29,14 @@ public static class RevenantEndGamePatch
         EndGameResult.CachedWinners =
             new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
 
+        var winnerId = NeutralWinnerResolver.Resolve(
+            RoleId.Revenant, RevenantRole.WinnerPlayerId);
+
         foreach (var player in PlayerControl.AllPlayerControls)
         {
             if (player == null ||
                 player.Data == null ||
-                player.PlayerId != RevenantRole.WinnerPlayerId)
+                player.PlayerId != winnerId)
                 continue;
 
             EndGameResult.CachedWinners.Add(

@@ -29,11 +29,14 @@ public static class PhantomEndGamePatch
         EndGameResult.CachedWinners =
             new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
 
+        var winnerId = NeutralWinnerResolver.Resolve(
+            RoleId.Phantom, PhantomRole.WinnerPlayerId);
+
         foreach (var player in PlayerControl.AllPlayerControls)
         {
             if (player == null ||
                 player.Data == null ||
-                player.PlayerId != PhantomRole.WinnerPlayerId)
+                player.PlayerId != winnerId)
                 continue;
 
             EndGameResult.CachedWinners.Add(

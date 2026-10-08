@@ -29,11 +29,14 @@ public static class JesterXEndGamePatch
         EndGameResult.CachedWinners =
             new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
 
+        var winnerId = NeutralWinnerResolver.Resolve(
+            RoleId.JesterX, JesterXRole.WinnerPlayerId);
+
         foreach (var player in PlayerControl.AllPlayerControls)
         {
             if (player == null ||
                 player.Data == null ||
-                player.PlayerId != JesterXRole.WinnerPlayerId)
+                player.PlayerId != winnerId)
                 continue;
 
             EndGameResult.CachedWinners.Add(

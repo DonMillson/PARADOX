@@ -28,11 +28,14 @@ public static class ForgottenEndGamePatch
         EndGameResult.CachedWinners =
             new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
 
+        var winnerId = NeutralWinnerResolver.Resolve(
+            RoleId.Forgotten, ForgottenRole.WinnerPlayerId);
+
         foreach (var player in PlayerControl.AllPlayerControls)
         {
             if (player == null ||
                 player.Data == null ||
-                player.PlayerId != ForgottenRole.WinnerPlayerId)
+                player.PlayerId != winnerId)
                 continue;
 
             EndGameResult.CachedWinners.Add(
