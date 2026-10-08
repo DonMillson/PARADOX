@@ -1,11 +1,11 @@
 # PARADOX STATION — map implementation and remaining integration
 
-## 0.6.0-alpha.4: experimental walkable arena inside Among Us
+## 0.6.0-alpha.5: experimental walkable arena inside Among Us
 
 This is an **opt-in, runtime-generated test scene**, not a registered or selectable custom ShipStatus map. It reuses the currently loaded vanilla match to test navigation, collision and shared console objectives. Do not ship it as the finished PARADOX STATION.
 
 - **F6:** original bilingual 12-room blueprint (read-only).
-- **F7, solo host lobby:** opens a local-only walkable station without starting the game. Press F7 again to return to the normal waiting room. F8 near a yellow marker tests the console steps without networking. When another player joins, the solo preview closes automatically. **This is not a normal single-player Among Us match.**
+- **F7, solo host lobby:** opens a local-only walkable station without starting the game. Press F7 again to return to the normal waiting room. F8 near a yellow marker tests the console steps without networking. The lobby camera is moved to the station and restored when the preview closes. When another player joins, the solo preview closes automatically. **This is not a normal single-player Among Us match.**
 - **F7, host during a live match:** build the off-map 2D station and transfer active players to Arrival Bay. Press again to return to previous positions. Multiplayer participants need the exact same PARADOX version.
 - **F8:** while standing beside a yellow console, contribute one of three calibration actions for that room. The host checks actor health, range and timing, then sends progress to all clients.
 - **F9, impostors only:** stand near an orange station vent marker to teleport along one of the three planned vent links. The host validates impostor status, entry range and 3-second cooldown, then synchronizes the position with NetTransform.SnapTo. This is prototype vent travel, not a real Among Us vent system.
@@ -25,7 +25,7 @@ This is an **opt-in, runtime-generated test scene**, not a registered or selecta
 
 ## Manual test protocol
 
-1. Install matching PARADOX 0.6.0-alpha.4 builds with BepInEx and Reactor. Capture `BepInEx/LogOutput.log`.
+1. Install matching PARADOX 0.6.0-alpha.5 builds with BepInEx and Reactor. Capture `BepInEx/LogOutput.log`.
 2. **Solo smoke test (no second player needed):** create a private room and remain alone in the waiting room. Press F7, walk around with WASD, approach a yellow console and press F8. Press F7 to return to the waiting room. Confirm that the scene disappears and no other player is needed.
 3. **Multiplayer test:** host + two clients start a vanilla match. Host presses **F7** after players can move.
 4. Verify all players appear in Arrival Bay and camera follows. Check walking between the 12 connected rooms. Try to walk through every perimeter wall; there should be no holes or invisible barriers.

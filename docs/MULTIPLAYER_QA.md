@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.6.0-alpha.4)
+# PARADOX — multiplayer QA plan (0.6.0-alpha.5)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -12,7 +12,7 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 
 ## PARADOX STATION solo lobby smoke test
 
-- Open a private lobby as the only player. Press F7 **before** starting a match; station floor, walls, rooms and consoles should be displayed. Walk with WASD and use F8 beside a yellow console.
+- Open a private lobby as the only player. Press F7 **before** starting a match; station floor, walls, rooms and consoles should be displayed, with the camera centered on Arrival Bay. Walk with WASD and use F8 beside a yellow console.
 - Press F7 to exit. Confirm the player returns to the previous lobby position and the scene is removed.
 - Reenter, then have another player join. The solo preview must close safely; no custom station mode RPC should have been sent.
 - Solo preview is intentionally not a playable one-player Among Us game: roles, votes, task victory and standard game systems cannot be fully tested here.
