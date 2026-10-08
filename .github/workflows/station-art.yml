@@ -1,0 +1,32 @@
+name: Build PARADOX 12 Room Art
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "art/arrival-bay/**"
+      - "art/station-rooms/**"
+      - "tools/generate_station_room_art.py"
+      - "tools/export_station_art.py"
+      - "tools/requirements-art.txt"
+      - "unity/ParadoxStation/**"
+      - ".github/workflows/station-art.yml"
+  workflow_dispatch:
+
+jobs:
+  render-all-rooms:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install vector renderer and image tester
+        run: pip install -r tools/requirements-art.txt
+      - name: Render and verify ALL 12 station rooms
+        run: python tools/export_station_art.py --output output/StationRooms
+      - name: Upload all Unity sprites and overview
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-12-Rooms-Art-Pack
+          path: output/StationRooms/
