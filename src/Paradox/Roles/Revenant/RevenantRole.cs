@@ -1,4 +1,5 @@
 using Paradox.Networking;
+using Paradox.Core;
 using Paradox.Settings;
 using Reactor.Networking.Rpc;
 using UnityEngine;
@@ -172,6 +173,7 @@ public static class RevenantRole
             return;
 
         player.Revive();
+        DeathEvidenceRegistry.Forget(player.PlayerId);
 
         if (player.NetTransform != null)
             player.NetTransform.SnapTo(position);

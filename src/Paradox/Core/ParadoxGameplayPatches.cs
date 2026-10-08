@@ -70,10 +70,13 @@ public static class ParadoxGameplayPatches
         if (target.Data == null || !target.Data.IsDead)
             return;
 
-        DeathEvidenceRegistry.Record(
+        // Count an actual death only once. A revived Revenant clears its prior
+        // evidence before a later, distinct death can be recorded.
+        if (!DeathEvidenceRegistry.Record(
             target.PlayerId,
             __instance.PlayerId,
-            UnityEngine.Time.time);
+            UnityEngine.Time.time))
+            return;
 
         ParadoxGame.AddFrom(ParadoxMeterSource.Kill);
         ParadoxRevenantRole.OnKilled(target);
