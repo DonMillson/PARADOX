@@ -44,5 +44,6 @@ public enum ParadoxRpcId : uint
     RevenantReturn = 39,
     BlackmailerMark = 40,
     SilencerMark = 41,
-    PhantomPhase = 42
+    PhantomPhase = 42,
+    SyncParadoxGameplaySetting = 43
 }
