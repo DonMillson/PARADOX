@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Paradox.Localization;
+using Paradox.Core;
 using Paradox.Roles;
 using Paradox.Settings;
 using TMPro;
@@ -29,6 +30,7 @@ public static class ParadoxLobbySettingsPatch
     {
         Language,
         Role,
+        MeterGain,
         Info
     }
 
@@ -38,6 +40,7 @@ public static class ParadoxLobbySettingsPatch
         public string Title { get; init; } = string.Empty;
         public string Value { get; set; } = string.Empty;
         public RoleId Role { get; init; }
+        public ParadoxMeterSource MeterSource { get; init; }
         public RoleFaction Faction { get; init; }
         public bool Planned { get; init; }
     }
@@ -228,10 +231,8 @@ public static class ParadoxLobbySettingsPatch
             CreateRoleRow(menu, definition);
 
         CreateHeader(menu, "PARADOX METER");
-        CreateInfoRow(menu, "Kill", "+10");
-        CreateInfoRow(menu, "Sabotage", "+4");
-        CreateInfoRow(menu, "Role ability", "+2");
-        CreateInfoRow(menu, "Anomaly", "+5");
+        foreach (var source in Enum.GetValues<ParadoxMeterSource>())
+            CreateMeterRow(menu, source);
         CreateInfoRow(menu, "Events", "25 / 50 / 75 / 100%");
 
         CreateHeader(menu, "MECHANICS");
@@ -255,6 +256,16 @@ public static class ParadoxLobbySettingsPatch
             Role = definition.Id,
             Faction = definition.Faction,
             Planned = !ParadoxRoleSettings.IsImplemented(definition.Id)
+        });
+    }
+
+    private static void CreateMeterRow(GameSettingMenu menu, ParadoxMeterSource source)
+    {
+        CreateRow(menu, new RowDefinition
+        {
+            Kind = RowKind.MeterGain,
+            Title = ParadoxPlugin.Localizer.Get($"ui.menu.meterGain.{source}"),
+            MeterSource = source
         });
     }
 
@@ -351,9 +362,12 @@ public static class ParadoxLobbySettingsPatch
             var row = item.Row;
             var definition = item.Definition;
 
-            row.TitleText.text = definition.Kind == RowKind.Role
-                ? ParadoxPlugin.Localizer.Get($"role.{definition.Role}.name")
-                : definition.Title;
+            row.TitleText.text = definition.Kind switch
+            {
+                RowKind.Role => ParadoxPlugin.Localizer.Get($"role.{definition.Role}.name"),
+                RowKind.MeterGain => ParadoxPlugin.Localizer.Get($"ui.menu.meterGain.{definition.MeterSource}"),
+                _ => definition.Title
+            };
 
             switch (definition.Kind)
             {
@@ -382,6 +396,11 @@ public static class ParadoxLobbySettingsPatch
                         row.ValueText.text = $"{ParadoxRoleSettings.GetSpawnChance(definition.Role)}%";
                         SetArrowsVisible(row, true);
                     }
+                    break;
+
+                case RowKind.MeterGain:
+                    row.ValueText.text = $"+{ParadoxGameplaySettings.GetGain(definition.MeterSource)}";
+                    SetArrowsVisible(row, true);
                     break;
 
                 case RowKind.Info:
@@ -452,6 +471,10 @@ public static class ParadoxLobbySettingsPatch
     {
         switch (definition.Kind)
         {
+            case RowKind.MeterGain:
+                ParadoxPlugin.Instance.CycleMeterGain(definition.MeterSource, +1);
+                break;
+
             case RowKind.Language:
                 ParadoxPlugin.Instance.SetLanguage(
                     ParadoxPlugin.Localizer.CurrentLanguage == Language.Polish
@@ -493,6 +516,10 @@ public static class ParadoxLobbySettingsPatch
     {
         switch (definition.Kind)
         {
+            case RowKind.MeterGain:
+                ParadoxPlugin.Instance.CycleMeterGain(definition.MeterSource, -1);
+                break;
+
             case RowKind.Language:
                 CycleForward(definition);
                 break;

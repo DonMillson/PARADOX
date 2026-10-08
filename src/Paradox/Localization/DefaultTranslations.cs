@@ -28,6 +28,10 @@ public static class DefaultTranslations
         Add(l, "ui.menu.mechanicsSaved", "Language and role settings are saved between launches.", "Język i ustawienia ról są zapisywane między uruchomieniami.");
         Add(l, "ui.menu.mechanicsMore", "More role mechanics will appear here as they are completed.", "Kolejne mechaniki ról pojawią się tutaj wraz z ich ukończeniem.");
         Add(l, "ui.menu.meterTitle", "PARADOX METER", "MIERNIK PARADOKSU");
+        Add(l, "ui.menu.meterGain.Kill", "Kill gain", "Za zabójstwo");
+        Add(l, "ui.menu.meterGain.Sabotage", "Sabotage gain", "Za sabotaż");
+        Add(l, "ui.menu.meterGain.RoleAbility", "Role ability gain", "Za zdolność roli");
+        Add(l, "ui.menu.meterGain.Anomaly", "Anomaly gain", "Za Anomalię");
         Add(l, "ui.menu.kill", "Kill +10", "Zabójstwo +10");
         Add(l, "ui.menu.sabotage", "Sabotage +4", "Sabotaż +4");
         Add(l, "ui.menu.ability", "Role ability +2", "Umiejętność roli +2");

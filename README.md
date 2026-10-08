@@ -83,6 +83,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Forensic can examine a nearby body using authoritative death-time evidence and recent ability traces.
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
+- Host can now tune Paradox Meter gains for kills, sabotages, role abilities and Anomaly from the native lobby tab. Values persist and synchronize via host-verified RPC 43 (protocol v40).
 - Host-side initial role assignment now covers all 40 registered roles. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow.
 - English/Polish localization foundation.
 - PARADOX STATION map architecture/skeleton.
@@ -105,7 +106,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.5.0-beta.1` artifact.
 2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
-3. All participating clients should use the same mod build and protocol (currently v39). Avoid mixing different PARADOX builds in one room.
+3. All participating clients should use the same mod build and protocol (currently v40). Avoid mixing different PARADOX builds in one room.
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
 
 The DLL being compiled by GitHub Actions **does not** establish that gameplay works correctly in a live Among Us match. Map content, assets and end-to-end multiplayer testing remain separate milestones.
