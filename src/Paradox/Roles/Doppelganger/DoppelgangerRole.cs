@@ -78,11 +78,13 @@ public static class DoppelgangerRole
             !state.TargetPlayerId.HasValue)
             return;
 
-        // Death cancels the active disguise immediately. Otherwise restore the
-        // original outfit as soon as the configured disguise duration expires.
+        // Never carry a disguise through a meeting or into a later match.
         var disguiseExpired = !state.IsDisguised(Time.time);
-        var playerDied = player.Data == null || player.Data.IsDead;
-        if (!disguiseExpired && !playerDied)
+        var playerUnavailable = player.Data == null ||
+                                player.Data.IsDead ||
+                                player.Data.Disconnected;
+        var meetingStarted = MeetingHud.Instance != null;
+        if (!disguiseExpired && !playerUnavailable && !meetingStarted)
             return;
 
         DoppelgangerAppearance.Restore(player);
@@ -142,6 +144,18 @@ public static class DoppelgangerRole
 
     public static void Reset()
     {
+        // Only the host may issue outfit restoration RPCs. The local cache must
+        // still be cleared on every client between matches.
+        if (AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost)
+        {
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player != null && States.TryGetValue(player.PlayerId, out var state) &&
+                    state.TargetPlayerId.HasValue)
+                    DoppelgangerAppearance.Restore(player);
+            }
+        }
+
         States.Clear();
         DoppelgangerAppearance.Reset();
     }
