@@ -24,6 +24,9 @@ public static class ParadoxLobbyRoleSummaryPatch
     private static SpriteRenderer? _panel;
     private static SpriteRenderer? _accent;
     private static Sprite? _solidSprite;
+    private static TextMeshPro? _stationButtonLabel;
+    private static PassiveButton? _stationButton;
+    private static GameObject? _stationButtonBackground;
     // Fixed-height card: paginate instead of rendering 15 roles outside its border.
     private const int RolesPerPage = 6;
     private static int _pageIndex;
@@ -209,10 +212,81 @@ public static class ParadoxLobbyRoleSummaryPatch
         _roleSummaryButton.OnMouseOut.AddListener((Action)(() => SetHover(false)));
 
         ParadoxFontSupport.ApplyTo(_roleSummary);
+        CreateSoloStationButton(template, root.transform);
         Refresh();
 
         ParadoxPlugin.Instance.Log.LogInfo(
             "PARADOX compact lobby role card built.");
+    }
+
+    private static void CreateSoloStationButton(TextMeshPro template, Transform parent)
+    {
+        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+            return;
+
+        var background = new GameObject("PARADOX_SoloMapTestButtonBackground");
+        background.transform.SetParent(parent, false);
+        background.transform.localPosition = new Vector3(0.96f, -1.14f, 0.06f);
+        background.transform.localScale = new Vector3(1.92f, 0.34f, 1f);
+        var panel = background.AddComponent<SpriteRenderer>();
+        panel.sprite = GetSolidSprite();
+        panel.color = new Color32(28, 109, 122, 235);
+        panel.sortingOrder = 24;
+        _stationButtonBackground = background;
+
+        var go = Object.Instantiate(template.gameObject, parent);
+        go.name = "PARADOX_SoloMapTestButton";
+        foreach (var component in go.GetComponents<Component>())
+        {
+            if (component == null)
+                continue;
+            if (component.TryCast<TextTranslatorTMP>() != null ||
+                component.TryCast<AspectPosition>() != null ||
+                component.TryCast<PassiveButton>() != null ||
+                component.TryCast<Collider2D>() != null)
+                Object.DestroyImmediate(component);
+        }
+
+        for (var i = go.transform.childCount - 1; i >= 0; i--)
+            Object.Destroy(go.transform.GetChild(i).gameObject);
+
+        go.SetActive(true);
+        go.transform.localPosition = new Vector3(0.96f, -1.14f, -0.12f);
+        go.transform.localRotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
+
+        _stationButtonLabel = go.GetComponent<TextMeshPro>();
+        if (_stationButtonLabel == null)
+            throw new InvalidOperationException("PARADOX station test button font not available.");
+
+        _stationButtonLabel.enabled = true;
+        _stationButtonLabel.fontSize = 0.4f;
+        _stationButtonLabel.alignment = TextAlignmentOptions.Center;
+        _stationButtonLabel.color = Color.white;
+        _stationButtonLabel.richText = false;
+        _stationButtonLabel.enableWordWrapping = false;
+        _stationButtonLabel.overflowMode = TextOverflowModes.Overflow;
+        _stationButtonLabel.renderer.sortingOrder = 26;
+        _stationButtonLabel.rectTransform.sizeDelta = new Vector2(3.1f, 0.56f);
+
+        var collider = go.AddComponent<BoxCollider2D>();
+        collider.size = new Vector2(1.9f, 0.34f);
+        collider.isTrigger = true;
+
+        _stationButton = go.AddComponent<PassiveButton>();
+        _stationButton.ClickMask = collider;
+        _stationButton.Colliders = new Collider2D[] { collider };
+        _stationButton.OnClick = new();
+        _stationButton.OnMouseOver = new();
+        _stationButton.OnMouseOut = new();
+        _stationButton.enabled = true;
+        _stationButton.SetButtonEnableState(true);
+        _stationButton.OnClick.AddListener((Action)(() =>
+            Paradox.Maps.ParadoxStationRuntime.TryToggleHost()));
+
+        ParadoxFontSupport.ApplyTo(_stationButtonLabel);
+        ParadoxPlugin.Instance.Log.LogInfo(
+            "PARADOX: solo station test lobby button created.");
     }
 
     private static void CreateCardBackground(Transform parent)
@@ -398,6 +472,14 @@ public static class ParadoxLobbyRoleSummaryPatch
         // full 15-role faction into a short lobby widget.
 
         _roleSummary.text = string.Join("\n", lines);
+
+        if (_stationButtonLabel != null)
+        {
+            _stationButtonLabel.text = Paradox.Maps.ParadoxStationRuntime.Active
+                ? polish ? "WRÓĆ DO LOBBY" : "RETURN TO LOBBY"
+                : polish ? "TESTUJ MAPĘ  >" : "TEST STATION  >";
+            ParadoxFontSupport.ApplyTo(_stationButtonLabel);
+        }
     }
 
     private static void DestroySummary()
@@ -407,6 +489,9 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         _root = null;
         _roleSummary = null;
+        _stationButtonLabel = null;
+        _stationButton = null;
+        _stationButtonBackground = null;
         _roleSummaryButton = null;
         _roleSummaryCollider = null;
         _anchor = null;

@@ -64,10 +64,17 @@ public static class ParadoxStationRuntime
         // No match can normally start with one player. In that case allow a
         // LOCAL-ONLY station walk-through directly from a one-player lobby.
         // Multiplayer mode still requires an active vanilla ShipStatus.
-        var enteringSoloLobby = !Active && ShipStatus.Instance == null;
+        var inLobby = UnityEngine.Object.FindObjectOfType<GameStartManager>() != null;
+        var enteringSoloLobby = !Active && inLobby;
         if (enteringSoloLobby && !IsSoloLobby())
         {
             Feedback("PARADOX STATION: solo F7 requires a lobby with only the host.");
+            return;
+        }
+
+        if (!Active && !inLobby && ShipStatus.Instance == null)
+        {
+            Feedback("PARADOX STATION: open a lobby or start a match first.");
             return;
         }
 
@@ -201,7 +208,6 @@ public static class ParadoxStationRuntime
         var client = AmongUsClient.Instance;
         var local = PlayerControl.LocalPlayer;
         if (client == null || !client.AmHost || local == null ||
-            ShipStatus.Instance != null ||
             UnityEngine.Object.FindObjectOfType<GameStartManager>() == null)
             return false;
 
