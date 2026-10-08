@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Paradox.Core;
 using Paradox.Settings;
+using Paradox.Roles.Corruptor;
 using UnityEngine;
 
 namespace Paradox.Roles.Stabilizer;
@@ -39,6 +40,7 @@ public static class StabilizerHudPatch
 
         var canUse = local.CanMove &&
                      !ParadoxEventRuntime.RoleAbilitiesBlocked &&
+                     !CorruptorRole.IsCorrupted(local.PlayerId) &&
                      ParadoxGame.State.Meter > 0f &&
                      remaining <= 0f;
 

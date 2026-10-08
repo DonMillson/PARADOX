@@ -2,6 +2,7 @@ using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Roles.Observer;
 using Paradox.Settings;
+using Paradox.Roles.Corruptor;
 using Reactor.Networking.Rpc;
 using UnityEngine;
 
@@ -34,7 +35,9 @@ public static class AnomalyRole
 
         if (!IsAnomaly(source.PlayerId) ||
             source.Data == null || source.Data.IsDead || source.Data.Disconnected ||
-            ParadoxEventRuntime.RoleAbilitiesBlocked)
+            ParadoxEventRuntime.RoleAbilitiesBlocked ||
+            CorruptorRole.IsCorrupted(source.PlayerId) ||
+            MeetingHud.Instance != null)
             return false;
 
         var now = Time.time;

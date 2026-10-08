@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Paradox.Core;
 using Paradox.Settings;
+using Paradox.Roles.Corruptor;
 using UnityEngine;
 
 namespace Paradox.Roles.Anomaly;
@@ -41,6 +42,7 @@ public static class AnomalyHudPatch
 
         var canUse = local.CanMove &&
                      !ParadoxEventRuntime.RoleAbilitiesBlocked &&
+                     !CorruptorRole.IsCorrupted(local.PlayerId) &&
                      ParadoxGame.State.Meter < 100f &&
                      remaining <= 0f;
 

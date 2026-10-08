@@ -7,7 +7,13 @@ public static class RoleAbilityService
 {
     public static bool Use(PlayerControl source, RoleId role)
     {
-        if (source == null || !AmongUsClient.Instance.AmHost)
+        if (source == null ||
+            AmongUsClient.Instance == null ||
+            !AmongUsClient.Instance.AmHost ||
+            source.Data == null ||
+            source.Data.IsDead ||
+            source.Data.Disconnected ||
+            MeetingHud.Instance != null)
             return false;
 
         if (ParadoxEventRuntime.RoleAbilitiesBlocked ||

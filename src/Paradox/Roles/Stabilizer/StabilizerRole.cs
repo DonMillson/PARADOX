@@ -2,6 +2,7 @@ using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Roles.Observer;
 using Paradox.Settings;
+using Paradox.Roles.Corruptor;
 using Reactor.Networking.Rpc;
 using UnityEngine;
 
@@ -34,6 +35,8 @@ public static class StabilizerRole
             source.Data.IsDead ||
             source.Data.Disconnected ||
             ParadoxEventRuntime.RoleAbilitiesBlocked ||
+            CorruptorRole.IsCorrupted(source.PlayerId) ||
+            MeetingHud.Instance != null ||
             ParadoxGame.State.Meter <= 0f)
             return false;
 
