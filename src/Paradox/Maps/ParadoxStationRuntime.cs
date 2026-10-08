@@ -21,7 +21,7 @@ public static class ParadoxStationRuntime
     private static bool _soloLobbyPreview;
     private static bool _cameraSaved;
     private static Vector3 _previousCameraPosition;
-    private static Vector3 _previousCameraCenter;
+    private static Vector2 _previousCameraCenter;
 
     public static bool Active { get; private set; }
     public static int CompleteTasks => Steps.Count(x => x >= 3);
@@ -164,8 +164,7 @@ public static class ParadoxStationRuntime
 
         // Lobby cameras may be framed around the waiting room instead of
         // following a player that has moved far into the test arena.
-        camera.centerPosition = new Vector3(
-            target.x, target.y, camera.centerPosition.z);
+        camera.centerPosition = new Vector2(target.x, target.y);
         camera.transform.position = new Vector3(
             target.x, target.y, _previousCameraPosition.z);
     }
