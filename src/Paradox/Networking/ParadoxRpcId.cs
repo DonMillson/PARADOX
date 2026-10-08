@@ -48,5 +48,6 @@ public enum ParadoxRpcId : uint
     SyncParadoxGameplaySetting = 43,
     StationMode = 44,
     StationTaskRequest = 45,
-    StationTaskState = 46
+    StationTaskState = 46,
+    StationVentRequest = 47
 }

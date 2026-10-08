@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.6.0-alpha.1)
+# PARADOX — multiplayer QA plan (0.6.0-alpha.2)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -16,6 +16,7 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 - Attempt to use F7 in lobby, or with a PARADOX-incompatible client: station must not start.
 - Move through all 12 rooms; walls must block movement and corridors must be traversable on host and clients. Verify no physics-layer or camera errors.
 - Stand at a yellow console and press F8 three times with short intervals. Verify host validates range and 12-room shared console completion state stays consistent.
+- Test the 3 orange vent pairs using F9 as an Impostor. Confirm crew cannot warp, host checks proximity and enforces the 3-second cooldown, and player positions synchronize after teleport.
 - Trigger an emergency meeting during station mode. Host should close the experimental scene and return players; vanilla meeting must work.
 - Disconnect, restart or finish the match; the scene must not leave colliders behind. Validate both with and without the F6 blueprint overlay open.
 - Prototype does NOT replace ShipStatus; vanilla tasks, impostor vent travel, and selectable map integration remain unimplemented.

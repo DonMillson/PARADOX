@@ -28,6 +28,12 @@ public static class ParadoxStationScene
     public static Vector2 RoomPosition(ParadoxStation.Room room) =>
         Origin + new Vector2(room.GridX * 10f * CellSize, room.GridY * 10f * CellSize);
 
+    public static Vector2 VentPosition(string roomId)
+    {
+        var room = ParadoxStation.Rooms.First(r => r.Id == roomId);
+        return RoomPosition(room) + new Vector2(-1.8f, 1.3f);
+    }
+
     public static Vector2 ConsolePosition(int roomIndex)
     {
         if (roomIndex < 0 || roomIndex >= ParadoxStation.Rooms.Count)
@@ -56,6 +62,7 @@ public static class ParadoxStationScene
             CreateFloor(root.transform, walkable);
             CreateBoundaryWalls(root.transform, walkable);
             CreateRoomLabels(root.transform);
+            CreateVentMarkers(root.transform);
             ParadoxPlugin.Instance.Log.LogInfo(
                 $"PARADOX STATION scene built ({walkable.Count} floor cells).");
         }
@@ -249,6 +256,29 @@ public static class ParadoxStationScene
             icon.sprite = WhiteSprite();
             icon.color = new Color32(240, 192, 73, 255);
             icon.sortingOrder = 10;
+        }
+    }
+
+    private static void CreateVentMarkers(Transform parent)
+    {
+        var distinct = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var link in ParadoxStation.Vents)
+        {
+            distinct.Add(link.FromRoomId);
+            distinct.Add(link.ToRoomId);
+        }
+
+        foreach (var roomId in distinct)
+        {
+            var pos = VentPosition(roomId) - Origin;
+            var go = new GameObject("StationVent_" + roomId);
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = new Vector3(pos.x, pos.y, 0f);
+            go.transform.localScale = new Vector3(0.75f, 0.52f, 1f);
+            var sprite = go.AddComponent<SpriteRenderer>();
+            sprite.sprite = WhiteSprite();
+            sprite.color = new Color32(245, 121, 51, 255);
+            sprite.sortingOrder = 11;
         }
     }
 

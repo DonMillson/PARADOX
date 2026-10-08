@@ -16,6 +16,7 @@ public static class ParadoxStationRuntime
     private static readonly Dictionary<byte, Vector2> ReturnPositions = new();
     private static readonly byte[] Steps = new byte[12];
     private static readonly float[] LastInteractedAt = new float[12];
+    private static readonly Dictionary<byte, float> VentCooldownEndsAt = new();
 
     public static bool Active { get; private set; }
     public static int CompleteTasks => Steps.Count(x => x >= 3);
@@ -34,6 +35,9 @@ public static class ParadoxStationRuntime
 
         if (Active && Input.GetKeyDown(KeyCode.F8) && MeetingHud.Instance == null)
             TryInteract();
+
+        if (Active && Input.GetKeyDown(KeyCode.F9) && MeetingHud.Instance == null)
+            TryVent();
     }
 
     public static void TryToggleHost()
@@ -84,6 +88,7 @@ public static class ParadoxStationRuntime
             Active = true;
             Array.Clear(Steps, 0, Steps.Length);
             Array.Clear(LastInteractedAt, 0, LastInteractedAt.Length);
+            VentCooldownEndsAt.Clear();
 
             if (isHost)
             {
@@ -102,7 +107,7 @@ public static class ParadoxStationRuntime
                 }
             }
 
-            Feedback("PARADOX STATION: walkable prototype. F8: consoles; host F7: exit.");
+            Feedback("PARADOX STATION: F8 = console; impostor F9 = vent; host F7 = exit.");
         }
         else
         {
@@ -140,6 +145,93 @@ public static class ParadoxStationRuntime
         }
 
         return true;
+    }
+
+    private static void TryVent()
+    {
+        var player = PlayerControl.LocalPlayer;
+        if (player == null || player.Data == null || player.Data.IsDead ||
+            player.Data.Disconnected || player.Data.Role == null ||
+            !player.Data.Role.IsImpostor || !player.CanMove)
+            return;
+
+        var best = 1.5f;
+        var selected = -1;
+        var fromFirst = true;
+        var position = player.GetTruePosition();
+
+        for (var i = 0; i < ParadoxStation.Vents.Count; i++)
+        {
+            var link = ParadoxStation.Vents[i];
+            var a = Vector2.Distance(position,
+                ParadoxStationScene.VentPosition(link.FromRoomId));
+            var b = Vector2.Distance(position,
+                ParadoxStationScene.VentPosition(link.ToRoomId));
+            if (a < best)
+            {
+                best = a;
+                selected = i;
+                fromFirst = true;
+            }
+            if (b < best)
+            {
+                best = b;
+                selected = i;
+                fromFirst = false;
+            }
+        }
+
+        if (selected < 0)
+        {
+            Feedback("PARADOX STATION: move near an orange vent marker.");
+            return;
+        }
+
+        if (AmongUsClient.Instance.AmHost)
+        {
+            TryUseVentHost(player, selected, fromFirst);
+        }
+        else
+        {
+            Rpc<StationVentRequestRpc>.Instance.Send(
+                player,
+                new StationVentRequestRpc.Data((byte)selected, fromFirst),
+                immediately: true);
+        }
+    }
+
+    public static void TryUseVentHost(PlayerControl player, int linkIndex, bool fromFirst)
+    {
+        if (!Active || AmongUsClient.Instance == null ||
+            !AmongUsClient.Instance.AmHost ||
+            player == null || player.Data == null ||
+            player.Data.IsDead || player.Data.Disconnected ||
+            player.Data.Role == null || !player.Data.Role.IsImpostor ||
+            MeetingHud.Instance != null || !player.CanMove ||
+            player.NetTransform == null ||
+            linkIndex < 0 || linkIndex >= ParadoxStation.Vents.Count)
+            return;
+
+        var now = Time.time;
+        if (VentCooldownEndsAt.TryGetValue(player.PlayerId, out var readyAt) &&
+            now < readyAt)
+            return;
+
+        var link = ParadoxStation.Vents[linkIndex];
+        var sourceId = fromFirst ? link.FromRoomId : link.ToRoomId;
+        var destinationId = fromFirst ? link.ToRoomId : link.FromRoomId;
+
+        if (Vector2.Distance(player.GetTruePosition(),
+                ParadoxStationScene.VentPosition(sourceId)) > 1.55f)
+            return;
+
+        VentCooldownEndsAt[player.PlayerId] = now + 3f;
+        player.NetTransform.SnapTo(
+            ParadoxStationScene.VentPosition(destinationId) +
+            new Vector2(0.25f, -0.15f));
+
+        ParadoxPlugin.Instance.Log.LogInfo(
+            $"PARADOX STATION vent used by {player.PlayerId}: {sourceId} -> {destinationId}.");
     }
 
     private static void TryInteract()
@@ -260,6 +352,7 @@ public static class ParadoxStationRuntime
         ReturnPositions.Clear();
         Array.Clear(Steps, 0, Steps.Length);
         Array.Clear(LastInteractedAt, 0, LastInteractedAt.Length);
+        VentCooldownEndsAt.Clear();
         ParadoxStationScene.Reset();
     }
 
