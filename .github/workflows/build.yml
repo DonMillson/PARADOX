@@ -26,6 +26,10 @@ jobs:
           New-Item -ItemType Directory -Force -Path lib | Out-Null
           Invoke-WebRequest -Uri "https://github.com/NuclearPowered/Reactor/releases/download/2.5.1/Reactor.dll" -OutFile "lib/Reactor.dll"
 
+      - name: Verify role roster and RPC identifiers
+        shell: pwsh
+        run: ./scripts/check-role-manifest.ps1
+
       - name: Build
         run: dotnet build src/Paradox/Paradox.csproj -c Release
 

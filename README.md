@@ -87,7 +87,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - English/Polish localization foundation.
 - PARADOX STATION map architecture/skeleton.
 - Match-end state reset for implemented MVP roles.
-- GitHub Actions Release build producing Paradox.dll.
+- GitHub Actions first verifies all 40 registered/implemented/localized roles, faction pools and unique RPC identifiers; the Release build then produces Paradox.dll.
 
 ## Next milestones
 

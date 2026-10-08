@@ -123,7 +123,12 @@ public static class DefaultTranslations
         Add(l, "role.Undertaker.drop", "DROP BODY", "ODŁÓŻ CIAŁO");
         Add(l, "role.Undertaker.feedback.pickup", "Body secured.", "Ciało podniesione.");
         Add(l, "role.Undertaker.feedback.drop", "Body dropped.", "Ciało odłożone.");
-        AddRoleName(l, "Silencer", "Silencer", "Wyciszacz");
+        AddRole(l, "Silencer", "Silencer", "Wyciszacz",
+            "Mark a nearby player to reject their vote in the next meeting.", "Oznacz pobliskiego gracza, aby jego głos nie liczył się na następnym spotkaniu.");
+        Add(l, "role.Silencer.ability", "SILENCE", "WYCISZ");
+        Add(l, "role.Silencer.feedback.source", "Target silenced for the next meeting.", "Cel wyciszony na następne spotkanie.");
+        Add(l, "role.Silencer.feedback.target", "You have been silenced. Your vote will not count in this meeting.", "Zostałeś wyciszony. Twój głos nie liczy się w tym spotkaniu.");
+        Add(l, "role.Silencer.blocked", "SILENCED — vote rejected.", "WYCISZONY — głos odrzucony.");
         AddRole(l, "Riftmaker", "Riftmaker", "Twórca Szczelin",
             "Place a personal rift anchor, then warp back to it on the next use.", "Ustaw osobistą kotwicę szczeliny, a przy kolejnym użyciu wróć do niej.");
         Add(l, "role.Riftmaker.anchor", "ANCHOR", "KOTWICA");
