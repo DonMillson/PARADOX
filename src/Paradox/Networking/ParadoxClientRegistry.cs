@@ -18,8 +18,12 @@ public sealed class ParadoxClientRegistry
         if (!_clients.TryGetValue(clientId, out var remote))
             return ClientCompatibility.MissingParadox;
 
-        return ParadoxHandshake.Local.IsCompatibleWith(remote)
+        var local = ParadoxHandshake.Local;
+        if (local.ProtocolVersion != remote.ProtocolVersion)
+            return ClientCompatibility.ProtocolMismatch;
+
+        return local.IsCompatibleWith(remote)
             ? ClientCompatibility.Compatible
-            : ClientCompatibility.ProtocolMismatch;
+            : ClientCompatibility.BuildMismatch;
     }
 }

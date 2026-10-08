@@ -4,5 +4,6 @@ public enum ClientCompatibility
 {
     Compatible,
     MissingParadox,
-    ProtocolMismatch
+    ProtocolMismatch,
+    BuildMismatch
 }

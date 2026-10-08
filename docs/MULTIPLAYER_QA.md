@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.5.0-beta.2)
+# PARADOX — multiplayer QA plan (0.5.0-beta.3)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -13,6 +13,7 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 ## Match/lobby lifecycle
 
 - Open/close settings and switch Polish/English; confirm role names, abilities and notifications translate.
+- Activate Doppelgänger and Illusionist disguises, then call an emergency meeting before their timers expire. Confirm immediate restoration on all clients and again at match end; the affected players must not retain copied outfits into the next round.
 - Start consecutive matches without restarting the game; confirm cooldowns, role assignments, evidence, traces, overlays and winners reset cleanly.
 - Disconnect/rejoin a client during lobby and while in-game; validate graceful recovery or explicit incompatibility handling.
 - Test meetings, skips, tie votes, body reports, sudden deaths and game endings in succession.

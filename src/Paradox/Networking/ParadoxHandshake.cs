@@ -10,5 +10,6 @@ public sealed record ParadoxHandshake(
 
     public bool IsCompatibleWith(ParadoxHandshake other) =>
         string.Equals(ModName, other.ModName, StringComparison.Ordinal) &&
-        ProtocolVersion == other.ProtocolVersion;
+        ProtocolVersion == other.ProtocolVersion &&
+        string.Equals(ModVersion, other.ModVersion, StringComparison.Ordinal);
 }
