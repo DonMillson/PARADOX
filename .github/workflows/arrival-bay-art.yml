@@ -1,0 +1,30 @@
+name: Build PARADOX Arrival Bay Art
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "art/arrival-bay/**"
+      - "tools/export_arrival_bay.py"
+      - "tools/requirements-art.txt"
+      - "unity/ParadoxStation/**"
+      - ".github/workflows/arrival-bay-art.yml"
+  workflow_dispatch:
+
+jobs:
+  render-art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install SVG renderer
+        run: pip install -r tools/requirements-art.txt
+      - name: Export original art to Unity sprites
+        run: python tools/export_arrival_bay.py --output output/ArrivalBay
+      - name: Upload Unity-ready PNG layers and preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-ArrivalBay-Art-Preview
+          path: output/ArrivalBay/*.png

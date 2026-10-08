@@ -112,3 +112,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
 
 The DLL being compiled by GitHub Actions **does not** establish that gameplay works correctly in a live Among Us match. Map content, assets and end-to-end multiplayer testing remain separate milestones.
+
+## Arrival Bay art production (separate from DLL)
+
+The original **Arrival Bay** room now has four layered SVG illustration sources in [art/arrival-bay](art/arrival-bay/README.md), a reproducible PNG export tool and a Unity Editor prefab/scene builder under [unity/ParadoxStation](unity/ParadoxStation/README.md). A separate **Build PARADOX Arrival Bay Art** GitHub Action exports sprites and a full-size preview. **This is a visual-authoring milestone, not a playable selectable map or an in-game asset-bundle implementation.**

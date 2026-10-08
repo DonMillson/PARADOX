@@ -42,3 +42,7 @@ This is an **opt-in, runtime-generated test scene**, not a registered or selecta
 4. Add host-validated ventilation, room doors, saboteur actions and station sabotage scenarios.
 5. Add station-specific minimap, admin panel/map camera, dead body / meeting / respawn and impostor systems.
 6. Multiplayer stability testing and graphics pass; only then mark PARADOX STATION playable/release-ready.
+
+## Original Arrival Bay art milestone
+
+The first room has separate authored 1920×1080 layers for floor, walls/airlock, props and emissive lighting in `art/arrival-bay/`. `tools/export_arrival_bay.py` rasterizes them into Unity-ready PNGs. `unity/ParadoxStation/Assets/Editor/ArrivalBayBuilder.cs` produces an editable art prefab with first-pass 2D boundary collision and a standalone art-preview scene. The `Build PARADOX Arrival Bay Art` workflow tests the exporter and publishes its rendered output. This remains **out of the current mod DLL and disconnected from real Among Us ShipStatus** until an asset-bundle/Unity-version compatible integration is implemented and runtime tested.
