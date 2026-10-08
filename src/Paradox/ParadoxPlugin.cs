@@ -75,6 +75,9 @@ public partial class ParadoxPlugin : BasePlugin
 
         if (_roleChance.TryGetValue(role, out var entry))
             entry.Value = ParadoxRoleSettings.GetSpawnChance(role);
+
+        // Cycling the host's chance in the UI must update clients just like SetRoleSpawnChance.
+        ParadoxNetwork.BroadcastRoleSetting(role);
     }
 
     private void LoadPreferences()
