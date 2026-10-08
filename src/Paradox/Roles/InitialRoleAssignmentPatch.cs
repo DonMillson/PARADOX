@@ -33,6 +33,11 @@ public static class InitialRoleAssignmentPatch
                 crew.Add(player);
         }
 
+        // Shuffle both rosters so the same lobby join order cannot determine who
+        // receives each enabled special role across consecutive matches.
+        Shuffle(impostors);
+        Shuffle(crew);
+
         for (var i = 0; i < impostors.Count && enabledImpostorRoles.Count > 0; i++)
         {
             var role = enabledImpostorRoles[i % enabledImpostorRoles.Count];
@@ -75,7 +80,22 @@ public static class InitialRoleAssignmentPatch
                 roles.Add(role);
         }
 
+        // A successful spawn roll only makes a role eligible. Randomize the
+        // eligible pool before assigning roles to players; otherwise the first
+        // few entries in InitialRolePool monopolize small matches.
+        Shuffle(roles);
         return roles;
+    }
+
+    private static void Shuffle<T>(IList<T> items)
+    {
+        // Fisher-Yates: unbiased for UnityEngine.Random.Range with exclusive
+        // integer upper bounds. No role is repeated until the pool is exhausted.
+        for (var i = items.Count - 1; i > 0; i--)
+        {
+            var j = UnityEngine.Random.Range(0, i + 1);
+            (items[i], items[j]) = (items[j], items[i]);
+        }
     }
 
     private static bool PassesSpawnRoll(int chancePercent)
