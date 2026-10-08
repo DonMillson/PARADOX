@@ -87,6 +87,7 @@ public static class ParadoxGameplayPatches
     public static void EndGameStartPostfix()
     {
         Paradox.Maps.ParadoxStationMapHudPatch.Close();
+        Paradox.Maps.ParadoxStationRuntime.Reset();
         ParadoxGame.Reset();
         DeathEvidenceRegistry.Reset();
         RoleAssignment.Reset();

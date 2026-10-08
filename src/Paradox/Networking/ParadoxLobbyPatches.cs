@@ -15,6 +15,10 @@ public static class ParadoxLobbyPatches
         if (__instance.PlayerId != PlayerControl.LocalPlayer.PlayerId)
             return;
 
+        if (Paradox.Maps.ParadoxStationRuntime.Active &&
+            AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost)
+            Paradox.Maps.ParadoxStationRuntime.TryForceExitHost();
+
         ParadoxPlugin.Clients.Register(
             AmongUsClient.Instance.ClientId,
             ParadoxHandshake.Local);
@@ -30,5 +34,6 @@ public static class ParadoxLobbyPatches
     {
         ParadoxPlugin.Clients.Clear();
         Paradox.Maps.ParadoxStationMapHudPatch.Close();
+        Paradox.Maps.ParadoxStationRuntime.Reset();
     }
 }

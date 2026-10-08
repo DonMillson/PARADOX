@@ -40,5 +40,5 @@ jobs:
       - name: Upload Paradox DLL
         uses: actions/upload-artifact@v4
         with:
-          name: PARADOX-v0.5.0-beta.4
+          name: PARADOX-v0.6.0-alpha.1
           path: src/Paradox/bin/Release/net6.0/Paradox.dll

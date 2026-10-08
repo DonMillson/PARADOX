@@ -45,5 +45,8 @@ public enum ParadoxRpcId : uint
     BlackmailerMark = 40,
     SilencerMark = 41,
     PhantomPhase = 42,
-    SyncParadoxGameplaySetting = 43
+    SyncParadoxGameplaySetting = 43,
+    StationMode = 44,
+    StationTaskRequest = 45,
+    StationTaskState = 46
 }

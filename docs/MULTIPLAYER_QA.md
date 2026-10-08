@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.5.0-beta.4)
+# PARADOX — multiplayer QA plan (0.6.0-alpha.1)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -9,6 +9,16 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 - Host settings are synchronized and all 40 roles are visible under their correct faction.
 - With all 40 roles enabled at 100%, run at least 10 consecutive matches with the same players. Confirm assignments vary (not fixed to roster/join order), no special role repeats within a faction until its eligible pool is exhausted, and each match assigns at most one Neutral role.
 - Set a test role to 0% and confirm it never spawns; set it back to 100% and verify it becomes eligible. Intermediate chance values are independent eligibility rolls, not guarantees of a specific player share.
+
+## PARADOX STATION walkable scene alpha QA
+
+- With host + two same-build PC clients start a match on a vanilla map, press F7 as host. Verify all clients show the procedural room/corridor floor and barriers and all players are placed at Arrival Bay. F7 again restores each player to their prior position.
+- Attempt to use F7 in lobby, or with a PARADOX-incompatible client: station must not start.
+- Move through all 12 rooms; walls must block movement and corridors must be traversable on host and clients. Verify no physics-layer or camera errors.
+- Stand at a yellow console and press F8 three times with short intervals. Verify host validates range and 12-room shared console completion state stays consistent.
+- Trigger an emergency meeting during station mode. Host should close the experimental scene and return players; vanilla meeting must work.
+- Disconnect, restart or finish the match; the scene must not leave colliders behind. Validate both with and without the F6 blueprint overlay open.
+- Prototype does NOT replace ShipStatus; vanilla tasks, impostor vent travel, and selectable map integration remain unimplemented.
 
 ## PARADOX STATION blueprint QA (not a playable map)
 
