@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Paradox</AssemblyName>
     <RootNamespace>Paradox</RootNamespace>
-    <Version>0.6.0-alpha.2</Version>
+    <Version>0.6.0-alpha.3</Version>
     <Description>PARADOX - an original Among Us gameplay mod.</Description>
   </PropertyGroup>
 

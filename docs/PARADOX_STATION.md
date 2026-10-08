@@ -1,6 +1,6 @@
 # PARADOX STATION — map implementation and remaining integration
 
-## 0.6.0-alpha.2: experimental walkable arena inside Among Us
+## 0.6.0-alpha.3: experimental walkable arena inside Among Us
 
 This is an **opt-in, runtime-generated test scene**, not a registered or selectable custom ShipStatus map. It reuses the currently loaded vanilla match to test navigation, collision and shared console objectives. Do not ship it as the finished PARADOX STATION.
 
@@ -24,7 +24,7 @@ This is an **opt-in, runtime-generated test scene**, not a registered or selecta
 
 ## Manual test protocol
 
-1. Install matching PARADOX 0.6.0-alpha.2 builds with BepInEx and Reactor. Capture `BepInEx/LogOutput.log`.
+1. Install matching PARADOX 0.6.0-alpha.3 builds with BepInEx and Reactor. Capture `BepInEx/LogOutput.log`.
 2. Host + two clients: start a vanilla match. Host presses **F7** after players can move.
 3. Verify all players appear in Arrival Bay and camera follows. Check walking between the 12 connected rooms. Try to walk through every perimeter wall; there should be no holes or invisible barriers.
 4. As an Impostor press **F9** near any orange vent; verify arrival at its paired marker, cooldown and refusal for a crew player. Stand next to a yellow console and press **F8** three times with at least 0.75 s between presses. Check that all clients see identical progress messages. Repeat for all 12 consoles.

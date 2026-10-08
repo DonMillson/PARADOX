@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.6.0-alpha.2)
+# PARADOX — multiplayer QA plan (0.6.0-alpha.3)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -26,6 +26,12 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 - Press F6 in the lobby and in a running match, verify all 12 translated rooms, green spawn, 16 corridor links, 3 dashed vent links and 12 planned-task markers.
 - Open a meeting with the viewer visible and verify it is hidden; close the meeting and use F6 to close the viewer.
 - Disconnect or end a match; ensure no leftover blueprint or Unity/TMP errors. The station is not registered as an Among Us selectable level.
+
+## Lobby role card regression
+
+- With all roles enabled, confirm every Impostor, Crewmate and Neutral is reachable by clicking through the paginated summary (six roles per page, one compact header and credit).
+- Confirm no role names extend beyond the cyan role card boundary, and no PARADOX credit overlaps the native Customize button at 16:9 and 16:10 resolutions.
+- Toggle role enabled settings; confirm pagination adapts without empty or duplicate role pages.
 
 ## Match/lobby lifecycle
 
