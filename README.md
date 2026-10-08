@@ -92,6 +92,10 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Match-end state reset for implemented MVP roles.
 - GitHub Actions checks all 40 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
 
+## Twelve-room station artwork
+
+PARADOX STATION now has **12 distinct illustrated room concepts**, each exported to four 1920×1080 sprite layers. The first room, Arrival Bay, remains manually authored; the other eleven have room-specific machinery and props generated from editable vector sources. `python tools/export_station_art.py` produces 48 PNG layers, twelve previews and one contact sheet. The Unity editor command **PARADOX → Build All 12 Room Art Previews** constructs twelve inspectable art prefabs and a gallery. See [the artwork inventory](art/station-rooms/README.md). **These are art-production assets, not an Among Us-compatible ShipStatus or playable map.**
+
 ## Next milestones
 
 1. Runtime-test Doppelgänger ability UX, host validation, synchronized disguise timer/cooldown and restoration.
