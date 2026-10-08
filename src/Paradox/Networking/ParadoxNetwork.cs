@@ -1,4 +1,5 @@
 using Paradox.Roles;
+using Paradox.Core;
 using Paradox.Settings;
 using Reactor.Networking.Rpc;
 
@@ -33,6 +34,29 @@ public static class ParadoxNetwork
 
             BroadcastRoleSetting(definition.Id);
         }
+
+        BroadcastMeterSettings();
+    }
+
+    public static void BroadcastMeterSettings()
+    {
+        foreach (var source in Enum.GetValues<ParadoxMeterSource>())
+            BroadcastMeterSetting(source);
+    }
+
+    public static void BroadcastMeterSetting(ParadoxMeterSource source)
+    {
+        if (AmongUsClient.Instance == null ||
+            !AmongUsClient.Instance.AmHost ||
+            PlayerControl.LocalPlayer == null)
+            return;
+
+        Rpc<SyncParadoxGameplaySettingRpc>.Instance.Send(
+            PlayerControl.LocalPlayer,
+            new SyncParadoxGameplaySettingRpc.Data(
+                (int)source,
+                ParadoxGameplaySettings.GetGain(source)),
+            immediately: true);
     }
 
     public static void BroadcastRoleSetting(RoleId role)

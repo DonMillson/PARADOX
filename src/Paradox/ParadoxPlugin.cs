@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Paradox.Localization;
+using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Roles;
 using Paradox.Settings;
@@ -23,6 +24,7 @@ public partial class ParadoxPlugin : BasePlugin
     private ConfigEntry<Language>? _language;
     private readonly Dictionary<RoleId, ConfigEntry<bool>> _roleEnabled = new();
     private readonly Dictionary<RoleId, ConfigEntry<int>> _roleChance = new();
+    private readonly Dictionary<ParadoxMeterSource, ConfigEntry<int>> _meterGains = new();
 
     public Harmony Harmony { get; } = new(Id);
 
@@ -80,6 +82,18 @@ public partial class ParadoxPlugin : BasePlugin
         ParadoxNetwork.BroadcastRoleSetting(role);
     }
 
+    public void CycleMeterGain(ParadoxMeterSource source, int direction)
+    {
+        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+            return;
+
+        var value = ParadoxGameplaySettings.CycleGain(source, direction);
+        if (_meterGains.TryGetValue(source, out var entry))
+            entry.Value = value;
+
+        ParadoxNetwork.BroadcastMeterSetting(source);
+    }
+
     private void LoadPreferences()
     {
         _language = Config.Bind(
@@ -89,6 +103,18 @@ public partial class ParadoxPlugin : BasePlugin
             "PARADOX interface language.");
 
         Localizer.CurrentLanguage = _language.Value;
+
+        foreach (var source in Enum.GetValues<ParadoxMeterSource>())
+        {
+            var entry = Config.Bind(
+                "ParadoxMeter",
+                $"{source}.Gain",
+                ParadoxGameplaySettings.GetGain(source),
+                $"Instability added by {source} (0 to 20).");
+
+            _meterGains[source] = entry;
+            ParadoxGameplaySettings.SetGain(source, entry.Value);
+        }
 
         foreach (var definition in RoleRegistry.All)
         {
