@@ -7,6 +7,8 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 - GitHub Actions completes **Verify role roster and RPC identifiers**, **Build**, and **Upload Paradox DLL** successfully.
 - All clients load the same PARADOX version and protocol; no missing-RPC or Harmony patch errors appear in the logs.
 - Host settings are synchronized and all 40 roles are visible under their correct faction.
+- With all 40 roles enabled at 100%, run at least 10 consecutive matches with the same players. Confirm assignments vary (not fixed to roster/join order), no special role repeats within a faction until its eligible pool is exhausted, and each match assigns at most one Neutral role.
+- Set a test role to 0% and confirm it never spawns; set it back to 100% and verify it becomes eligible. Intermediate chance values are independent eligibility rolls, not guarantees of a specific player share.
 
 ## Match/lobby lifecycle
 
