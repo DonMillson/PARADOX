@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Paradox.Localization;
+using Paradox.Maps;
 using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Roles;
@@ -34,6 +35,11 @@ public partial class ParadoxPlugin : BasePlugin
         Clients.Clear();
 
         LoadPreferences();
+
+        if (!ParadoxStation.TryValidateDesign(out var stationIssue))
+            Log.LogError($"PARADOX STATION design manifest invalid: {stationIssue}");
+        else
+            Log.LogInfo($"PARADOX STATION design manifest: {ParadoxStation.Rooms.Count} connected rooms.");
 
         Log.LogInfo($"PARADOX v{ParadoxInfo.Version} / protocol {ParadoxInfo.ProtocolVersion} loading...");
         Harmony.PatchAll();

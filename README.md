@@ -86,7 +86,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Host can now tune Paradox Meter gains for kills, sabotages, role abilities and Anomaly from the native lobby tab. Values persist and synchronize via host-verified RPC 43 (protocol v40).
 - Host-side initial role assignment now covers all 40 registered roles. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow.
 - English/Polish localization foundation.
-- PARADOX STATION map architecture/skeleton.
+- PARADOX STATION level-design manifest: 12 rooms, 16 corridor links, 3 vent links and 12 task IDs; startup connectivity validation. **This is a data blueprint, not a playable custom map yet.**
 - Match-end state reset for implemented MVP roles.
 - GitHub Actions first verifies all 40 registered/implemented/localized roles, faction pools and unique RPC identifiers; the Release build then produces Paradox.dll.
 
