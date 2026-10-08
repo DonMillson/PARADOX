@@ -84,7 +84,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
 - Host can now tune Paradox Meter gains for kills, sabotages, role abilities and Anomaly from the native lobby tab. Values persist and synchronize via host-verified RPC 43 (protocol v40).
-- Host-side initial role assignment now covers all 40 registered roles. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow.
+- Host-side initial role assignment covers all 40 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
 - PARADOX STATION level-design manifest: 12 rooms, 16 corridor links, 3 vent links and 12 task IDs; startup connectivity validation. **This is a data blueprint, not a playable custom map yet.**
 - Match-end state reset for implemented MVP roles.
