@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-The project has 40 registered roles: 15 Impostor, 15 Crewmate and 10 Neutral. All 40 registered roles now have gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. The current set includes Phantom alongside the previously implemented roles.
+**Current testing milestone: PARADOX 0.5.0-beta.1.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -100,3 +100,12 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 7. Expand the Paradox event pool and continue implementing registered roles.
 8. Harden multiplayer RPC validation and perform multi-client runtime tests.
 9. Android adapter and cosmetic-only Founder/Premium features after the PC gameplay core is stable.
+
+## Testing build (Windows)
+
+1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.5.0-beta.1` artifact.
+2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
+3. All participating clients should use the same mod build and protocol (currently v39). Avoid mixing different PARADOX builds in one room.
+4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
+
+The DLL being compiled by GitHub Actions **does not** establish that gameplay works correctly in a live Among Us match. Map content, assets and end-to-end multiplayer testing remain separate milestones.
