@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.5.0-beta.1)
+# PARADOX — multiplayer QA plan (0.5.0-beta.2)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
