@@ -1,4 +1,4 @@
-# PARADOX — multiplayer QA plan (0.5.0-beta.3)
+# PARADOX — multiplayer QA plan (0.5.0-beta.4)
 
 This is a **test plan**, not a record of passed runtime tests. Use a supported PC Among Us build, matching BepInEx/Reactor and the same PARADOX DLL on every client. Start with one host and two clients, then repeat with at least four players.
 
@@ -9,6 +9,12 @@ This is a **test plan**, not a record of passed runtime tests. Use a supported P
 - Host settings are synchronized and all 40 roles are visible under their correct faction.
 - With all 40 roles enabled at 100%, run at least 10 consecutive matches with the same players. Confirm assignments vary (not fixed to roster/join order), no special role repeats within a faction until its eligible pool is exhausted, and each match assigns at most one Neutral role.
 - Set a test role to 0% and confirm it never spawns; set it back to 100% and verify it becomes eligible. Intermediate chance values are independent eligibility rolls, not guarantees of a specific player share.
+
+## PARADOX STATION blueprint QA (not a playable map)
+
+- Press F6 in the lobby and in a running match, verify all 12 translated rooms, green spawn, 16 corridor links, 3 dashed vent links and 12 planned-task markers.
+- Open a meeting with the viewer visible and verify it is hidden; close the meeting and use F6 to close the viewer.
+- Disconnect or end a match; ensure no leftover blueprint or Unity/TMP errors. The station is not registered as an Among Us selectable level.
 
 ## Match/lobby lifecycle
 

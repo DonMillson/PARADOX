@@ -29,5 +29,6 @@ public static class ParadoxLobbyPatches
     public static void DisconnectPostfix()
     {
         ParadoxPlugin.Clients.Clear();
+        Paradox.Maps.ParadoxStationMapHudPatch.Close();
     }
 }

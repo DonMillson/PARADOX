@@ -30,11 +30,15 @@ jobs:
         shell: pwsh
         run: ./scripts/check-role-manifest.ps1
 
+      - name: Validate Paradox Station geometry
+        shell: pwsh
+        run: ./scripts/check-station-layout.ps1
+
       - name: Build
         run: dotnet build src/Paradox/Paradox.csproj -c Release
 
       - name: Upload Paradox DLL
         uses: actions/upload-artifact@v4
         with:
-          name: PARADOX-v0.5.0-beta.3
+          name: PARADOX-v0.5.0-beta.4
           path: src/Paradox/bin/Release/net6.0/Paradox.dll

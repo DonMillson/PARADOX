@@ -86,6 +86,7 @@ public static class ParadoxGameplayPatches
     [HarmonyPostfix]
     public static void EndGameStartPostfix()
     {
+        Paradox.Maps.ParadoxStationMapHudPatch.Close();
         ParadoxGame.Reset();
         DeathEvidenceRegistry.Reset();
         RoleAssignment.Reset();

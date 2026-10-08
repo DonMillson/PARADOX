@@ -41,6 +41,18 @@ public static class DefaultTranslations
         Add(l, "ui.language.polish", "Polish", "Polski");
 
         Add(l, "map.paradoxStation.name", "Paradox Station", "Stacja Paradoks");
+        Add(l, "map.paradoxStation.room.arrival_bay", "Arrival Bay", "Port Przylotów");
+        Add(l, "map.paradoxStation.room.cargo", "Cargo", "Ładownia");
+        Add(l, "map.paradoxStation.room.crew_quarters", "Crew Quarters", "Kajuty Załogi");
+        Add(l, "map.paradoxStation.room.security", "Security", "Ochrona");
+        Add(l, "map.paradoxStation.room.communications", "Communications", "Łączność");
+        Add(l, "map.paradoxStation.room.observation", "Observation", "Obserwatorium");
+        Add(l, "map.paradoxStation.room.temporal_lab", "Temporal Lab", "Laboratorium Czasu");
+        Add(l, "map.paradoxStation.room.medical", "Medical", "Ambulatorium");
+        Add(l, "map.paradoxStation.room.containment", "Containment", "Izolatorium");
+        Add(l, "map.paradoxStation.room.reactor_rift", "Reactor Rift", "Reaktor Szczeliny");
+        Add(l, "map.paradoxStation.room.power_core", "Power Core", "Rdzeń Energii");
+        Add(l, "map.paradoxStation.room.void_chamber", "Void Chamber", "Komora Pustki");
         Add(l, "event.25", "Reality disturbance", "Zakłócenie rzeczywistości");
         Add(l, "event.25.detail", "Reality flickers for a few seconds.", "Rzeczywistość migocze przez kilka sekund.");
         Add(l, "event.50", "Reality distortion", "Zniekształcenie rzeczywistości");

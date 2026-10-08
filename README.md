@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-**Current testing milestone: PARADOX 0.5.0-beta.3.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.5.0-beta.4.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -86,9 +86,9 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Host can now tune Paradox Meter gains for kills, sabotages, role abilities and Anomaly from the native lobby tab. Values persist and synchronize via host-verified RPC 43 (protocol v40).
 - Host-side initial role assignment covers all 40 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
-- PARADOX STATION level-design manifest: 12 rooms, 16 corridor links, 3 vent links and 12 task IDs; startup connectivity validation. **This is a data blueprint, not a playable custom map yet.**
+- PARADOX STATION: 12 rooms, 16 corridors, 3 vent links and 12 task IDs. **F6 opens an in-game EN/PL blueprint overlay**, with room/corridor/vent and planned-task markers. Geometry validation is enforced in CI. **Not a playable custom ShipStatus map yet.** See [Station milestones](docs/PARADOX_STATION.md).
 - Match-end state reset for implemented MVP roles.
-- GitHub Actions first verifies all 40 registered/implemented/localized roles, faction pools and unique RPC identifiers; the Release build then produces Paradox.dll.
+- GitHub Actions checks all 40 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
 
 ## Next milestones
 
@@ -104,7 +104,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 ## Testing build (Windows)
 
-1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.5.0-beta.3` artifact.
+1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.5.0-beta.4` artifact.
 2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
 3. All participating clients should use the same mod build and protocol (currently v40). Avoid mixing different PARADOX builds in one room.
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
