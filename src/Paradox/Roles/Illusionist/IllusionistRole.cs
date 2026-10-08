@@ -112,6 +112,8 @@ public static class IllusionistRole
             if (victim == null ||
                 victim.Data == null ||
                 victim.Data.IsDead ||
+                victim.Data.Disconnected ||
+                MeetingHud.Instance != null ||
                 now >= state.EndsAt)
             {
                 if (victim != null)
@@ -245,6 +247,16 @@ public static class IllusionistRole
 
     public static void ResetRuntime()
     {
+        if (AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost)
+        {
+            foreach (var state in ActiveIllusions.Values)
+            {
+                var victim = FindPlayer(state.VictimPlayerId);
+                if (victim != null)
+                    IllusionistAppearance.Restore(victim);
+            }
+        }
+
         CooldownEndsAt.Clear();
         ActiveIllusions.Clear();
         IllusionistAppearance.Reset();
