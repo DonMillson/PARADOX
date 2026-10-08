@@ -18,6 +18,8 @@ public static class ParadoxStationRuntime
     private static readonly float[] LastInteractedAt = new float[12];
     private static readonly Dictionary<byte, float> VentCooldownEndsAt = new();
 
+    private static bool _soloLobbyPreview;
+
     public static bool Active { get; private set; }
     public static int CompleteTasks => Steps.Count(x => x >= 3);
 
@@ -28,6 +30,15 @@ public static class ParadoxStationRuntime
         if (AmongUsClient.Instance == null ||
             PlayerControl.LocalPlayer == null)
             return;
+
+        // A solo lobby preview is local-only. Leave it immediately if another
+        // player joins or the session transitions out of the lobby.
+        if (_soloLobbyPreview && !IsSoloLobby())
+        {
+            RestoreHostPlayers();
+            Reset();
+            Feedback("PARADOX STATION: solo preview closed (lobby changed).");
+        }
 
         if (Input.GetKeyDown(KeyCode.F7) &&
             AmongUsClient.Instance.AmHost && MeetingHud.Instance == null)
@@ -47,13 +58,17 @@ public static class ParadoxStationRuntime
             PlayerControl.LocalPlayer == null)
             return;
 
-        if (!Active && ShipStatus.Instance == null)
+        // No match can normally start with one player. In that case allow a
+        // LOCAL-ONLY station walk-through directly from a one-player lobby.
+        // Multiplayer mode still requires an active vanilla ShipStatus.
+        var enteringSoloLobby = !Active && ShipStatus.Instance == null;
+        if (enteringSoloLobby && !IsSoloLobby())
         {
-            Feedback("PARADOX STATION: start a match before entering the test scene.");
+            Feedback("PARADOX STATION: solo F7 requires a lobby with only the host.");
             return;
         }
 
-        if (!Active && !AllClientsCompatible())
+        if (!Active && !enteringSoloLobby && !AllClientsCompatible())
         {
             Feedback("PARADOX STATION: all players must have the same PARADOX build.");
             return;
@@ -62,11 +77,19 @@ public static class ParadoxStationRuntime
         try
         {
             var enable = !Active;
+            var wasSolo = _soloLobbyPreview;
+            if (enable)
+                _soloLobbyPreview = enteringSoloLobby;
+
             ApplyMode(enable, isHost: true);
-            Rpc<StationModeRpc>.Instance.Send(
-                PlayerControl.LocalPlayer,
-                new StationModeRpc.Data(enable),
-                immediately: true);
+
+            // Never send station RPCs from solo lobby previews. The room can be
+            // joined by unmodded clients and the preview must stay local.
+            if (!enteringSoloLobby && !wasSolo)
+                Rpc<StationModeRpc>.Instance.Send(
+                    PlayerControl.LocalPlayer,
+                    new StationModeRpc.Data(enable),
+                    immediately: true);
         }
         catch (Exception e)
         {
@@ -107,7 +130,9 @@ public static class ParadoxStationRuntime
                 }
             }
 
-            Feedback("PARADOX STATION: F8 = console; impostor F9 = vent; host F7 = exit.");
+            Feedback(_soloLobbyPreview
+                ? "PARADOX STATION SOLO: move with WASD; F8 = console; F7 = return."
+                : "PARADOX STATION: F8 = console; impostor F9 = vent; host F7 = exit.");
         }
         else
         {
@@ -129,6 +154,28 @@ public static class ParadoxStationRuntime
             player.NetTransform.SnapTo(position);
         }
         ReturnPositions.Clear();
+    }
+
+    private static bool IsSoloLobby()
+    {
+        var client = AmongUsClient.Instance;
+        var local = PlayerControl.LocalPlayer;
+        if (client == null || !client.AmHost || local == null ||
+            ShipStatus.Instance != null ||
+            UnityEngine.Object.FindObjectOfType<GameStartManager>() == null)
+            return false;
+
+        var connected = 0;
+        foreach (var player in PlayerControl.AllPlayerControls)
+        {
+            if (player == null || player.Data == null || player.Data.Disconnected)
+                continue;
+            connected++;
+            if (player.PlayerId != local.PlayerId)
+                return false;
+        }
+
+        return connected == 1;
     }
 
     private static bool AllClientsCompatible()
@@ -298,7 +345,7 @@ public static class ParadoxStationRuntime
         SetTaskStep(roomIndex, stage);
 
         var sender = PlayerControl.LocalPlayer;
-        if (sender != null)
+        if (!_soloLobbyPreview && sender != null)
             Rpc<StationTaskStateRpc>.Instance.Send(
                 sender,
                 new StationTaskStateRpc.Data((byte)roomIndex, stage),
@@ -338,8 +385,9 @@ public static class ParadoxStationRuntime
             return;
 
         var sender = PlayerControl.LocalPlayer;
+        var wasSolo = _soloLobbyPreview;
         ApplyMode(false, isHost: true);
-        if (sender != null)
+        if (!wasSolo && sender != null)
             Rpc<StationModeRpc>.Instance.Send(
                 sender,
                 new StationModeRpc.Data(false),
@@ -349,6 +397,7 @@ public static class ParadoxStationRuntime
     public static void Reset()
     {
         Active = false;
+        _soloLobbyPreview = false;
         ReturnPositions.Clear();
         Array.Clear(Steps, 0, Steps.Length);
         Array.Clear(LastInteractedAt, 0, LastInteractedAt.Length);
