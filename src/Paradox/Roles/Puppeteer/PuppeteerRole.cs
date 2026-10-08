@@ -1,6 +1,7 @@
 using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Roles.Corruptor;
+using Paradox.Roles.Timebreaker;
 using Paradox.Settings;
 using Reactor.Networking.Rpc;
 using UnityEngine;
@@ -181,7 +182,10 @@ public static class PuppeteerRole
                 continue;
             }
 
-            if (now < state.NextSnapAt)
+            if (now < state.NextSnapAt ||
+                source == null ||
+                target == null ||
+                target.NetTransform == null)
                 continue;
 
             var desired =
@@ -216,7 +220,8 @@ public static class PuppeteerRole
         if (local.Data != null &&
             !local.Data.IsDead &&
             !local.Data.Disconnected &&
-            MeetingHud.Instance == null)
+            MeetingHud.Instance == null &&
+            !TimebreakerRole.IsInStasis(local.PlayerId))
         {
             local.moveable = true;
         }

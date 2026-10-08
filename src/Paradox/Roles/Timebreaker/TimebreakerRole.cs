@@ -1,6 +1,7 @@
 using Paradox.Core;
 using Paradox.Networking;
 using Paradox.Settings;
+using Paradox.Roles.Puppeteer;
 using Reactor.Networking.Rpc;
 using UnityEngine;
 
@@ -15,6 +16,9 @@ public static class TimebreakerRole
     public static bool IsTimebreaker(byte playerId) =>
         PlayerRoleRegistry.TryGet(playerId, out var role) &&
         role == RoleId.Timebreaker;
+
+    public static bool IsInStasis(byte playerId) =>
+        StasisUntil.TryGetValue(playerId, out var end) && Time.time < end;
 
     public static float CooldownRemaining(byte playerId, float now)
     {
@@ -153,7 +157,8 @@ public static class TimebreakerRole
         if (local.Data != null &&
             !local.Data.IsDead &&
             !local.Data.Disconnected &&
-            MeetingHud.Instance == null)
+            MeetingHud.Instance == null &&
+            !PuppeteerRole.IsControlledTarget(local.PlayerId, now))
         {
             local.moveable = true;
         }
