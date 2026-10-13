@@ -11,6 +11,7 @@ on:
       - "tools/requirements-art.txt"
       - "src/Paradox/Maps/ParadoxStationArtwork.cs"
       - "src/Paradox/Maps/ParadoxStationScene.cs"
+      - "src/Paradox/UI/ParadoxLobbyRoleSummaryPatch.cs"
       - "src/Paradox/Paradox.csproj"
       - "unity/ParadoxStation/**"
       - ".github/workflows/station-art.yml"
