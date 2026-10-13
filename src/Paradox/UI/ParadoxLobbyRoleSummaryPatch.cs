@@ -260,14 +260,20 @@ public static class ParadoxLobbyRoleSummaryPatch
             throw new InvalidOperationException("PARADOX station test button font not available.");
 
         _stationButtonLabel.enabled = true;
-        _stationButtonLabel.fontSize = 0.4f;
+        // The native room-code template uses TMP auto-sizing. Disable it,
+        // otherwise "RETURN TO LOBBY" grows far beyond this tiny HUD button.
+        _stationButtonLabel.enableAutoSizing = false;
+        _stationButtonLabel.autoSizeTextContainer = false;
+        _stationButtonLabel.fontSize = 0.31f;
+        _stationButtonLabel.fontSizeMin = 0.31f;
+        _stationButtonLabel.fontSizeMax = 0.31f;
         _stationButtonLabel.alignment = TextAlignmentOptions.Center;
         _stationButtonLabel.color = Color.white;
         _stationButtonLabel.richText = false;
         _stationButtonLabel.enableWordWrapping = false;
-        _stationButtonLabel.overflowMode = TextOverflowModes.Overflow;
+        _stationButtonLabel.overflowMode = TextOverflowModes.Truncate;
         _stationButtonLabel.renderer.sortingOrder = 26;
-        _stationButtonLabel.rectTransform.sizeDelta = new Vector2(3.1f, 0.56f);
+        _stationButtonLabel.rectTransform.sizeDelta = new Vector2(1.8f, 0.34f);
 
         var collider = go.AddComponent<BoxCollider2D>();
         collider.size = new Vector2(1.9f, 0.34f);
