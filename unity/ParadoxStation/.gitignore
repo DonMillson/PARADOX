@@ -1,0 +1,11 @@
+Library/
+Temp/
+Obj/
+Logs/
+UserSettings/
+Build/
+Assets/Generated/
+Assets/Art/StationRooms/
+Assets/Art/ArrivalBay/
+Assets/Resources/StationProductionLayout.json
+!Assets/Editor/
