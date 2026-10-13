@@ -8,8 +8,10 @@ from repository root, alongside `python tools/export_station_art.py`, then
 choose **PARADOX > Production > Build Connected Station Scene** from the Unity
 editor. This creates a **single connected map scene** containing all 12
 illustrated rooms, 16 constructed corridor routes, and global boundary
-colliders derived from continuous walkable geometry. Menu **Build Windows
-Scene AssetBundle** exports the authored scene for future native map loading.
+colliders derived from continuous walkable geometry. The scene builder additionally saves a separate **GameObject environment
+prefab** as `PARADOX_STATION_ENVIRONMENT.prefab`. Menu **Build Windows Scene
+AssetBundle** exports both a scene-preview bundle and a loadable environment
+prefab bundle for the future native map loader.
 
 This scene is **not yet registered as an Among Us ShipStatus**. The
 map-selection UI, 12 actual minigames, sabotages, vents and multiplayer game

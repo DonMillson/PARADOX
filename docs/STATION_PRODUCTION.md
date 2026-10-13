@@ -17,8 +17,9 @@ until the native map is integrated and tested.
   imports the twelve original four-layer room artworks, lays out the rooms
   using real station coordinates, creates visual corridor segments, adds the
   generated perimeter **BoxCollider2D** walls, and creates task/spawn/vent
-  attachment-point objects. Unity's editor can save the new scene and build
-  an asset bundle for Windows.
+  attachment-point objects. Unity's editor saves a connected scene, a separate
+  **loadable environment GameObject prefab**, and builds both Windows AssetBundles.
+  Neither bundle contains a finished `ShipStatus` game map.
 - New `Verify PARADOX Production Map Geometry` GitHub Actions workflow
   generates/checks the layout and uploads the JSON for Unity.
 - Old off-map F7 prototype entry, F6 blueprint and TESTUJ MAPĘ button are
@@ -41,8 +42,10 @@ until the native map is integrated and tested.
    select **PARADOX > Production > Build Connected Station Scene**.
 4. Inspect the connected scene at
    `Assets/Generated/StationProduction/ParadoxStation_ProductionLayout.unity`.
-   You can also select **Build Windows Scene AssetBundle** to create a
-   standalone Unity scene bundle **for integration testing only**.
+   The editor also generates `PARADOX_STATION_ENVIRONMENT.prefab` with the
+   actual room/corridor/wall objects. Select **Build Windows Scene AssetBundle**
+   to create **two separate bundles** (editor preview scene plus loadable
+   environment prefab) **for native integration development only**.
 5. This Unity-generated scene is not yet an Among Us `ShipStatus` prefab and
    **cannot be launched as a native map** until the game-specific adapter is
    implemented. Do not package it as a finished map.

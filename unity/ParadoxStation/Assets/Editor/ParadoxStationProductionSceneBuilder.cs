@@ -165,6 +165,19 @@ public static class ParadoxStationProductionSceneBuilder
             marker.transform.position=Vector3.zero;
         }
 
+        // Save a loadable GameObject prefab separately from the editor preview
+        // scene. The prefab bundle can later be instantiated by a native
+        // Among Us ShipStatus adapter; it deliberately has NO ShipStatus yet.
+        string prefabPath=GeneratedPath+"/PARADOX_STATION_ENVIRONMENT.prefab";
+        GameObject environment=PrefabUtility.SaveAsPrefabAsset(root,prefabPath);
+        if(environment==null)
+            throw new InvalidOperationException("Could not create station environment prefab.");
+        AssetImporter prefabImporter=AssetImporter.GetAtPath(prefabPath);
+        if(prefabImporter==null)
+            throw new InvalidOperationException("Station prefab importer missing.");
+        prefabImporter.assetBundleName="paradoxstation-environment";
+        prefabImporter.SaveAndReimport();
+
         string scenePath=GeneratedPath+"/ParadoxStation_ProductionLayout.unity";
         if(!EditorSceneManager.SaveScene(scene,scenePath))
             throw new InvalidOperationException("Unable to save production station scene");
@@ -189,9 +202,11 @@ public static class ParadoxStationProductionSceneBuilder
     public static void BuildBundle()
     {
         string scenePath=GeneratedPath+"/ParadoxStation_ProductionLayout.unity";
-        if(AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath)==null)
+        if(AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath)==null ||
+           AssetDatabase.LoadAssetAtPath<GameObject>(
+               GeneratedPath+"/PARADOX_STATION_ENVIRONMENT.prefab")==null)
             throw new InvalidOperationException(
-                "Build connected scene first, then build its asset bundle.");
+                "Build connected scene and environment prefab before bundle export.");
         string output=Path.GetFullPath(
             Path.Combine(Application.dataPath,"../Build/StationWindows"));
         Directory.CreateDirectory(output);
@@ -200,8 +215,8 @@ public static class ParadoxStationProductionSceneBuilder
             BuildTarget.StandaloneWindows);
         if(result==null)
             throw new InvalidOperationException("AssetBundle build failed.");
-        Debug.Log("PARADOX production scene bundle at: "+output +
-            ". Still requires an Among Us ShipStatus map adapter.");
+        Debug.Log("PARADOX scene and environment prefab bundles at: "+output +
+            ". They still require an Among Us ShipStatus map adapter.");
     }
 
     private static Sprite LoadSprite(string filename)
