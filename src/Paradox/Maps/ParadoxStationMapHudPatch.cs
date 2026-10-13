@@ -23,6 +23,9 @@ public static class ParadoxStationMapHudPatch
     [HarmonyPostfix]
     public static void HudUpdatePostfix(HudManager __instance)
     {
+        if (!ParadoxStationRuntime.PrototypeEnabled)
+            return;
+
         if (Input.GetKeyDown(KeyCode.F6))
         {
             if (_root != null)

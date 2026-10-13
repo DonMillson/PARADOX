@@ -1,0 +1,46 @@
+name: Verify PARADOX Production Map Geometry
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "tools/build_station_production_layout.py"
+      - "src/Paradox/Maps/ParadoxStation.cs"
+      - "unity/ParadoxStation/**"
+      - ".github/workflows/station-production.yml"
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  validate-production-layout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build Unity production map geometry
+        run: python tools/build_station_production_layout.py --output output/StationProductionLayout.json
+      - name: Rebuild and validate deterministic room graph
+        run: python tools/build_station_production_layout.py --output output/StationProductionLayout.json --check
+      - name: Verify map shape and 16 room passage routes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('output/StationProductionLayout.json')
+          m=json.loads(p.read_text(encoding='utf-8'))
+          assert len(m['rooms'])==12 and sum(r['isSpawn'] for r in m['rooms'])==1
+          assert len(m['corridors'])==16 and len(m['vents'])==3
+          assert m['diagnostics']['reachableCells']==m['diagnostics']['walkableCells']
+          assert len(m['walls'])>=20
+          assert all(len(c['points'])>=2 for c in m['corridors'])
+          assert len({r['taskId'] for r in m['rooms']})==12
+          print('PASS: 12 connected rooms, 16 built corridors, vent plans, unique task sockets and collision boundary.')
+          print(m['diagnostics'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-Station-Production-Geometry
+          path: output/StationProductionLayout.json

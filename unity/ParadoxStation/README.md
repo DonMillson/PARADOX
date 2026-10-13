@@ -1,3 +1,22 @@
+# PARADOX STATION — Unity production map authoring
+
+The old F7 off-map test arena is disabled. Do not treat preview/gallery artwork
+as a player-downloadable custom map.
+
+**Production scene:** run `python tools/build_station_production_layout.py`
+from repository root, alongside `python tools/export_station_art.py`, then
+choose **PARADOX > Production > Build Connected Station Scene** from the Unity
+editor. This creates a **single connected map scene** containing all 12
+illustrated rooms, 16 constructed corridor routes, and global boundary
+colliders derived from continuous walkable geometry. Menu **Build Windows
+Scene AssetBundle** exports the authored scene for future native map loading.
+
+This scene is **not yet registered as an Among Us ShipStatus**. The
+map-selection UI, 12 actual minigames, sabotages, vents and multiplayer game
+behaviour remain release-blocking. See [production checklist](../../docs/STATION_PRODUCTION.md).
+
+---
+
 # PARADOX STATION — Unity artwork workspace
 
 The original twelve-room art pipeline consists of **Arrival Bay** (manually

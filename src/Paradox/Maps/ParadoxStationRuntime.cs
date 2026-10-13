@@ -13,6 +13,9 @@ namespace Paradox.Maps;
 [HarmonyPatch]
 public static class ParadoxStationRuntime
 {
+    // Disabled for standard builds. A real native map must replace this prototype.
+    public const bool PrototypeEnabled = false;
+
     private static readonly Dictionary<byte, Vector2> ReturnPositions = new();
     private static readonly byte[] Steps = new byte[12];
     private static readonly float[] LastInteractedAt = new float[12];
@@ -30,6 +33,9 @@ public static class ParadoxStationRuntime
     [HarmonyPostfix]
     public static void UpdatePostfix()
     {
+        if (!PrototypeEnabled)
+            return;
+
         if (AmongUsClient.Instance == null ||
             PlayerControl.LocalPlayer == null)
             return;
@@ -56,6 +62,9 @@ public static class ParadoxStationRuntime
 
     public static void TryToggleHost()
     {
+        if (!PrototypeEnabled)
+            return;
+
         if (AmongUsClient.Instance == null ||
             !AmongUsClient.Instance.AmHost ||
             PlayerControl.LocalPlayer == null)
@@ -112,6 +121,9 @@ public static class ParadoxStationRuntime
 
     public static void ApplyMode(bool enable, bool isHost)
     {
+        if (enable && !PrototypeEnabled)
+            return;
+
         if (enable == Active)
             return;
 

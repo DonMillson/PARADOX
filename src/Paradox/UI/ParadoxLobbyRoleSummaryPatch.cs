@@ -221,6 +221,9 @@ public static class ParadoxLobbyRoleSummaryPatch
 
     private static void CreateSoloStationButton(TextMeshPro template, Transform parent)
     {
+        if (!Paradox.Maps.ParadoxStationRuntime.PrototypeEnabled)
+            return;
+
         if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
             return;
 

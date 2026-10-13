@@ -4,7 +4,10 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-**Current testing milestone: PARADOX 0.6.0-alpha.7.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Production-map direction:** F6/F7 test-station entry and the TESTUJ MAPĘ lobby button are disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
+
+
+**Current testing milestone: PARADOX 0.7.0-dev.1.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -87,20 +90,14 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Host-side initial role assignment covers all 40 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
 - Lobby UI: role summary now shows six roles per page, cycles through faction pages with a click, and carries the PARADOX by DonMillson credit without a separate overlay obscuring Customize.
-- **Solo map test:** while alone as the host in a lobby, click the cyan **TESTUJ MAPĘ / TEST STATION** button below the PARADOX role card (or press **F7**) to explore PARADOX STATION without starting a match. WASD moves, F8 advances yellow prototype consoles and F7 returns to the lobby. The solo preview is local-only (no station RPCs), moves the lobby camera to the station, restores the old view on exit, and closes if another player joins. This is a geometry test, not a solo Among Us match.
-- PARADOX STATION experimental WALKABLE SCENE: during a match, host presses **F7** to create a procedural 12-room station with corridors, walls, labels, and 12 yellow console objectives (F8 near a console advances it; 3 steps each), plus F9 impostor-only host-validated travel between the three orange vent pairs. Host teleports players and can return them with F7; state/task progress is synchronized by host RPC. **F6** still shows the bilingual blueprint. This is an opt-in test arena within a vanilla ShipStatus, not a separately registered playable Among Us map; vanilla tasks, standard vent objects/animations and official map selection are not yet integrated. See [Station milestones](docs/PARADOX_STATION.md).
+- Former solo-map testing via F7 is disabled in release/dev standard builds. Production Unity geometry now lives separately under `unity/ParadoxStation/`.
+- PARADOX STATION: production map geometry/build scripts now generate all 12 connected room positions, 16 full collision-aware corridor routes and asset-bundle-ready Unity scene authoring; native ShipStatus tasks, vents and map choice are still pending. See [Production map development](docs/STATION_PRODUCTION.md).
 - Match-end state reset for implemented MVP roles.
 - GitHub Actions checks all 40 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
 
 ## Twelve-room station artwork
 
 PARADOX STATION now has **12 distinct illustrated room concepts**, each exported to four 1920×1080 sprite layers. The first room, Arrival Bay, remains manually authored; the other eleven have room-specific machinery and props generated from editable vector sources. `python tools/export_station_art.py` produces 48 PNG layers, twelve previews and one contact sheet. The Unity editor command **PARADOX → Build All 12 Room Art Previews** constructs twelve inspectable art prefabs and a gallery. See [the artwork inventory](art/station-rooms/README.md). **These are art-production assets, not an Among Us-compatible ShipStatus or playable map.**
-
-## In-game artwork in the F7 experimental station (alpha.7)
-
-The 12 room PNG art layers are now **loaded by the existing Among Us mod at runtime** when installed alongside the DLL. This replaces the visual placeholder tiles *within each room* with layered original PNG artwork; experimental corridor geometry, collision boundaries and room-console mechanics are unchanged. It is still not a selectable native Among Us map.
-
-For the easiest local test, download the **PARADOX-Station-alpha.7-Playtest-Install** artifact from the **Build PARADOX 12 Room Art** GitHub Action. Extract the included `BepInEx` folder into your Among Us installation (merging into the existing BepInEx structure), then host a private lobby alone and click **TESTUJ MAPĘ**. The playtest zip contains both the DLL and `BepInEx/plugins/ParadoxAssets/StationRooms/<room_id>/{01_floor,02_walls,03_props,04_lights}.png`. If artwork is absent, PARADOX falls back to the old geometric placeholder scene and logs the missing directory. Do not confuse a green CI compilation with a proven in-game test.
 
 ## Next milestones
 
@@ -116,7 +113,7 @@ For the easiest local test, download the **PARADOX-Station-alpha.7-Playtest-Inst
 
 ## Testing build (Windows)
 
-1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.6.0-alpha.7` artifact.
+1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.7.0-dev.1` artifact.
 2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
 3. All participating clients should use the same mod build and protocol (currently v42). Avoid mixing different PARADOX builds in one room.
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
