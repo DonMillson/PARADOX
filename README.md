@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-**Current testing milestone: PARADOX 0.6.0-alpha.6.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.6.0-alpha.7.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -96,6 +96,12 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 
 PARADOX STATION now has **12 distinct illustrated room concepts**, each exported to four 1920×1080 sprite layers. The first room, Arrival Bay, remains manually authored; the other eleven have room-specific machinery and props generated from editable vector sources. `python tools/export_station_art.py` produces 48 PNG layers, twelve previews and one contact sheet. The Unity editor command **PARADOX → Build All 12 Room Art Previews** constructs twelve inspectable art prefabs and a gallery. See [the artwork inventory](art/station-rooms/README.md). **These are art-production assets, not an Among Us-compatible ShipStatus or playable map.**
 
+## In-game artwork in the F7 experimental station (alpha.7)
+
+The 12 room PNG art layers are now **loaded by the existing Among Us mod at runtime** when installed alongside the DLL. This replaces the visual placeholder tiles *within each room* with layered original PNG artwork; experimental corridor geometry, collision boundaries and room-console mechanics are unchanged. It is still not a selectable native Among Us map.
+
+For the easiest local test, download the **PARADOX-Station-alpha.7-Playtest-Install** artifact from the **Build PARADOX 12 Room Art** GitHub Action. Extract the included `BepInEx` folder into your Among Us installation (merging into the existing BepInEx structure), then host a private lobby alone and click **TESTUJ MAPĘ**. The playtest zip contains both the DLL and `BepInEx/plugins/ParadoxAssets/StationRooms/<room_id>/{01_floor,02_walls,03_props,04_lights}.png`. If artwork is absent, PARADOX falls back to the old geometric placeholder scene and logs the missing directory. Do not confuse a green CI compilation with a proven in-game test.
+
 ## Next milestones
 
 1. Runtime-test Doppelgänger ability UX, host validation, synchronized disguise timer/cooldown and restoration.
@@ -110,9 +116,9 @@ PARADOX STATION now has **12 distinct illustrated room concepts**, each exported
 
 ## Testing build (Windows)
 
-1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.6.0-alpha.6` artifact.
+1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.6.0-alpha.7` artifact.
 2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
-3. All participating clients should use the same mod build and protocol (currently v40). Avoid mixing different PARADOX builds in one room.
+3. All participating clients should use the same mod build and protocol (currently v42). Avoid mixing different PARADOX builds in one room.
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
 
 The DLL being compiled by GitHub Actions **does not** establish that gameplay works correctly in a live Among Us match. Map content, assets and end-to-end multiplayer testing remain separate milestones.

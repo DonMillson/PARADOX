@@ -43,3 +43,11 @@ These are **graphics prototypes** requiring concept-art review and manual polish
 Actual Among Us gameplay requires a compatible Unity asset bundle, new
 ShipStatus/map registration, correctly aligned room interiors/corridors,
 authored colliders/doors, tasks/vents/sabotage and multiplayer verification.
+
+## alpha.7 experimental game installation
+
+The 12 room PNG sprite layers are additionally installed as optional runtime art in
+`BepInEx/plugins/ParadoxAssets/StationRooms/<room-id>/`. The `Build PARADOX 12
+Room Art` GitHub workflow creates a combined `PARADOX-Station-alpha.7-Playtest.zip`
+containing the plugin DLL and resized 960×540 PNGs. Its F7 solo lobby
+walk-through is still a development arena, **not an actual selectable new map**.

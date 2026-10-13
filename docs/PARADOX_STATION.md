@@ -1,6 +1,6 @@
 # PARADOX STATION — map implementation and remaining integration
 
-## 0.6.0-alpha.6: experimental walkable arena inside Among Us
+## 0.6.0-alpha.7: experimental walkable arena inside Among Us
 
 This is an **opt-in, runtime-generated test scene**, not a registered or selectable custom ShipStatus map. It reuses the currently loaded vanilla match to test navigation, collision and shared console objectives. Do not ship it as the finished PARADOX STATION.
 
@@ -12,6 +12,14 @@ This is an **opt-in, runtime-generated test scene**, not a registered or selecta
 - Includes deterministic room floors, navigable connected corridors, visible boundary walls with BoxCollider2D, 12 localized room labels, 12 prototype consoles, and 6 vent markers.
 - Initial player relocation/return is performed by the host via NetTransform.SnapTo. Runtime mode, task progress and vent requests are carried by host-validated Reactor RPCs 44–47 (protocol v42). The scene is destroyed at disconnect/endgame, and a meeting causes the host to exit the test scene.
 - The scene is built only on demand: regular Among Us matches and map selection are unchanged until the host explicitly presses F7.
+
+## alpha.7: original art loaded into experimental F7/F8 station
+
+- An **optional on-disk art pack** is now loaded into the experimental station via `ParadoxStationArtwork.cs`. The visual scene uses the original 12 themed rooms and 48 transparent PNG sprite layers over the existing walkable geometry, without changing vanilla Among Us resources.
+- Default game art location: `BepInEx/plugins/ParadoxAssets/StationRooms/<room-id>/<layer>.png`, with four numbered layers for each room.
+- The **Build PARADOX 12 Room Art** workflow now exports authoring-resolution art, a more memory-friendly 960×540 runtime pack, compiles the DLL, and creates **one installation ZIP** containing the correct BepInEx folder tree.
+- Original tiles remain as a fallback if the optional pack is missing; all 48 required files are checked before attempting to load the sprites.
+- Important limits: graphics/shape alignment, world sorting, IL2CPP texture loading, VRAM use, room transitions and camera must be verified on an actual current Among Us client. Drawing PNG sprites does **not** register a new native map; corridors, task terminals, vent travel and game logic remain the earlier prototypes.
 
 ## Known alpha limitations
 
@@ -25,7 +33,7 @@ This is an **opt-in, runtime-generated test scene**, not a registered or selecta
 
 ## Manual test protocol
 
-1. Install matching PARADOX 0.6.0-alpha.6 builds with BepInEx and Reactor. Capture `BepInEx/LogOutput.log`.
+1. Install matching PARADOX 0.6.0-alpha.7 builds with BepInEx and Reactor. Capture `BepInEx/LogOutput.log`.
 2. **Solo smoke test (no second player needed):** create a private room and remain alone in the waiting room. Click **TESTUJ MAPĘ** below the role panel (F7 is an optional shortcut), walk around with WASD, approach a yellow console and press F8. Press F7 to return to the waiting room. Confirm that the scene disappears and no other player is needed.
 3. **Multiplayer test:** host + two clients start a vanilla match. Host presses **F7** after players can move.
 4. Verify all players appear in Arrival Bay and camera follows. Check walking between the 12 connected rooms. Try to walk through every perimeter wall; there should be no holes or invisible barriers.

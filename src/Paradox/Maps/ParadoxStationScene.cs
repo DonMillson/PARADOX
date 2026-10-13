@@ -60,6 +60,9 @@ public static class ParadoxStationScene
         try
         {
             CreateFloor(root.transform, walkable);
+            // Optional 12-room PNG art pack is layered over the logical floor.
+            // Wall colliders / console positions remain authoritative.
+            ParadoxStationArtwork.AttachToScene(root.transform);
             CreateBoundaryWalls(root.transform, walkable);
             CreateRoomLabels(root.transform);
             CreateVentMarkers(root.transform);
@@ -75,6 +78,8 @@ public static class ParadoxStationScene
 
     public static void Reset()
     {
+        // Destroy game objects before their loaded textures and sprites.
+        ParadoxStationArtwork.Reset();
         if (_root != null)
             Object.Destroy(_root);
         _root = null;

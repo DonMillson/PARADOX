@@ -9,6 +9,9 @@ on:
       - "tools/generate_station_room_art.py"
       - "tools/export_station_art.py"
       - "tools/requirements-art.txt"
+      - "src/Paradox/Maps/ParadoxStationArtwork.cs"
+      - "src/Paradox/Maps/ParadoxStationScene.cs"
+      - "src/Paradox/Paradox.csproj"
       - "unity/ParadoxStation/**"
       - ".github/workflows/station-art.yml"
   workflow_dispatch:
@@ -23,10 +26,78 @@ jobs:
           python-version: "3.11"
       - name: Install vector renderer and image tester
         run: pip install -r tools/requirements-art.txt
-      - name: Render and verify ALL 12 station rooms
+      - name: Render and verify ALL 12 station rooms at authoring resolution
         run: python tools/export_station_art.py --output output/StationRooms
+      - name: Render 12 room layers at runtime resolution
+        run: python tools/export_station_art.py --output output/StationRuntime --render-width 960
       - name: Upload all Unity sprites and overview
         uses: actions/upload-artifact@v4
         with:
           name: PARADOX-12-Rooms-Art-Pack
           path: output/StationRooms/
+      - name: Upload runtime PNG artwork
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-Station-Runtime-Art
+          path: |
+            output/StationRuntime/*/01_floor.png
+            output/StationRuntime/*/02_walls.png
+            output/StationRuntime/*/03_props.png
+            output/StationRuntime/*/04_lights.png
+
+  build-station-plugin:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+      - name: Download Reactor 2.5.1
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path lib | Out-Null
+          Invoke-WebRequest -Uri "https://github.com/NuclearPowered/Reactor/releases/download/2.5.1/Reactor.dll" -OutFile "lib/Reactor.dll"
+      - name: Build PARADOX with station PNG loader
+        run: dotnet build src/Paradox/Paradox.csproj -c Release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-Station-Plugin
+          path: src/Paradox/bin/Release/net6.0/Paradox.dll
+
+  bundle-preview:
+    runs-on: ubuntu-latest
+    needs: [render-all-rooms, build-station-plugin]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: PARADOX-Station-Plugin
+          path: staging/BepInEx/plugins
+      - uses: actions/download-artifact@v4
+        with:
+          name: PARADOX-Station-Runtime-Art
+          path: staging/BepInEx/plugins/ParadoxAssets/StationRooms
+      - name: Validate DLL and complete 48-layer installation bundle
+        shell: bash
+        run: |
+          test -s staging/BepInEx/plugins/Paradox.dll
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('staging/BepInEx/plugins/ParadoxAssets/StationRooms')
+          rooms=[p for p in root.iterdir() if p.is_dir()]
+          assert len(rooms)==12, f"Expected 12 room folders, found {len(rooms)}"
+          for room in rooms:
+              layers=[room/f'{index:02d}_{name}.png' for index,name in
+                      [(1,'floor'),(2,'walls'),(3,'props'),(4,'lights')]]
+              assert all(p.is_file() and p.stat().st_size>0 for p in layers), room
+          print('PASS: executable DLL and 12 rooms with 48 PNG layers.')
+          PY
+      - name: Zip BepInEx-ready experimental mod + art pack
+        shell: bash
+        run: |
+          mkdir -p package
+          cd staging
+          zip -qr ../package/PARADOX-Station-alpha.7-Playtest.zip BepInEx
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-Station-alpha.7-Playtest-Install
+          path: package/PARADOX-Station-alpha.7-Playtest.zip

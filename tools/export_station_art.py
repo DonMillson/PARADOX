@@ -24,9 +24,9 @@ ALL_ROOMS = [("arrival_bay", "ARRIVAL BAY")] + [(slug, title) for slug, title, *
 SIZE = (1920, 1080)
 
 
-def render_one(slug: str, title: str, source: Path, target: Path) -> Image.Image:
+def render_one(slug: str, title: str, source: Path, target: Path, size: tuple[int, int]) -> Image.Image:
     target.mkdir(parents=True, exist_ok=True)
-    composite = Image.new("RGBA", SIZE, (0, 0, 0, 0))
+    composite = Image.new("RGBA", size, (0, 0, 0, 0))
 
     for layer in LAYER_NAMES:
         file = source / f"{layer}.svg"
@@ -35,10 +35,10 @@ def render_one(slug: str, title: str, source: Path, target: Path) -> Image.Image
         png = target / f"{layer}.png"
         cairosvg.svg2png(
             url=str(file), write_to=str(png),
-            output_width=SIZE[0], output_height=SIZE[1],
+            output_width=size[0], output_height=size[1],
         )
         with Image.open(png) as image:
-            if image.mode != "RGBA" or image.size != SIZE:
+            if image.mode != "RGBA" or image.size != size:
                 raise RuntimeError(f"Unexpected PNG format: {png}")
             bounds = image.getbbox()
             if bounds is None:
@@ -59,7 +59,12 @@ def main() -> None:
         "--output", type=Path,
         default=ROOT / "unity" / "ParadoxStation" / "Assets" / "Art" / "StationRooms",
     )
+    parser.add_argument("--render-width", type=int, default=SIZE[0],
+                        help="Sprite export width (1920 default; 960 recommended for runtime preview)")
     args = parser.parse_args()
+    if args.render_width < 480 or args.render_width > 3840 or args.render_width % 16:
+        raise SystemExit("--render-width must be between 480 and 3840 and divisible by 16")
+    render_size = (args.render_width, args.render_width * 9 // 16)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
 
@@ -84,9 +89,9 @@ def main() -> None:
                 ROOT / "art" / "arrival-bay"
                 if slug == "arrival_bay" else generated / slug
             )
-            room = render_one(slug, title, source, output / slug)
+            room = render_one(slug, title, source, output / slug, render_size)
             thumb = room.convert("RGBA")
-            bg = Image.new("RGBA", SIZE, "#07131fff")
+            bg = Image.new("RGBA", render_size, "#07131fff")
             bg.alpha_composite(thumb)
             thumb = bg.convert("RGB").resize((452, 254), Image.Resampling.LANCZOS)
 
@@ -102,7 +107,7 @@ def main() -> None:
                            outline="#67aab4", width=2)
             draw.text((x + 4, y + 4), f"{idx+1:02d}  {title}", fill="#e5f4f5")
             draw.text((x + 4, y + 287), slug, fill="#8dabad")
-            print(f"OK  {slug:<19} four 1920x1080 sprite layers")
+            print(f"OK  {slug:<19} four {render_size[0]}x{render_size[1]} sprite layers")
 
         output.joinpath("Station_AllRooms_ContactSheet.png").parent.mkdir(
             parents=True, exist_ok=True)
