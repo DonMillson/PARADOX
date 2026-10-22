@@ -121,7 +121,7 @@ class DependencyTests(TestCase):
             self.assertEqual(result["bepinex_build"], 790)
             self.assertTrue((root / "payload/BepInEx/plugins/Paradox.dll").is_file())
             self.assertTrue((root / "payload/BepInEx/plugins/Reactor.dll").is_file())
-            self.assertTrue((root / "payload/dotnet/runtime.dll").is_file())
+            self.assertTrue((root / "payload/dotnet/coreclr.dll").is_file())
             self.assertGreater(events[-1][0], .5)
 
     def test_previous_release_manifest_uses_build_matched_fallback(self):
