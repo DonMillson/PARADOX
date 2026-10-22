@@ -39,6 +39,19 @@ jobs:
           dotnet build src/Paradox/Paradox.csproj -c Release --no-restore
           if ($LASTEXITCODE -ne 0) { throw "PARADOX compilation failed" }
 
+      - name: Pin compiled Reactor.dll SHA256 for launcher compatibility
+        shell: pwsh
+        run: |
+          $reactorDir=Join-Path $env:USERPROFILE ".nuget/packages/reactor/2.5.1-ci.400"
+          $dll=Get-ChildItem -LiteralPath $reactorDir -Filter Reactor.dll -Recurse -File |
+            Where-Object { $_.FullName -match '[\\/]lib[\\/]' } | Select-Object -First 1
+          if (-not $dll) { throw "Reactor.dll missing from restored NuGet package" }
+          $sha=(Get-FileHash -LiteralPath $dll.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          $config=Get-Content -LiteralPath "launcher_python/dependencies.json" -Raw -Encoding UTF8 | ConvertFrom-Json
+          $config.reactor.dll_sha256=$sha
+          $config | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath "launcher_python/dependencies.json" -Encoding UTF8
+          Write-Host "PARADOX compiled Reactor.dll SHA256: $sha"
+
       - name: Install GUI and packaging tools
         shell: pwsh
         run: |
