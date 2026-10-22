@@ -122,6 +122,14 @@ class DependencyTests(TestCase):
             self.assertTrue((root / "payload/dotnet/runtime.dll").is_file())
             self.assertGreater(events[-1][0], .5)
 
+    def test_previous_release_manifest_uses_build_matched_fallback(self):
+        old = sample_manifest()
+        old["mod_version"] = "0.7.0-dev.4"
+        with patch.object(deps, "_text", return_value=json.dumps(old)):
+            found = deps.get_manifest()
+        self.assertEqual(found["mod_version"], deps.MOD_VERSION)
+        self.assertEqual(found["reactor_version"], deps.COMPILED_REACTOR)
+
     def test_download_bad_reactor_checksum_rejected_before_install(self):
         reactor_zip = make_zip({"lib/net6.0/Reactor.dll": b"x" * 11_000})
         with tempfile.TemporaryDirectory() as temp:
