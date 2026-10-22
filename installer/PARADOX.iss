@@ -54,12 +54,14 @@ end;
 function ScanSteamLibraries(const SteamRoot: String): String;
 var
   Vdf, Line, Fragment, Dir, Candidate: String;
+  RawVdf: AnsiString;
   P, Q, R: Integer;
 begin
   Result := '';
   Candidate := AddBackslash(SteamRoot) + 'steamapps\common\Among Us';
   if IsAmongUsDir(Candidate) then begin Result := Candidate; Exit; end;
-  if not LoadStringFromFile(AddBackslash(SteamRoot) + 'steamapps\libraryfolders.vdf', Vdf) then Exit;
+  if not LoadStringFromFile(AddBackslash(SteamRoot) + 'steamapps\libraryfolders.vdf', RawVdf) then Exit;
+  Vdf := RawVdf;
   while Vdf <> '' do begin
     R := Pos(#10, Vdf);
     if R <= 0 then begin
