@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 from launcher_python.paradox_launcher import (
-    new_challenge, pe_machine, valid_game, source_payload, install_backend
+    new_challenge, pe_machine, valid_game, install_backend
 )
 
 
@@ -44,7 +44,9 @@ class StartupTests(unittest.TestCase):
             self.assertEqual(pe_machine(path / "Among Us.exe"), 0x14C)
 
     def test_bundle_paths_are_separate(self):
-        self.assertEqual(source_payload().name, "payload")
+        from launcher_python.online_dependencies import bundled_manifest, bundled_mod
+        self.assertEqual(bundled_manifest().name, "dependencies.json")
+        self.assertEqual(bundled_mod().name, "Paradox.dll")
         self.assertEqual(install_backend().name, "Install-Paradox.ps1")
 
 
