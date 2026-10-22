@@ -20,11 +20,12 @@ jobs:
         with:
           dotnet-version: "6.0.x"
 
-      - name: Download Reactor 2.5.1 (2026 release)
+      - name: Restore pinned v19 dependencies
+        run: dotnet restore src/Paradox/Paradox.csproj --configfile nuget.config
+
+      - name: Verify v19 dependency pins
         shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path lib | Out-Null
-          Invoke-WebRequest -Uri "https://github.com/NuclearPowered/Reactor/releases/download/2.5.1/Reactor.dll" -OutFile "lib/Reactor.dll"
+        run: ./scripts/check-v19-toolchain.ps1
 
       - name: Verify role roster and RPC identifiers
         shell: pwsh
@@ -40,8 +41,26 @@ jobs:
       - name: Build
         run: dotnet build src/Paradox/Paradox.csproj -c Release
 
-      - name: Upload Paradox DLL
+      - name: Stage v19 test installation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $stage = "dist/PARADOX-v0.7.0-dev.4-v19-test/BepInEx/plugins"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item "src/Paradox/bin/Release/net6.0/Paradox.dll" $stage
+          $reactorDir = Join-Path $env:USERPROFILE ".nuget/packages/reactor/2.5.1-ci.400"
+          $reactor = Get-ChildItem -Path $reactorDir -Filter Reactor.dll -File -Recurse |
+            Where-Object { $_.FullName -match '[\\/]lib[\\/]' } |
+            Select-Object -First 1
+          if (-not $reactor) { throw "Compatible Reactor 2.5.1-ci.400 runtime DLL missing in NuGet package" }
+          Copy-Item $reactor.FullName (Join-Path $stage "Reactor.dll")
+          Copy-Item "docs/V19_INSTALL_PL.md" "dist/PARADOX-v0.7.0-dev.4-v19-test/README-PL.md"
+          Copy-Item "scripts/install-v19.ps1" "dist/PARADOX-v0.7.0-dev.4-v19-test/install-v19.ps1"
+          Write-Host "v19 test package staged with Paradox.dll and NuGet Reactor.dll"
+
+      - name: Upload v19 test package
         uses: actions/upload-artifact@v4
         with:
-          name: PARADOX-v0.7.0-dev.3
-          path: src/Paradox/bin/Release/net6.0/Paradox.dll
+          name: PARADOX-v0.7.0-dev.4-v19-test-NOT-RUNTIME-VERIFIED
+          path: dist/PARADOX-v0.7.0-dev.4-v19-test/
+          if-no-files-found: error
