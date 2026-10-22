@@ -251,7 +251,11 @@ class ParadoxLauncher(ctk.CTk):
         ctk.CTkButton(panel, text="ROZPOCZNIJ MISJĘ  →", height=49, width=280,
                       fg_color=CYAN, hover_color="#2AB5C8", text_color="#08101F",
                       font=ctk.CTkFont(size=17, weight="bold"),
-                      command=lambda: self.show_stage(1)).pack(pady=(9, 19))
+                      command=lambda: self.show_stage(1)).pack(pady=(7, 5))
+        ctk.CTkButton(panel, text="SPRAWDŹ INSTALACJĘ  /  LOGI",
+                      fg_color="#273854", hover_color="#3A527C",
+                      text_color=TEXT, width=280, height=39,
+                      command=self.quick_diagnostics).pack(pady=(3, 14))
 
     def hunt(self) -> None:
         self.title_block("MISJA 01  /  ZŁAP IMPOSTORA",
@@ -609,6 +613,16 @@ class ParadoxLauncher(ctk.CTk):
             pass
         if self.winfo_exists():
             self.after(80, self.check_events)
+
+    def quick_diagnostics(self) -> None:
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            selected = filedialog.askdirectory(
+                title="Wskaż katalog gry Among Us do diagnostyki", parent=self)
+            if not selected:
+                return
+            self.game_dir.set(selected)
+        self.check_mods()
 
     def show_diagnostic_state(self, status, popup: bool = True) -> None:
         color = GREEN if status.state == "loaded" else (
