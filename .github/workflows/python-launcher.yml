@@ -1,4 +1,4 @@
-name: Build PARADOX AMONG US Launcher EXE
+name: Build PARADOX AMONG US Online Launcher EXE
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  offline-launcher:
+  online-launcher:
     runs-on: windows-latest
     timeout-minutes: 45
     steps:
@@ -39,53 +39,56 @@ jobs:
           dotnet build src/Paradox/Paradox.csproj -c Release --no-restore
           if ($LASTEXITCODE -ne 0) { throw "PARADOX compilation failed" }
 
-      - name: Stage complete offline BepInEx / Reactor / PARADOX payload
-        shell: pwsh
-        run: ./installer/Stage-Payload.ps1
-
-      - name: Validate existing setup and rollback
-        shell: pwsh
-        run: ./installer/Test-Installer.ps1
-
-      - name: Install Python GUI and packaging dependencies
+      - name: Install GUI and packaging tools
         shell: pwsh
         run: |
           python -m pip install --disable-pip-version-check "customtkinter==5.2.2" "pyinstaller==6.16.0"
           if ($LASTEXITCODE -ne 0) { throw "Python dependencies failed" }
 
-      - name: Check launcher logic without opening UI
+      - name: Test UI logic and secure dependency selection
         shell: pwsh
         run: |
-          python -m unittest -v launcher_python/test_launcher.py
+          python -m unittest -v launcher_python/test_launcher.py launcher_python/test_online_dependencies.py
           if ($LASTEXITCODE -ne 0) { throw "Launcher unit tests failed" }
-          python -m py_compile launcher_python/paradox_launcher.py
+          python -m py_compile launcher_python/paradox_launcher.py launcher_python/online_dependencies.py
           if ($LASTEXITCODE -ne 0) { throw "Launcher syntax check failed" }
 
-      - name: Build single offline launcher EXE
+      - name: Download and test real official vendors (not embedded)
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --name "PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64" --collect-all customtkinter --add-data "dist/installer/payload;payload" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
+          New-Item -ItemType Directory -Force -Path "mod" | Out-Null
+          Copy-Item "src/Paradox/bin/Release/net6.0/Paradox.dll" "mod/Paradox.dll"
+          New-Item -ItemType Directory -Force -Path "dist/installer/payload" | Out-Null
+          python -c "from pathlib import Path; from launcher_python.online_dependencies import assemble_payload; assemble_payload(Path('dist/installer/payload'), lambda name, frac: print(round(frac * 100), name))"
+          if ($LASTEXITCODE -ne 0) { throw "Official vendor download or checksum validation failed" }
+          ./installer/Test-Installer.ps1
+          if ($LASTEXITCODE -ne 0) { throw "Installer integration test failed" }
+
+      - name: Build lightweight online launcher
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --paths "." --name "PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64" --collect-all customtkinter --add-data "mod/Paradox.dll;mod" --add-data "launcher_python/dependencies.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
           if ($LASTEXITCODE -ne 0) { throw "PyInstaller build failed" }
-          $exe=Get-Item "dist/PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe"
-          if ($exe.Length -lt 1000000) { throw "Missing or invalid bundled EXE" }
-          Write-Host "Launcher executable: $($exe.FullName)"
-          Write-Host "File size: $($exe.Length) bytes"
+          $exe=Get-Item "dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe"
+          if ($exe.Length -lt 1000000) { throw "Bundled EXE missing or implausibly small" }
+          Write-Host "PARADOX online launcher: $($exe.FullName)"
           Write-Host "SHA256: $((Get-FileHash $exe.FullName -Algorithm SHA256).Hash)"
 
-      - name: Check bundled resources inside EXE archive
+      - name: Verify lightweight EXE payload
         shell: pwsh
         run: |
-          $archive=python -m PyInstaller.utils.cliutils.archive_viewer "dist/PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe" -b 2>&1
+          $archive=python -m PyInstaller.utils.cliutils.archive_viewer "dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe" -b 2>&1
           $txt=$archive | Out-String
-          foreach ($name in @('Install-Paradox.ps1', 'Paradox.dll', 'Reactor.dll', 'winhttp.dll')) {
-            if (-not $txt.Contains($name)) { throw "Missing archived component: $name" }
+          foreach ($name in @('Install-Paradox.ps1', 'Paradox.dll', 'dependencies.json', 'online_dependencies')) {
+            if (-not $txt.Contains($name)) { throw "Missing required bundled resource: $name" }
           }
-          Write-Host "PASS: EXE contains backend and bundled loader"
+          if ($txt.Contains('BepInEx/core')) { throw 'Vendor binaries should not be bundled in lightweight launcher' }
+          Write-Host 'PASS: EXE includes PARADOX but retrieves official dependencies at install time'
 
-      - name: Upload one-click PARADOX launcher
+      - name: Upload online PARADOX launcher
         uses: actions/upload-artifact@v4
         with:
-          name: PARADOX-AMONG-US-LAUNCHER-ALL-IN-ONE-v0.7.0-dev.4-x64
-          path: dist/PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe
+          name: PARADOX-ONLINE-LAUNCHER-v0.7.0-dev.4-x64
+          path: dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe
           if-no-files-found: error
           retention-days: 30
