@@ -16,7 +16,9 @@ public static class RoleAbilityService
             MeetingHud.Instance != null)
             return false;
 
-        if (ParadoxEventRuntime.RoleAbilitiesBlocked ||
+        // Rift Warden is PARADOX's emergency ability: its only purpose is
+        // to break an active reality jam. All other roles remain blocked.
+        if ((ParadoxEventRuntime.RoleAbilitiesBlocked && role != RoleId.RiftWarden) ||
             Paradox.Roles.Corruptor.CorruptorRole.IsCorrupted(source.PlayerId))
         {
             ParadoxPlugin.Instance.Log.LogInfo(
