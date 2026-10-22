@@ -7,7 +7,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
-**Current testing milestone: PARADOX 0.7.0-dev.2.** The project has 41 registered roles with gameplay MVP/foundation: 15 Impostor, 16 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.7.0-dev.3.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -48,6 +48,8 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Forensic | Crewmate | Examines bodies for real death age and recent ability residue. | Partial | Multiplayer/runtime verification and balance tuning |
 | Stabilizer | Crewmate | Reduces the Paradox Meter by up to 10 per use. | Partial | Multiplayer/runtime verification and balance tuning |
 | Swapper | Crewmate | During meetings, click two swap arrows beside the players' voting cards, or use `/swap ID1 ID2` in Free Chat as a fallback. The votes FOR the two players are exchanged; if the swap changes the exile to a Crewmate, Swapper dies. | Partial | Live voting UI, post-exile punishment, compatibility and multiplayer verification |
+| Sheriff | Crewmate | Shoots a suspected Impostor; shooting a non-Impostor instead eliminates Sheriff. | Partial | Host/client murder sync, protection interactions and real match testing |
+| Rift Warden | Crewmate | Original PARADOX role: once per match, breaks one global Paradox role-ability jam without reducing instability. | Partial | Event ordering, Null Field, multi-client synchronization and UI testing |
 | Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forgotten | Neutral | Recovers memories from two unique dead bodies and wins immediately after completing the memory objective. | Partial | Multiplayer/runtime verification and balance tuning |
 | Collector | Neutral | Collects unique samples from three different living players and wins immediately after completing the collection. | Partial | Multiplayer/runtime verification and balance tuning |
@@ -88,13 +90,13 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
 - Host can now tune Paradox Meter gains for kills, sabotages, role abilities and Anomaly from the native lobby tab. Values persist and synchronize via host-verified RPC 43 (protocol v40).
-- Host-side initial role assignment covers all 41 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
+- Host-side initial role assignment covers all 43 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
 - Lobby UI: role summary now shows six roles per page, cycles through faction pages with a click, and carries the PARADOX by DonMillson credit without a separate overlay obscuring Customize.
 - Former solo-map testing via F7 is disabled in release/dev standard builds; the unfinished lobby map-test button was removed entirely. Production Unity geometry remains separate under `unity/ParadoxStation/`.
 - PARADOX STATION: production map geometry/build scripts now generate all 12 connected room positions, 16 full collision-aware corridor routes and asset-bundle-ready Unity scene authoring; native ShipStatus tasks, vents and map choice are still pending. See [Production map development](docs/STATION_PRODUCTION.md).
 - Match-end state reset for implemented MVP roles.
-- GitHub Actions checks all 41 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
+- GitHub Actions checks all 43 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
 
 ## Twelve-room station artwork
 
@@ -114,9 +116,9 @@ PARADOX STATION now has **12 distinct illustrated room concepts**, each exported
 
 ## Testing build (Windows)
 
-1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.7.0-dev.2` artifact.
+1. In GitHub Actions, open the latest green **Build PARADOX** workflow run and download its `PARADOX-v0.7.0-dev.3` artifact.
 2. Use a matching supported Among Us PC build with the required BepInEx 6 IL2CPP and Reactor 2.5.1 dependencies installed. Place `Paradox.dll` in `BepInEx/plugins/`.
-3. All participating clients should use the same mod build and protocol (currently v43). Avoid mixing different PARADOX builds in one room.
+3. All participating clients should use the same mod build and protocol (currently v44). Avoid mixing different PARADOX builds in one room.
 4. Before public release, follow [Multiplayer QA plan](docs/MULTIPLAYER_QA.md) and capture client/host logs for any desync, role or meeting crash.
 
 The DLL being compiled by GitHub Actions **does not** establish that gameplay works correctly in a live Among Us match. Map content, assets and end-to-end multiplayer testing remain separate milestones.
