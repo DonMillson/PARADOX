@@ -23,6 +23,13 @@ public partial class ParadoxPlugin : BasePlugin
     public static Localizer Localizer { get; } = DefaultTranslations.Create();
 
     private ConfigEntry<Language>? _language;
+    private ConfigEntry<bool>? _experimentalLargeLobbies;
+    private ConfigEntry<int>? _experimentalMaxPlayers;
+
+    // This is a host create-room UI experiment, NOT a server capacity bypass.
+    public bool ExperimentalLargeLobbiesEnabled => _experimentalLargeLobbies?.Value ?? false;
+    public int ExperimentalLobbyMaxPlayers =>
+        LargeLobbyPolicy.ClampRequestedLimit(_experimentalMaxPlayers?.Value ?? 50);
     private readonly Dictionary<RoleId, ConfigEntry<bool>> _roleEnabled = new();
     private readonly Dictionary<RoleId, ConfigEntry<int>> _roleChance = new();
     private readonly Dictionary<ParadoxMeterSource, ConfigEntry<int>> _meterGains = new();
@@ -35,6 +42,10 @@ public partial class ParadoxPlugin : BasePlugin
         Clients.Clear();
 
         LoadPreferences();
+
+        if (ExperimentalLargeLobbiesEnabled)
+            Log.LogWarning($"Experimental large lobby capacity requested: {ExperimentalLobbyMaxPlayers}. " +
+                "Only use a private modded server. 16–50 player gameplay is untested.");
 
         if (!ParadoxStation.TryValidateDesign(out var stationIssue))
             Log.LogError($"PARADOX STATION design manifest invalid: {stationIssue}");
@@ -130,6 +141,18 @@ public partial class ParadoxPlugin : BasePlugin
 
     private void LoadPreferences()
     {
+        _experimentalLargeLobbies = Config.Bind(
+            "ExperimentalLargeLobby",
+            "Enable",
+            false,
+            "EXPERIMENTAL: Unlock a 16–50 seat create-room picker only on a custom/modded server. " +
+            "Disabled by default; does not upgrade the server or fix the 15-player meeting UI.");
+        _experimentalMaxPlayers = Config.Bind(
+            "ExperimentalLargeLobby",
+            "MaxPlayers",
+            50,
+            "Experimental upper limit on custom servers (15–50). Ignored unless Enable is true.");
+
         _language = Config.Bind(
             "General",
             "Language",

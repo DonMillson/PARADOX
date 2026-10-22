@@ -1,6 +1,7 @@
 using Paradox.Roles.Doppelganger;
 using Paradox.Roles.Swapper;
 using Paradox.Roles;
+using Paradox.Settings;
 using Paradox.Localization;
 using System.Text.RegularExpressions;
 
@@ -106,3 +107,56 @@ foreach (var key in englishKeys)
     Check(enTokens.SequenceEqual(plTokens), $"localization token mismatch: {key}");
 }
 Console.WriteLine($"PASS: bilingual localization ({englishKeys.Count} EN/PL keys, 43 roles, placeholder parity).");
+
+
+// 50-seat mode must stay opt-in and must never unlock on official/unknown regions.
+Check(LargeLobbyPolicy.VanillaMaxPlayers == 15, "default Among Us cap stays 15");
+Check(LargeLobbyPolicy.ExperimentalMaxPlayers == 50, "PARADOX target maximum is 50");
+Check(LargeLobbyPolicy.ClampRequestedLimit(10) == 15, "requested minimum stays vanilla");
+Check(LargeLobbyPolicy.ClampRequestedLimit(20) == 20, "20 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(30) == 30, "30 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(40) == 40, "40 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(50) == 50, "50 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(500) == 50, "no unbounded 500 player setting");
+Check(LargeLobbyPolicy.EffectiveMaxPlayers(50, false, true) == 15,
+      "disabled large lobby mode cannot change default");
+Check(LargeLobbyPolicy.EffectiveMaxPlayers(50, true, false) == 15,
+      "public and unknown regions remain vanilla 15");
+Check(LargeLobbyPolicy.EffectiveMaxPlayers(50, true, true) == 50,
+      "private server can unlock experimental 50 in native selector");
+Check(LargeLobbyPolicy.IsLargeLobby(16) && !LargeLobbyPolicy.IsLargeLobby(15),
+      "only above vanilla 15 is large lobby");
+Check(LargeLobbyPolicy.WithinExperimentalTarget(50) &&
+      !LargeLobbyPolicy.WithinExperimentalTarget(51) &&
+      !LargeLobbyPolicy.WithinExperimentalTarget(-1),
+      "capacity target never exceeds signed-safe count or goes negative");
+Console.WriteLine("PASS: experimental 15/20/30/40/50 player policy and public-server safety.");
+
+Check(LargeLobbyPagination.PageCount(15) == 1 &&
+      LargeLobbyPagination.PageCount(16) == 2 &&
+      LargeLobbyPagination.PageCount(30) == 2 &&
+      LargeLobbyPagination.PageCount(31) == 3 &&
+      LargeLobbyPagination.PageCount(50) == 4,
+      "meeting vote paging covers 15 through 50 players");
+Check(LargeLobbyPagination.PageCount(0) == 0 &&
+      LargeLobbyPagination.CyclePage(0, +1, 0) == 0,
+      "empty meetings do not divide by zero");
+Check(LargeLobbyPagination.CyclePage(3, +1, 50) == 0 &&
+      LargeLobbyPagination.CyclePage(0, -1, 50) == 3,
+      "meeting pages wrap correctly in both directions");
+Check(LargeLobbyPagination.IsOnPage(49, 3, 50) &&
+      !LargeLobbyPagination.IsOnPage(48, 2, 50) &&
+      !LargeLobbyPagination.IsOnPage(50, 3, 50),
+      "last meeting page includes player 50 and no out-of-bounds card");
+Check(LargeLobbyPagination.PositionWithinPage(49) == (1, 1),
+      "position index 49 corresponds to page four, row two, column two");
+for (var playerCount = 16; playerCount <= 50; playerCount++)
+{
+    for (var index = 0; index < playerCount; index++)
+    {
+        var hits = Enumerable.Range(0, LargeLobbyPagination.PageCount(playerCount))
+            .Count(page => LargeLobbyPagination.IsOnPage(index, page, playerCount));
+        Check(hits == 1, $"meeting card {index} appears on exactly one page with {playerCount} players");
+    }
+}
+Console.WriteLine("PASS: 15 cards/page, wrap, positioning and visibility for 16–50 players.");

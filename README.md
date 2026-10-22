@@ -9,6 +9,10 @@ Po mini-grze i kodzie matematycznym instalator pobiera **najnowszy oficjalny Bep
 
 Zobacz [instrukcję launchera](launcher_python/README_PL.md). Zgodność z realnym klientem Among Us 19.0.0 i multiplayer pozostaje **niezweryfikowana**.
 
+## Experimental lobby capacity: 16–50 players
+
+PARADOX now includes an **opt-in** 15–50 seat Create Game picker for a **custom/modded Among Us server only**. Official Innersloth regions are left at the native 15-player limit. This is a preliminary code milestone, **not** 50-player multiplayer support: the server, meeting UI, role/netcode scaling and runtime tests must be completed. Disabled by default; see [configuration and QA blockers](docs/LARGE_LOBBIES_50_QA.md).
+
 ## Development status
 
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
