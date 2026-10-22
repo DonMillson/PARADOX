@@ -33,6 +33,13 @@ foreach($name in @('winhttp.dll','BepInEx/plugins/Reactor.dll',
 if (-not (Test-Path (Join-Path $support 'installed-files.json'))) {
     throw 'Installation did not write the uninstall manifest'
 }
+$installedManifest=Get-Content (Join-Path $support 'installed-files.json') -Raw | ConvertFrom-Json
+$expectedFiles=@(Get-ChildItem -LiteralPath $payload -Recurse -File | Where-Object {
+    $_.Name -ne 'PARADOX-PAYLOAD-MANIFEST.json'
+})
+if (@($installedManifest.Files).Count -ne $expectedFiles.Count) {
+    throw "Incomplete loader: only $(@($installedManifest.Files).Count) of $($expectedFiles.Count) files installed."
+}
 if ([IO.File]::ReadAllText((Join-Path $game 'BepInEx/plugins/FriendsCustomMod.dll')) -ne 'unrelated') {
     throw 'The installer modified an unrelated mod'
 }
