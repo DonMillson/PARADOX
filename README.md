@@ -2,14 +2,24 @@
 
 ## PARADOX AMONG US — instalator online (Among Us 19, x64)
 
-**Nowy:** samodzielny launcher Windows `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe`.
+**Nowy:** samodzielny launcher Windows `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe`.
 Po mini-grze i kodzie matematycznym instalator pobiera **najnowszy oficjalny BepInEx Unity IL2CPP x64** oraz **zgodny z tą kompilacją Reactor 2.5.1-ci.400** z serwera NuGet, zamiast dołączać te zależności do EXE. Kontroluje HTTPS, zawartość ZIP i sumy plików; zachowuje backup i wycofuje zmiany po błędzie. **Do instalacji wymagany jest internet.**
 
 **Nie pobieraj dowolnego „najnowszego” Reactora:** mod PARADOX musi być skompilowany na tę samą wersję API. Przypięta wersja jest ogłaszana w `launcher_python/compatibility.json`; nowszy niezatwierdzony pakiet nie jest instalowany automatycznie.
 
 Zobacz [instrukcję launchera](launcher_python/README_PL.md). Zgodność z realnym klientem Among Us 19.0.0 i multiplayer pozostaje **niezweryfikowana**.
 
-## Experimental lobby capacity: 16–50 players
+## Experimental lobby capacity: 16–50 players (dev.5)
+
+**Bez ręcznej konfiguracji:** nowy instalator PARADOX dev.5 pozwala zaznaczyć
+eksperymentalny tryb większych lobby i wybrać **15 / 20 / 30 / 40 / 50**
+graczy. Wybrany limit jest automatycznie zapisywany w BepInEx z kopią
+ustawień. Dostęp działa **wyłącznie z kompatybilnym niestandardowym
+serwerem**; oficjalne regiony pozostają przy 15.
+
+Stronicowanie głosowań, Vitals i Shapeshifter jest zaimplementowane na
+poziomie UI. Nadal **brak zakończonego testu grywalności 50 osób na żywo**,
+pełnego netcode i zgodności serwera.
 
 PARADOX now includes an **opt-in** 15–50 seat Create Game picker for a **custom/modded Among Us server only**. Official Innersloth regions are left at the native 15-player limit. This is a preliminary code milestone, **not** 50-player multiplayer support: the server, meeting UI, role/netcode scaling and runtime tests must be completed. Disabled by default; see [configuration and QA blockers](docs/LARGE_LOBBIES_50_QA.md).
 
@@ -18,7 +28,7 @@ PARADOX now includes an **opt-in** 15–50 seat Create Game picker for a **custo
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
-**Current testing milestone: PARADOX 0.7.0-dev.4.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.7.0-dev.5.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 43 registered roles have an MVP/foundation; none is considered multiplayer-certified yet.
 

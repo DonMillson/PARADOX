@@ -10,25 +10,21 @@ connections or that a 50-person match can complete.
 
 The vanilla 15 player experience remains the default.
 
-## How to opt in (host only, Windows PC)
+## How to opt in (host only, Windows PC, dev.5)
 
-1. Install and start PARADOX on Windows. Exit the game.
-2. Edit `BepInEx/config/gg.paradox.mod.cfg` (exact generated filename depends on BepInEx's plugin ID).
-3. In section `[ExperimentalLargeLobby]`, set:
-   ```ini
-   Enable = true
-   MaxPlayers = 50
-   ```
-   `MaxPlayers` can be between 15 and 50. For incremental tests, use 20,
-   then 30, 40 and finally 50.
-4. Set up a **separate, trustworthy, compatible custom Among Us server** that
-   explicitly supports expanded lobbies on the game's target version. Select
-   that custom region in the Among Us server selector.
-5. Open **Create Game**. PARADOX tries to expand the standard player-count
-   picker to the requested cap. If the region is official or unknown, it leaves
-   the vanilla picker untouched.
-6. Require all clients to run matching PARADOX versions and verify host/client
-   logs before increasing test load.
+1. Download the **PARADOX AMONG US Online Installer dev.5**.
+2. At installation stage, check **Eksperymentalne duże lobby** and choose
+   `15 / 20 / 30 / 40 / 50` in the dropdown; leave unchecked for vanilla 15.
+3. The installer saves the selection into the correct BepInEx configuration
+   file **automatically**, with a backup. No manual .cfg editing is required.
+4. Set up and select a **separate, compatible custom Among Us server** capable
+   of hosting 16–50 players. On official/unknown regions the cap stays vanilla.
+5. Open **Create Game**. PARADOX tries to expand the native player-count picker
+   to the requested max. For incremental tests start at 20, then 30/40/50.
+6. Use the same PARADOX dev.5 / protocol 45 on ALL clients, and retain logs.
+
+Advanced manual alternative: set `Enable = true` and `MaxPlayers = 50`
+under `[ExperimentalLargeLobby]` in `BepInEx/config/gg.paradox.mod.cfg`.
 
 No hardcoded third-party server address is injected by PARADOX.
 No official server validation is bypassed, and no automatic client installation
@@ -38,6 +34,9 @@ of an external custom server is included.
 
 - Meeting voting cards are split into 15-card pages (50 players = 4 pages).
 - PageUp/PageDown and Left/Right arrows switch pages.
+- **Vitals** and **Shapeshifter targets** also have 15-slot paging overlays.
+  These are client-side presentation changes; actual targets/votes remain native.
+  Runtime HUD positions and click hitboxes must still be verified.
 - A small page counter is added to the meeting timer; Swapper voting markers
   remain attached to their native player cards.
 - This layout logic and the last partially filled page have unit tests. It
@@ -61,7 +60,8 @@ of an external custom server is included.
 - [ ] Verify the **experimental** 15-card meeting paging in the real game,
       including Swapper arrows, chat, tie votes, exile and native button input.
       Basic paging code exists, but runtime QA is not complete.
-- [ ] Paginate the shapeshifter/target picker and vitals display.
+- [ ] Runtime-test the now-implemented Vitals/Shapeshifter pages, confirm
+      inactive views clean up correctly, and verify input with 50 real clients.
 - [ ] Review player count assumptions, byte ID sentinels (253–255),
       impostor counts, role assignment and network RPC rates for 50 players.
 - [ ] Load/stress test host: joining/leaving, 50-player role assignment,
