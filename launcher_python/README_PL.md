@@ -4,13 +4,21 @@
 
 ## Przebieg
 
-1. Uruchom `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe` jako administrator na Windows x64.
+1. Uruchom `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe` jako administrator na Windows x64.
 2. Przejdź mini-grę (5 kliknięć Impostora) i zadanie matematyczne. Instalacja jest wcześniej zablokowana.
 3. Launcher wykrywa Among Us w bibliotece Steam lub pozwala wskazać katalog ręcznie.
+   W tym samym oknie można zaznaczyć **Eksperymentalne duże lobby** i wybrać
+   15, 20, 30, 40 lub 50 graczy. Opcja wymaga własnego zgodnego serwera i
+   nie znosi limitu publicznych serwerów Among Us. Bez zaznaczenia
+   pozostaje bezpieczny standard 15.
 4. Po kliknięciu „Zainstaluj moda” odczytuje [listę zgodności PARADOX](compatibility.json) z GitHub (z dołączonym zapasowym manifestem), wyszukuje **najnowsze BepInEx Unity.IL2CPP win-x64** na [oficjalnym serwerze](https://builds.bepinex.dev/projects/bepinex_be), pobiera je i sprawdza typ paczki oraz sumę SHA-256 dla przypiętej wersji zapasowej.
 5. Reactor pobierany jest jako oficjalny pakiet NuGet z [nuget.reactor.gg](https://nuget.reactor.gg/). **Wersja Reactor 2.5.1-ci.400 pozostaje kompatybilnościowo przypięta do skompilowanego PARADOX dev.4**, a archiwum weryfikowane jest sumą SHA-512 udostępnianą przez NuGet.
 6. Launcher wypakowuje pliki do katalogu tymczasowego i uruchamia dotychczasowy instalator z manifestem plików, kopiami zapasowymi i rollbackiem. Dopiero po pobraniu i sprawdzeniu wszystkich komponentów modyfikuje folder gry.
-7. Po sukcesie można uruchomić Among Us. W razie problemów sprawdź `BepInEx/LogOutput.log`.
+7. Po sukcesie instalator automatycznie zapisuje wybór dużego lobby do
+   `BepInEx/config/gg.paradox.mod.cfg`, zachowując wcześniejsze ustawienia i
+   kopię bezpieczeństwa. Nie trzeba ręcznie edytować pliku. Po tym można
+   uruchomić Among Us.
+8. W razie problemów sprawdź `BepInEx/LogOutput.log`.
 
 **Dlaczego Reactor nie zawsze „latest”?** Nowy Reactor może wymagać rekompilacji PARADOX i zmienić API; automatycznie aktualizujemy źródło kompatybilności, ale nie podstawiamy niezweryfikowanego wydania. Jeśli aktualna lista wymaga innej wersji niż wbudowany mod, instalator zatrzyma się i poprosi o nowy build launchera.
 
