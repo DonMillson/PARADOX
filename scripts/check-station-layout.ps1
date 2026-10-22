@@ -78,8 +78,13 @@ foreach ($required in @('IsSoloLobby()', 'enteringSoloLobby', '_soloLobbyPreview
     if (-not $runtime.Contains($required)) { throw "Solo preview integration missing: $required" }
 }
 $ui = Get-Content -Raw -Encoding UTF8 (Join-Path $root 'src/Paradox/UI/ParadoxLobbyRoleSummaryPatch.cs')
-foreach ($token in @('CreateSoloStationButton', 'TESTUJ MAPĘ', 'ParadoxStationRuntime.TryToggleHost')) {
-    if (-not $ui.Contains($token)) { throw "Missing clickable lobby station entry: $token" }
+# The unfinished map preview must not create a lobby button or offer a
+# fake playable Among Us map. Keep the UI regression guard in this check.
+foreach ($token in @('CreateSoloStationButton', 'SoloMapTestButton', 'TESTUJ MAPĘ', 'TEST STATION', 'ParadoxStationRuntime.TryToggleHost')) {
+    if ($ui.Contains($token)) { throw "Removed station test lobby entry returned: $token" }
 }
-Write-Host 'PARADOX STATION: 12 reachable rooms, 16 corridors, 3 vents, 12 tasks, F6 blueprint and clickable solo-lobby station button.'
+if (-not $runtime.Contains('public const bool PrototypeEnabled = false;')) {
+    throw 'Unfinished map runtime must stay disabled in standard builds.'
+}
+Write-Host 'PARADOX STATION: 12 reachable rooms, 16 corridors, 3 vents, 12 tasks; prototype disabled and no map-test lobby button.'
 
