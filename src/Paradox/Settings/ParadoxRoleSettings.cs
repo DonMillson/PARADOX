@@ -45,7 +45,8 @@ public static class ParadoxRoleSettings
         [RoleId.EngineerX] = true,
         [RoleId.Dispatcher] = true,
         [RoleId.Locksmith] = true,
-        [RoleId.Technician] = true
+        [RoleId.Technician] = true,
+        [RoleId.Swapper] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -89,7 +90,8 @@ public static class ParadoxRoleSettings
         [RoleId.EngineerX] = 100,
         [RoleId.Dispatcher] = 100,
         [RoleId.Locksmith] = 100,
-        [RoleId.Technician] = 100
+        [RoleId.Technician] = 100,
+        [RoleId.Swapper] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -234,7 +236,8 @@ public static class ParadoxRoleSettings
         RoleId.EngineerX or
         RoleId.Dispatcher or
         RoleId.Locksmith or
-        RoleId.Technician;
+        RoleId.Technician or
+        RoleId.Swapper;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
