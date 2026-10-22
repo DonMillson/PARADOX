@@ -133,8 +133,8 @@ class ParadoxLauncher(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
         self.title("PARADOX AMONG US • Launcher / Installer")
-        self.geometry("1000x748")
-        self.minsize(880, 690)
+        self.geometry("1000x840")
+        self.minsize(880, 770)
         self.configure(fg_color=BACKGROUND)
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.stage = 0
