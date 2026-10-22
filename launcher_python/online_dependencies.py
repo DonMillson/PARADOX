@@ -77,12 +77,8 @@ def validate_manifest(doc: object) -> dict:
         raise DependencyError("Manifest nie zawiera SHA256 BepInEx.")
     if reactor.get("version") != COMPILED_REACTOR:
         raise DependencyError("Reactor nie pasuje do kompilacji PARADOX.")
-    base = "https://nuget.reactor.gg/v3-flatcontainer/reactor/"
-    nupkg = f"reactor.{COMPILED_REACTOR}.nupkg"
-    if reactor.get("url") != base + COMPILED_REACTOR + "/" + nupkg:
-        raise DependencyError("Nieznany adres paczki Reactor.")
-    if reactor.get("sha512_url") != base + COMPILED_REACTOR + "/" + nupkg + ".sha512":
-        raise DependencyError("Nieznany adres sumy kontrolnej Reactor.")
+    if reactor.get("feed") != "https://nuget.reactor.gg/v3/index.json":
+        raise DependencyError("Nieznany adres oficjalnego indeksu NuGet.")
     return doc
 
 
@@ -210,6 +206,39 @@ def _reactor_assembly(nupkg: bytes) -> bytes:
         return dll
 
 
+def reactor_download_urls(feed: str) -> tuple[str, str]:
+    """Resolve NuGet PackageBaseAddress from the vendor's actual V3 index."""
+    if feed != "https://nuget.reactor.gg/v3/index.json":
+        raise DependencyError("Nieprawidłowy NuGet feed.")
+    data = json.loads(_fetch_bytes(feed, 65536).decode("utf-8"))
+    resources = data.get("resources", [])
+    if not isinstance(resources, list):
+        raise DependencyError("Nieprawidłowa odpowiedź NuGet.")
+    base = None
+    for resource in resources:
+        if not isinstance(resource, dict):
+            continue
+        kind = resource.get("@type", "")
+        if "PackageBaseAddress/3.0.0" not in (
+            kind if isinstance(kind, list) else [kind]
+        ):
+            continue
+        candidate = resource.get("@id", "")
+        if not isinstance(candidate, str):
+            continue
+        parts = urllib.parse.urlsplit(candidate)
+        if parts.scheme == "https" and parts.hostname == "nuget.reactor.gg" and (
+            not parts.username and not parts.password and not parts.query and not parts.fragment
+        ):
+            base = candidate.rstrip("/")
+            break
+    if not base:
+        raise DependencyError("Oficjalny NuGet nie podał bezpiecznego adresu pakietów.")
+    nupkg = f"reactor.{COMPILED_REACTOR}.nupkg"
+    url = f"{base}/reactor/{COMPILED_REACTOR}/{nupkg}"
+    return url, url + ".sha512"
+
+
 def assemble_payload(destination: Path, progress: Progress | None = None) -> dict:
     manifest = choose_manifest(progress)
     mod = bundled_mod()
@@ -222,7 +251,8 @@ def assemble_payload(destination: Path, progress: Progress | None = None) -> dic
 
     # NuGet's official SHA-512 sidecar is downloaded over HTTPS and must match
     # the package bytes. The package version cannot change without a mod rebuild.
-    sha_b64 = _fetch_bytes(reactor["sha512_url"], 4096).decode("ascii").strip()
+    reactor_url, reactor_sha_url = reactor_download_urls(reactor["feed"])
+    sha_b64 = _fetch_bytes(reactor_sha_url, 4096).decode("ascii").strip()
     try:
         reactor_sha = base64.b64decode(sha_b64, validate=True)
     except ValueError as exc:
@@ -230,7 +260,7 @@ def assemble_payload(destination: Path, progress: Progress | None = None) -> dic
     if len(reactor_sha) != 64:
         raise DependencyError("Nieprawidłowy rozmiar sumy SHA512 Reactora.")
     # Cache the official package under its upstream SHA512-derived content ID.
-    nupkg = _get_verified_reactor(reactor["url"], reactor_sha, progress)
+    nupkg = _get_verified_reactor(reactor_url, reactor_sha, progress)
     _extract_safe(bep_zip, destination)
     required = [destination / "winhttp.dll", destination / "BepInEx" / "core"]
     if not all(p.exists() for p in required):
