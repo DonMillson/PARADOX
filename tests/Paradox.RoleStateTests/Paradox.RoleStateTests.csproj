@@ -12,6 +12,8 @@
     <Compile Include="../../src/Paradox/Roles/Swapper/SwapperVoteResolver.cs"
              Link="SwapperVoteResolver.cs" />
     <Compile Include="../../src/Paradox/Roles/RoleId.cs" Link="RoleId.cs" />
+    <Compile Include="../../src/Paradox/Settings/LargeLobbyPolicy.cs"
+             Link="LargeLobbyPolicy.cs" />
     <Compile Include="../../src/Paradox/Localization/Language.cs" Link="Language.cs" />
     <Compile Include="../../src/Paradox/Localization/Localizer.cs" Link="Localizer.cs" />
     <Compile Include="../../src/Paradox/Localization/DefaultTranslations.cs"
