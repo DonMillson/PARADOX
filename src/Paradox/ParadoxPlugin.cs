@@ -42,8 +42,36 @@ public partial class ParadoxPlugin : BasePlugin
             Log.LogInfo($"PARADOX STATION design manifest: {ParadoxStation.Rooms.Count} connected rooms.");
 
         Log.LogInfo($"PARADOX v{ParadoxInfo.Version} / protocol {ParadoxInfo.ProtocolVersion} loading...");
-        Harmony.PatchAll();
-        Log.LogInfo("PARADOX loaded. Reactor RPC transport ready.");
+        try
+        {
+            var gameVersion = UnityEngine.Application.version;
+            var reactorAssembly = typeof(ReactorPlugin).Assembly.GetName().Version;
+            Log.LogInfo($"PARADOX diagnostic: game application version '{gameVersion}', " +
+                        $"process {IntPtr.Size * 8}-bit, Reactor assembly {reactorAssembly}.");
+            if (IntPtr.Size != 8)
+                Log.LogWarning("PARADOX dev.4 test package targets Windows x64 Among Us v19.");
+            if (!gameVersion.StartsWith("19.", StringComparison.Ordinal) &&
+                !gameVersion.Contains("2026.9.29", StringComparison.Ordinal))
+                Log.LogWarning($"PARADOX v19 test baseline does not recognize game version '{gameVersion}'.");
+        }
+        catch (Exception e)
+        {
+            Log.LogWarning($"PARADOX could not read runtime diagnostics: {e.Message}");
+        }
+
+        // Do not keep a half-installed group of Harmony patches if v19 has
+        // removed or renamed a method; log exactly why startup failed.
+        try
+        {
+            Harmony.PatchAll();
+        }
+        catch (Exception e)
+        {
+            Log.LogError($"PARADOX Harmony patch registration failed: {e}");
+            Harmony.UnpatchSelf();
+            throw;
+        }
+        Log.LogInfo("PARADOX loaded. Reactor RPC transport registered; multiplayer test still required.");
     }
 
     public void SetLanguage(Language language)
