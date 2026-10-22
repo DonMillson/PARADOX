@@ -34,6 +34,16 @@ No hardcoded third-party server address is injected by PARADOX.
 No official server validation is bypassed, and no automatic client installation
 of an external custom server is included.
 
+## Experimental voting layout in code
+
+- Meeting voting cards are split into 15-card pages (50 players = 4 pages).
+- PageUp/PageDown and Left/Right arrows switch pages.
+- A small page counter is added to the meeting timer; Swapper voting markers
+  remain attached to their native player cards.
+- This layout logic and the last partially filled page have unit tests. It
+  still needs a real 50-player Among Us run to confirm mouse hitboxes,
+  voting/ejection behavior and text placements.
+
 ## Tests completed by CI
 
 - Opt-in disabled -> 15 max.
@@ -48,8 +58,9 @@ of an external custom server is included.
 - [ ] Runtime verify Harmony patch `CreateGameOptions.Show` on Among Us 19.0.0.
 - [ ] Confirm external custom server accepts 16/20/30/40/50 clients without
       packet drops/disconnects and that region selection survives restarts.
-- [ ] Implement and verify meeting voting card **pagination/search** for up to
-      50 players, including Swapper arrows, chat, tie votes and exile.
+- [ ] Verify the **experimental** 15-card meeting paging in the real game,
+      including Swapper arrows, chat, tie votes, exile and native button input.
+      Basic paging code exists, but runtime QA is not complete.
 - [ ] Paginate the shapeshifter/target picker and vitals display.
 - [ ] Review player count assumptions, byte ID sentinels (253–255),
       impostor counts, role assignment and network RPC rates for 50 players.
