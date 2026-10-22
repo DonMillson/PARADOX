@@ -26,7 +26,7 @@ public sealed class DoppelgangerState
     {
         // Reject overlapping disguises even when a host chooses a cooldown
         // shorter than the disguise duration.
-        if (!IsReady(now) || IsDisguised(now) ||
+        if (!IsReady(now) || TargetPlayerId.HasValue ||
             targetPlayerId == PlayerId || targetPlayerId == byte.MaxValue)
             return false;
 
