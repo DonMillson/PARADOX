@@ -5,7 +5,7 @@ Nowy, mniejszy launcher `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe` 
 ## Co pobiera sam?
 
 - **BepInEx Unity IL2CPP Windows x64**: aktualnie zatwierdzony dla PARADOX wariant `6.0.0-be.790+4e98359` z `builds.bepinex.dev`, bez Mono lub x86. SHA256 pobranego ZIP musi zgadzać się z manifestem. W przeciwnym razie instalacja się zatrzymuje.
-- **Reactor 2.5.1-ci.400**: kompatybilny z binarką PARADOX build z `nuget.reactor.gg`, pobierany jako NuGet `.nupkg` i sprawdzany przez oficjalny SHA512. Nie zamieniamy na dowolny `latest`, który mógłby zepsuć RPC lub Harmony.
+- **Reactor 2.5.1-ci.400**: kompatybilny z binarką PARADOX build z `nuget.reactor.gg`, pobierany jako NuGet `.nupkg`, z którego `Reactor.dll` jest porównywany za pomocą SHA-256 z identyczną biblioteką używaną podczas kompilacji moda. Nie zamieniamy na dowolny `latest`, który mógłby zepsuć RPC lub Harmony.
 - **Paradox.dll**: dostarczony z launcherem, tak aby Reactor był zgodny z konkretną kompilacją.
 
 ## Automatyczna aktualizacja
