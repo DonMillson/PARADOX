@@ -101,6 +101,11 @@ def _steam_roots() -> list[Path]:
     return roots
 
 
+def is_steam_install(folder: Path) -> bool:
+    parts = {part.casefold() for part in folder.parts}
+    return "steamapps" in parts and "common" in parts
+
+
 def detect_among_us() -> str:
     visited: set[str] = set()
     for steam in _steam_roots():
@@ -666,9 +671,17 @@ class ParadoxLauncher(ctk.CTk):
             self.show_diagnostic_state(health)
             return
         try:
-            subprocess.Popen([str(exe)], cwd=str(game))
+            if os.name == "nt" and is_steam_install(game):
+                # The EXE installer may run elevated; Steam itself should start
+                # the game with its normal ownership, authentication and cwd.
+                try:
+                    os.startfile("steam://rungameid/945360")  # type: ignore[attr-defined]
+                except OSError:
+                    subprocess.Popen([str(exe)], cwd=str(game))
+            else:
+                subprocess.Popen([str(exe)], cwd=str(game))
             self.diagnostic_status.configure(
-                text="GRA URUCHOMIONA — po załadowaniu sprawdź log BepInEx",
+                text="ŻĄDANIE STARTU GRY — po załadowaniu sprawdź log BepInEx",
                 text_color=CYAN)
         except OSError as exc:
             messagebox.showerror("PARADOX", str(exc), parent=self)
