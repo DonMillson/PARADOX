@@ -8,6 +8,12 @@ public static class DefaultTranslations
 
         Add(l, "ui.paradoxMeter", "Paradox Meter", "Miernik Paradoksu");
         Add(l, "ui.menu.title", "PARADOX SETTINGS", "USTAWIENIA PARADOX");
+        Add(l, "ui.lobby.section.general", "GENERAL", "OGÓLNE");
+        Add(l, "ui.lobby.section.impostor", "IMPOSTOR ROLES", "ROLE IMPOSTORÓW");
+        Add(l, "ui.lobby.section.crewmate", "CREWMATE ROLES", "ROLE ZAŁOGI");
+        Add(l, "ui.lobby.section.neutral", "NEUTRAL ROLES", "ROLE NEUTRALNE");
+        Add(l, "ui.lobby.section.meter", "PARADOX METER", "MIERNIK PARADOKSU");
+        Add(l, "ui.lobby.section.mechanics", "MECHANICS", "MECHANIKI");
         Add(l, "ui.menu.open", "PARADOX", "PARADOX");
         Add(l, "ui.menu.roles", "ROLES", "ROLE");
         Add(l, "ui.menu.mechanics", "MECHANICS", "MECHANIKI");
