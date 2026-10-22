@@ -13,6 +13,7 @@ public static class RoleAbilityService
             source.Data == null ||
             source.Data.IsDead ||
             source.Data.Disconnected ||
+            !source.CanMove ||
             MeetingHud.Instance != null)
             return false;
 
