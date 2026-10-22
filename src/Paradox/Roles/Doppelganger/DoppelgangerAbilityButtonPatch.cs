@@ -1,6 +1,9 @@
 using HarmonyLib;
+using Paradox.Core;
 using Paradox.Networking;
+using Paradox.Roles.Corruptor;
 using Reactor.Networking.Rpc;
+using UnityEngine;
 
 namespace Paradox.Roles.Doppelganger;
 
@@ -17,8 +20,26 @@ public static class DoppelgangerAbilityButtonPatch
         if (HudManager.Instance == null || __instance != HudManager.Instance.AbilityButton)
             return true;
 
+        // Suppress duplicate requests and stale-target clicks on the client.
+        // This is a UX guard; the host repeats all security-critical validation.
+        if (AmongUsClient.Instance == null ||
+            local.Data == null || local.Data.IsDead || local.Data.Disconnected ||
+            !local.CanMove || MeetingHud.Instance != null ||
+            ParadoxEventRuntime.RoleAbilitiesBlocked ||
+            CorruptorRole.IsCorrupted(local.PlayerId))
+            return false;
+
+        var state = DoppelgangerRole.GetOrCreate(local.PlayerId);
+        var now = Time.time;
+        if (state.IsDisguised(now) || !state.IsReady(now))
+            return false;
+
         var target = DoppelgangerHudPatch.CurrentTarget;
-        if (target == null)
+        if (!DoppelgangerTargeting.IsValidTarget(local, target))
+            return false;
+
+        if (Vector2.Distance(local.GetTruePosition(), target!.GetTruePosition()) >
+            local.MaxReportDistance)
             return false;
 
         if (AmongUsClient.Instance.AmHost)
