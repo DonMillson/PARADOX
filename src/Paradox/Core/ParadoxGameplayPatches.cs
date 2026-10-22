@@ -36,6 +36,8 @@ using ParadoxEngineerXRole = Paradox.Roles.EngineerX.EngineerXRole;
 using ParadoxDispatcherRole = Paradox.Roles.Dispatcher.DispatcherRole;
 using ParadoxLocksmithRole = Paradox.Roles.Locksmith.LocksmithRole;
 using ParadoxTechnicianRole = Paradox.Roles.Technician.TechnicianRole;
+using ParadoxSheriffRole = Paradox.Roles.Sheriff.SheriffRole;
+using ParadoxRiftWardenRole = Paradox.Roles.RiftWarden.RiftWardenRole;
 using ParadoxSwapperRole = Paradox.Roles.Swapper.SwapperRole;
 using Paradox.Roles;
 using HarmonyLib;
@@ -130,6 +132,8 @@ public static class ParadoxGameplayPatches
         ParadoxDispatcherRole.ResetRuntime();
         ParadoxLocksmithRole.ResetRuntime();
         ParadoxTechnicianRole.ResetRuntime();
+        ParadoxSheriffRole.ResetRuntime();
+        ParadoxRiftWardenRole.ResetRuntime();
         ParadoxSwapperRole.ResetRuntime();
     }
 }
