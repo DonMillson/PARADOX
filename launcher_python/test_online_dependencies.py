@@ -65,11 +65,10 @@ class OnlineDependencyTests(unittest.TestCase):
         ]}
         with patch.object(online, "_fetch_bytes",
                           return_value=json.dumps(service).encode("utf-8")):
-            pkg, sha = online.reactor_download_urls(
+            pkg = online.reactor_download_urls(
                 "https://nuget.reactor.gg/v3/index.json")
         self.assertEqual(pkg, "https://nuget.reactor.gg/custom-flatcontainer/reactor/"
                               "2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg")
-        self.assertEqual(sha, pkg + ".sha512")
 
     def test_untrusted_nuget_index_endpoint_rejected(self):
         service = {"resources": [
@@ -98,12 +97,12 @@ class OnlineDependencyTests(unittest.TestCase):
             with patch.object(online, "cache_root", return_value=Path(folder)):
                 with patch.object(online, "_fetch_bytes", return_value=content):
                     downloaded = online._get_verified_reactor("https://nuget.reactor.gg/example",
-                                                              sha512, None)
+                                                              hashlib.sha256(b"MZ"+b"\0"*50).hexdigest(), None)
                 self.assertEqual(downloaded, content)
                 self.assertTrue(next(Path(folder).iterdir()).exists())
                 with patch.object(online, "_fetch_bytes", side_effect=RuntimeError("no network")):
                     self.assertEqual(online._get_verified_reactor("https://nuget.reactor.gg/example",
-                                                                  sha512, None), content)
+                                                                  hashlib.sha256(b"MZ"+b"\0"*50).hexdigest(), None), content)
 
     def test_bepinex_fingerprint_failure_fails_closed(self):
         with tempfile.TemporaryDirectory() as folder:
