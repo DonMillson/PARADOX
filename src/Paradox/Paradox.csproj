@@ -6,15 +6,14 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Paradox</AssemblyName>
     <RootNamespace>Paradox</RootNamespace>
-    <Version>0.7.0-dev.3</Version>
+    <Version>0.7.0-dev.4</Version>
     <Description>PARADOX - an original Among Us gameplay mod.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Reactor">
-      <HintPath>../../lib/Reactor.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <!-- Reactor CI 400 is the 2026.9.29-compatible dependency used by
+         PropHunt v2026.10.1. Do not compile against the old 2.5.1 release. -->
+    <PackageReference Include="Reactor" Version="2.5.1-ci.400" PrivateAssets="all" />
     <!-- Compile-time BepInEx is pinned to be.735 because BepInEx.IL2CPP.MSBuild 2.1.0-rc.1 is not compatible with the Il2CppInterop 1.5.x pulled by newer BE packages. Runtime testing targets current BepInEx 6 bleeding-edge builds. -->
     <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" Private="false" ExcludeAssets="runtime;native" />
     <PackageReference Include="AmongUs.GameLibs.Steam" Version="2026.9.29" PrivateAssets="all" />
