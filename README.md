@@ -1,15 +1,15 @@
 # PARADOX
 
-Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release), targeting its supported Among Us 16.0.5–17.4 range. **As of October 22, 2026, official Among Us v19.0.0 is newer than the versions supported by this Reactor build: PARADOX is NOT verified compatible with the latest game.** Confirm a compatible Reactor/GameLibs/BepInEx toolchain and real multiplayer startup before calling this a v19 release.
+Original Among Us mod project. **Experimental Among Us v19.0.0 (Steam 2026.9.29) compatibility branch**: compile against `AmongUs.GameLibs.Steam 2026.9.29` and `Reactor 2.5.1-ci.400`, matching the toolchain used in an independently reported v19-compatible Reactor mod (PropHunt). This is **NOT a claim of verified PARADOX runtime compatibility**. The official Reactor 2.5.1 release only supports Among Us through 17.4. Windows Steam/Epic v19 requires x64 BepInEx. [Read the v19 install/test guide](docs/V19_INSTALL_PL.md).
 
 ## Development status
 
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
-**Current testing milestone: PARADOX 0.7.0-dev.3.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.7.0-dev.4.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
-Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
+Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 43 registered roles have an MVP/foundation; none is considered multiplayer-certified yet.
 
 Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronized randomized 100% final event are implemented in code; in-game runtime verification is still required.
 
