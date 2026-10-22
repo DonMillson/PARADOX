@@ -11,7 +11,6 @@
   },
   "reactor": {
     "version": "2.5.1-ci.400",
-    "url": "https://nuget.reactor.gg/v3-flatcontainer/reactor/2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg",
-    "sha512_url": "https://nuget.reactor.gg/v3-flatcontainer/reactor/2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg.sha512"
+    "feed": "https://nuget.reactor.gg/v3/index.json"
   }
 }
