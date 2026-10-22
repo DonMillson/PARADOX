@@ -131,3 +131,32 @@ Check(LargeLobbyPolicy.WithinExperimentalTarget(50) &&
       !LargeLobbyPolicy.WithinExperimentalTarget(-1),
       "capacity target never exceeds signed-safe count or goes negative");
 Console.WriteLine("PASS: experimental 15/20/30/40/50 player policy and public-server safety.");
+
+Check(LargeLobbyPagination.PageCount(15) == 1 &&
+      LargeLobbyPagination.PageCount(16) == 2 &&
+      LargeLobbyPagination.PageCount(30) == 2 &&
+      LargeLobbyPagination.PageCount(31) == 3 &&
+      LargeLobbyPagination.PageCount(50) == 4,
+      "meeting vote paging covers 15 through 50 players");
+Check(LargeLobbyPagination.PageCount(0) == 0 &&
+      LargeLobbyPagination.CyclePage(0, +1, 0) == 0,
+      "empty meetings do not divide by zero");
+Check(LargeLobbyPagination.CyclePage(3, +1, 50) == 0 &&
+      LargeLobbyPagination.CyclePage(0, -1, 50) == 3,
+      "meeting pages wrap correctly in both directions");
+Check(LargeLobbyPagination.IsOnPage(49, 3, 50) &&
+      !LargeLobbyPagination.IsOnPage(48, 2, 50) &&
+      !LargeLobbyPagination.IsOnPage(50, 3, 50),
+      "last meeting page includes player 50 and no out-of-bounds card");
+Check(LargeLobbyPagination.PositionWithinPage(49) == (1, 1),
+      "position index 49 corresponds to page four, row two, column two");
+for (var playerCount = 16; playerCount <= 50; playerCount++)
+{
+    for (var index = 0; index < playerCount; index++)
+    {
+        var hits = Enumerable.Range(0, LargeLobbyPagination.PageCount(playerCount))
+            .Count(page => LargeLobbyPagination.IsOnPage(index, page, playerCount));
+        Check(hits == 1, $"meeting card {index} appears on exactly one page with {playerCount} players");
+    }
+}
+Console.WriteLine("PASS: 15 cards/page, wrap, positioning and visibility for 16–50 players.");
