@@ -12,6 +12,6 @@
   "reactor": {
     "version": "2.5.1-ci.400",
     "feed": "https://nuget.reactor.gg/v3/index.json",
-    "dll_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "dll_sha256": "e15de32fe56c3c9613d71d244173c320c4f366b3e15c5e11d38ec88187d58fd0"
   }
 }
