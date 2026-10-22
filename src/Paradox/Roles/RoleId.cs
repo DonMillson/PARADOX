@@ -10,9 +10,9 @@ public enum RoleId
     // Crewmate
     Observer, Witness, EngineerX, Guardian, Chronologist,
     Detective, Medic, Tracker, Locksmith, Analyst,
-    Technician, Seer, Dispatcher, Forensic, Stabilizer,
+    Technician, Seer, Dispatcher, Forensic, Stabilizer, Swapper = 40,
 
     // Neutral
-    Anomaly, Forgotten, Collector, BountyHunter, Survivor,
+    Anomaly = 30, Forgotten, Collector, BountyHunter, Survivor,
     Revenant, JesterX, Phantom, Opportunist, Harbinger
 }
