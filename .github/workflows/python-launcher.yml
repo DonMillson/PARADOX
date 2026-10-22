@@ -64,6 +64,7 @@ jobs:
       - name: Live end-to-end official dependency download verification
         shell: pwsh
         run: |
+          $env:PYTHONIOENCODING = "utf-8"
           @'
           from pathlib import Path
           import tempfile
