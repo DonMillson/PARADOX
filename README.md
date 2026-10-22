@@ -3,9 +3,11 @@
 ## PARADOX AMONG US — instalator online (Among Us 19, x64)
 
 **Nowy:** samodzielny launcher Windows `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe`.
-Po mini-grze i kodzie matematycznym instalator pobiera **najnowszy oficjalny BepInEx Unity IL2CPP x64** oraz **zgodny z tą kompilacją Reactor 2.5.1-ci.400** z serwera NuGet, zamiast dołączać te zależności do EXE. Kontroluje HTTPS, zawartość ZIP i sumy plików; zachowuje backup i wycofuje zmiany po błędzie. **Do instalacji wymagany jest internet.**
+Po mini-grze i kodzie matematycznym instalator pobiera **zweryfikowany, przypięty BepInEx Unity IL2CPP x64 (be.790)** oraz **zgodny z tą kompilacją Reactor 2.5.1-ci.400** z serwera NuGet, zamiast dołączać te zależności do EXE. Kontroluje HTTPS, zawartość ZIP i sumy plików; zachowuje backup i wycofuje zmiany po błędzie. **Do instalacji wymagany jest internet.**
 
 **Nie pobieraj dowolnego „najnowszego” Reactora:** mod PARADOX musi być skompilowany na tę samą wersję API. Przypięta wersja jest ogłaszana w `launcher_python/compatibility.json`; nowszy niezatwierdzony pakiet nie jest instalowany automatycznie.
+
+**Diagnoza instalacji:** przycisk **SPRAWDŹ MODY** sprawdza kompletność Doorstop/BepInEx, Reactor i PARADOX oraz potwierdzenie startu pluginu w `BepInEx/LogOutput.log` lub `.txt`. Sukces kopiowania plików nie jest równoznaczny z działaniem moda.
 
 Zobacz [instrukcję launchera](launcher_python/README_PL.md). Zgodność z realnym klientem Among Us 19.0.0 i multiplayer pozostaje **niezweryfikowana**.
 

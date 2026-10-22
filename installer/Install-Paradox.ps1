@@ -36,11 +36,19 @@ $payload=[IO.Path]::GetFullPath($PayloadRoot).TrimEnd('\')
 $support=[IO.Path]::GetFullPath($SupportRoot).TrimEnd('\')
 Assert-Game $game
 
-foreach ($needed in @('BepInEx\core','BepInEx\plugins\Reactor.dll',
-                     'BepInEx\plugins\Paradox.dll','winhttp.dll')) {
+foreach ($needed in @('BepInEx\core','BepInEx\core\BepInEx.Unity.IL2CPP.dll',
+                     'BepInEx\plugins\Reactor.dll','BepInEx\plugins\Paradox.dll',
+                     'winhttp.dll','doorstop_config.ini','dotnet\coreclr.dll')) {
     if (-not (Test-Path -LiteralPath (Join-Path $payload $needed))) {
         throw "Niekompletna paczka instalatora: $needed"
     }
+}
+# A complete ZIP can still contain a disabled/wrong Doorstop configuration.
+# Reject it BEFORE any game files are touched.
+$doorstop=Get-Content -LiteralPath (Join-Path $payload 'doorstop_config.ini') -Raw -Encoding UTF8
+if ($doorstop -notmatch '(?mi)^\s*enabled\s*=\s*true\s*$' -or
+    $doorstop -notmatch '(?mi)^\s*target_assembly\s*=\s*BepInEx[\\/]core[\\/]BepInEx\.Unity\.IL2CPP\.dll\s*$') {
+    throw 'Nieprawidlowy loader: Doorstop musi byc aktywny i wskazywac BepInEx IL2CPP.'
 }
 $manifestPath=Join-Path $support 'installed-files.json'
 $prior=@{}
@@ -89,6 +97,8 @@ try {
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
         Copy-Item -LiteralPath $item.FullName -Destination $target -Force
         $sha=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
+        $expected=(Get-FileHash -LiteralPath $item.FullName -Algorithm SHA256).Hash
+        if ($sha -ne $expected) { throw "Plik nie przeszedl weryfikacji kopiowania: $rel" }
         $entries.Add([pscustomobject]@{ RelativePath=$rel; HadOriginal=$hadOriginal; InstalledSha256=$sha })
         $installedCount++
         if ($installedCount % 4 -eq 0 -or $installedCount -eq $files.Count) {
@@ -96,7 +106,7 @@ try {
         }
     }
     $data=[pscustomobject]@{
-        GamePath=$game; Version='0.7.0-dev.4'; Files=@($entries.ToArray())
+        GamePath=$game; Version='0.7.0-dev.5'; Files=@($entries.ToArray())
     }
     $tmp=Join-Path $support 'installed-files.json.tmp'
     $data | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $tmp -Encoding UTF8

@@ -122,25 +122,12 @@ def get_manifest() -> dict:
 
 
 def latest_bepinex_url(manifest: dict) -> tuple[str, int]:
-    try:
-        page = _text(BEPINEX_INDEX, "builds.bepinex.dev")
-        parser = Links()
-        parser.feed(page)
-        choices: list[tuple[int, str]] = []
-        for href in parser.hrefs:
-            full = urllib.parse.urljoin(BEPINEX_INDEX + "/", href)
-            parsed = urllib.parse.urlsplit(full)
-            if parsed.hostname != "builds.bepinex.dev" or parsed.scheme != "https":
-                continue
-            filename = urllib.parse.unquote(parsed.path.rsplit("/", 1)[-1])
-            match = BEP_FILENAME.fullmatch(filename)
-            if match:
-                choices.append((int(match.group(1)), full))
-        candidates = [item for item in choices if item[0] >= manifest["bepinex_min_build"]]
-        if candidates:
-            return max(candidates, key=lambda item: item[0])[1], max(candidates)[0]
-    except (DependencyError, ValueError):
-        pass  # Version discovery failed, not permission to install untrusted bytes.
+    """Return the release-tested, hash-pinned IL2CPP loader.
+
+    Kept under the historical function name for existing test compatibility.
+    Automatically installing a newer *untested* BepInEx build can break the
+    compiled Reactor/IL2CPP combination, even when downloading succeeds.
+    """
     fallback = manifest["bepinex_fallback_url"]
     match = BEP_FILENAME.fullmatch(urllib.parse.unquote(fallback.rsplit("/", 1)[-1]))
     if not match or int(match.group(1)) < manifest["bepinex_min_build"]:
@@ -239,13 +226,23 @@ def stage_live_dependencies(payload: Path, mod_dll: Path, report: REPORT) -> dic
     report(0.13, f"Pobieram BepInEx be.{build}")
     bep_blob = download_file(bep_url, "builds.bepinex.dev")
     bep_hash = hashlib.sha256(bep_blob).hexdigest()
-    if urllib.parse.unquote(bep_url.rsplit("/", 1)[-1]) == urllib.parse.unquote(
-        manifest["bepinex_fallback_url"].rsplit("/", 1)[-1]
-    ) and bep_hash.lower() != manifest["bepinex_fallback_sha256"].lower():
+    if bep_hash.lower() != manifest["bepinex_fallback_sha256"].lower():
         raise DependencyError("BepInEx nie przeszedł kontroli SHA-256.")
     _safe_extract(bep_blob, payload)
-    if not (payload / "winhttp.dll").is_file() or not (payload / "BepInEx" / "core").is_dir():
-        raise DependencyError("Paczka BepInEx nie jest zgodnym loaderem Unity IL2CPP x64.")
+    loader_files = (
+        "winhttp.dll", "doorstop_config.ini",
+        "BepInEx/core/BepInEx.Unity.IL2CPP.dll", "dotnet/coreclr.dll"
+    )
+    missing = [rel for rel in loader_files if not (payload / rel).is_file()]
+    if missing:
+        raise DependencyError("Niekompletny BepInEx IL2CPP x64: " + ", ".join(missing))
+    config = (payload / "doorstop_config.ini").read_text("utf-8-sig", errors="replace")
+    if not re.search(r"(?mi)^\s*enabled\s*=\s*true\s*$", config):
+        raise DependencyError("Oficjalny loader BepInEx ma wyłączony Doorstop.")
+    if not re.search(
+        r"(?mi)^\s*target_assembly\s*=\s*BepInEx[\\/]core[\\/]BepInEx\.Unity\.IL2CPP\.dll\s*$", config
+    ):
+        raise DependencyError("Loader Doorstop nie wskazuje BepInEx Unity IL2CPP.")
     report(0.38, "Pobieram zgodny Reactor")
     reactor_url, checksum_url = reactor_package_url(COMPILED_REACTOR)
     reactor_blob = download_file(reactor_url, "nuget.reactor.gg")

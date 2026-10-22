@@ -43,7 +43,8 @@ class DependencyTests(TestCase):
         """
         with patch.object(deps, "_text", return_value=html):
             url, build = deps.latest_bepinex_url(sample_manifest())
-        self.assertEqual(build, 791)
+        # The newest web listing is not a tested runtime: use pinned BE 790.
+        self.assertEqual(build, 790)
         self.assertIn("IL2CPP-win-x64", url)
 
     def test_fallback_when_page_unreachable(self):
@@ -88,8 +89,9 @@ class DependencyTests(TestCase):
     def test_integration_download_stage_without_network(self):
         be_zip = make_zip({
             "winhttp.dll": b"x64 mock native loader",
-            "BepInEx/core/mock.dll": b"framework",
-            "dotnet/runtime.dll": b"runtime"})
+            "doorstop_config.ini": b"[General]\nenabled = true\ntarget_assembly = BepInEx\\core\\BepInEx.Unity.IL2CPP.dll\n",
+            "BepInEx/core/BepInEx.Unity.IL2CPP.dll": b"framework",
+            "dotnet/coreclr.dll": b"runtime"})
         reactor_zip = make_zip({"lib/net6.0/Reactor.dll": b"MZ" + b"x" * 11000})
         manifest = sample_manifest()
         bep_url = manifest["bepinex_fallback_url"]
@@ -119,7 +121,7 @@ class DependencyTests(TestCase):
             self.assertEqual(result["bepinex_build"], 790)
             self.assertTrue((root / "payload/BepInEx/plugins/Paradox.dll").is_file())
             self.assertTrue((root / "payload/BepInEx/plugins/Reactor.dll").is_file())
-            self.assertTrue((root / "payload/dotnet/runtime.dll").is_file())
+            self.assertTrue((root / "payload/dotnet/coreclr.dll").is_file())
             self.assertGreater(events[-1][0], .5)
 
     def test_previous_release_manifest_uses_build_matched_fallback(self):
@@ -135,7 +137,12 @@ class DependencyTests(TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root / "mod.dll").write_bytes(b"x")
-            be_zip = make_zip({"winhttp.dll": b"x", "BepInEx/core/loader.dll": b"y"})
+            be_zip = make_zip({
+                "winhttp.dll": b"x",
+                "doorstop_config.ini": b"[General]\nenabled = true\ntarget_assembly = BepInEx\\core\\BepInEx.Unity.IL2CPP.dll\n",
+                "BepInEx/core/BepInEx.Unity.IL2CPP.dll": b"y",
+                "dotnet/coreclr.dll": b"runtime"
+            })
             manifest = sample_manifest()
             manifest["bepinex_fallback_sha256"] = hashlib.sha256(be_zip).hexdigest()
             with (patch.object(deps, "get_manifest", return_value=manifest),

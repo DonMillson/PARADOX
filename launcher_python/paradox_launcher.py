@@ -1,8 +1,9 @@
-"""PARADOX AMONG US — unified offline Windows installer/launcher.
+"""PARADOX AMONG US — online Windows installer/launcher.
 
-The PyInstaller --onefile build bundles official BepInEx x64, Reactor CI400,
-Paradox.dll and the audited PowerShell installation backend. Nothing downloads
-at install time. All UI controls are local and thread-safe through a queue.
+The PyInstaller --onefile build embeds Paradox.dll and an audited installer.
+Verified, pinned BepInEx IL2CPP and Reactor are downloaded over HTTPS.
+On-disk installation and actual plugin startup are verified separately.
+All UI controls are thread-safe through a queue.
 """
 from __future__ import annotations
 
@@ -17,6 +18,7 @@ import tempfile
 
 from launcher_python.online_dependencies import stage_live_dependencies
 from launcher_python.lobby_config import write_lobby_config
+from launcher_python.mod_health import inspect_install, diagnosis_text
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -99,6 +101,11 @@ def _steam_roots() -> list[Path]:
     return roots
 
 
+def is_steam_install(folder: Path) -> bool:
+    parts = {part.casefold() for part in folder.parts}
+    return "steamapps" in parts and "common" in parts
+
+
 def detect_among_us() -> str:
     visited: set[str] = set()
     for steam in _steam_roots():
@@ -147,6 +154,7 @@ class ParadoxLauncher(ctk.CTk):
         self.large_lobby_capacity = tk.StringVar(value="50")
         self.events: queue.Queue[tuple] = queue.Queue()
         self.worker_busy = False
+        self.installed_after: float | None = None
         self.animation_id: str | None = None
         self.board: tk.Canvas | None = None
         self.px, self.py, self.dx, self.dy = 125.0, 118.0, 3.25, 2.3
@@ -176,7 +184,7 @@ class ParadoxLauncher(ctk.CTk):
         self.content.pack_propagate(False)
         foot = ctk.CTkFrame(self, fg_color="transparent")
         foot.pack(fill="x", padx=39, pady=(0, 15))
-        ctk.CTkLabel(foot, text="PARADOX by DonMillson  •  Offline installer",
+        ctk.CTkLabel(foot, text="PARADOX by DonMillson  •  Installer online + weryfikacja",
                      text_color=MUTED, font=ctk.CTkFont(size=12)).pack(side="left")
         ctk.CTkLabel(foot, text="Among Us 19 / Windows x64 • test build",
                      text_color=PURPLE, font=ctk.CTkFont(size=12)).pack(side="right")
@@ -210,8 +218,9 @@ class ParadoxLauncher(ctk.CTk):
             anchor="w", padx=30, pady=(0, 13))
 
     def welcome(self) -> None:
-        self.title_block("SYSTEM PARADOX  /  INICJALIZACJA",
-                         "Trzy etapy autoryzacji. Jedna paczka zawiera moda, Reactor i BepInEx IL2CPP.")
+        self.title_block("PARADOX  /  NOWA MISJA",
+                         "Among Us spotyka PARADOX: załoga, sabotaż i niestabilna rzeczywistość. "
+                         "Trzy etapy przed uruchomieniem modyfikacji.")
         panel = ctk.CTkFrame(self.content, fg_color="#0B142B", corner_radius=18)
         panel.pack(fill="both", expand=True, padx=31, pady=(8, 14))
         picture = tk.Canvas(panel, height=250, bg="#0B142B", highlightthickness=0)
@@ -219,22 +228,39 @@ class ParadoxLauncher(ctk.CTk):
         picture.update_idletasks()
         w = max(650, picture.winfo_width())
         cx = w / 2
-        for r in (99, 86, 71):
-            picture.create_oval(cx-r, 118-r, cx+r, 118+r,
-                                outline=("#253A60" if r != 86 else "#5AE5FA"), width=2)
-        picture.create_polygon(cx-53, 118, cx, 44, cx+53, 118, cx, 192,
-                               outline=PURPLE, fill="", width=3)
-        picture.create_text(cx, 115, text="P", fill=CYAN,
-                            font=("Segoe UI", 78, "bold"))
-        picture.create_text(cx, 224, text="PARADOX AMONG US",
-                            fill=TEXT, font=("Segoe UI", 22, "bold"))
+        for r, accent in ((104, "#284367"), (93, PURPLE), (76, "#275A77")):
+            picture.create_oval(cx-r, 110-r, cx+r, 110+r,
+                                outline=accent, width=2)
+        # Original spacesuit silhouette: recognisably Among Us-inspired,
+        # with PARADOX's luminous visor and unstable violet orbital field.
+        picture.create_oval(cx-72, 155, cx+70, 181, fill="#0A1227", outline="")
+        picture.create_polygon(cx-46, 76, cx-70, 79, cx-76, 135,
+                               cx-45, 147, fill="#792C63", outline=PURPLE, width=3)
+        picture.create_polygon(cx-47, 115, cx-36, 115, cx-37, 180,
+                               cx-7, 180, cx-5, 134, cx+8, 134,
+                               cx+13, 180, cx+43, 180, cx+47, 95,
+                               cx+29, 51, cx-18, 49, cx-45, 77,
+                               fill="#DC365E", outline="#F476AA",
+                               width=3, smooth=True)
+        picture.create_oval(cx-13, 70, cx+51, 111, fill="#23496A",
+                            outline="#6BDEFF", width=4)
+        picture.create_oval(cx-9, 74, cx+45, 104, fill="#8CE7F8", outline="")
+        picture.create_oval(cx+2, 77, cx+24, 85, fill="#EEFFFF", outline="")
+        picture.create_line(cx-91, 117, cx-68, 94, fill=CYAN, width=3)
+        picture.create_line(cx+65, 45, cx+82, 63, fill=PURPLE, width=3)
+        picture.create_text(cx, 222, text="PARADOX  //  AMONG US",
+                            fill=TEXT, font=("Segoe UI", 21, "bold"))
         ctk.CTkLabel(panel, text="IMPOSTOR HUNT   /   AUTORYZACJA   /   INSTALACJA",
                      text_color=PURPLE, font=ctk.CTkFont(size=13, weight="bold")
                      ).pack(pady=(8, 10))
         ctk.CTkButton(panel, text="ROZPOCZNIJ MISJĘ  →", height=49, width=280,
                       fg_color=CYAN, hover_color="#2AB5C8", text_color="#08101F",
                       font=ctk.CTkFont(size=17, weight="bold"),
-                      command=lambda: self.show_stage(1)).pack(pady=(9, 19))
+                      command=lambda: self.show_stage(1)).pack(pady=(7, 5))
+        ctk.CTkButton(panel, text="SPRAWDŹ INSTALACJĘ  /  LOGI",
+                      fg_color="#273854", hover_color="#3A527C",
+                      text_color=TEXT, width=280, height=39,
+                      command=self.quick_diagnostics).pack(pady=(3, 14))
 
     def hunt(self) -> None:
         self.title_block("MISJA 01  /  ZŁAP IMPOSTORA",
@@ -270,15 +296,21 @@ class ParadoxLauncher(ctk.CTk):
         if c is None:
             return
         x, y = self.px, self.py
-        c.create_oval(x-38, y-48, x+36, y+47, fill="#C72546",
-                      outline="#50122B", width=4, tags="target")
-        c.create_rectangle(x-29, y+24, x-9, y+57, fill=RED,
-                           outline="#50122B", width=3, tags="target")
-        c.create_rectangle(x+9, y+24, x+30, y+57, fill=RED,
-                           outline="#50122B", width=3, tags="target")
-        c.create_oval(x-17, y-30, x+33, y+0, fill="#85F5FF",
-                      outline="#115073", width=4, tags="target")
-        c.create_oval(x-10, y-27, x+12, y-18, fill="#D4FCFF",
+        c.create_oval(x-43, y+37, x+40, y+66, fill="#060E20",
+                      outline="", tags="target")
+        c.create_rectangle(x-48, y-18, x-25, y+37, fill="#74275B",
+                           outline=PURPLE, width=3, tags="target")
+        c.create_rectangle(x-29, y+19, x-8, y+55, fill=RED,
+                           outline="#7D2444", width=3, tags="target")
+        c.create_rectangle(x+11, y+19, x+32, y+55, fill=RED,
+                           outline="#7D2444", width=3, tags="target")
+        c.create_oval(x-34, y-50, x+35, y+45, fill="#DA315A",
+                      outline="#FF6790", width=3, tags="target")
+        c.create_oval(x-12, y-30, x+38, y+3, fill="#245274",
+                      outline=CYAN, width=3, tags="target")
+        c.create_oval(x-8, y-25, x+32, y-2, fill="#8CDEF4",
+                      outline="", tags="target")
+        c.create_oval(x-2, y-23, x+16, y-17, fill="#F2FFFF",
                       outline="", tags="target")
 
     def move_target(self) -> None:
@@ -422,10 +454,25 @@ class ParadoxLauncher(ctk.CTk):
                                             font=ctk.CTkFont(size=18, weight="bold"),
                                             command=self.start_install)
         self.install_button.pack(pady=(11, 9))
-        self.launch_button = ctk.CTkButton(self.content, text="URUCHOM AMONG US",
-                                           width=225, height=38, state="disabled",
-                                           fg_color="#394C6A", command=self.launch_game)
-        self.launch_button.pack(pady=(4, 7))
+        actions = ctk.CTkFrame(self.content, fg_color="transparent")
+        actions.pack(pady=(4, 4))
+        self.launch_button = ctk.CTkButton(actions, text="▶  URUCHOM AMONG US",
+                                           width=230, height=40, state="disabled",
+                                           fg_color="#365276", command=self.launch_game)
+        self.launch_button.pack(side="left", padx=7)
+        ctk.CTkButton(actions, text="✓  SPRAWDŹ MODY", width=210, height=40,
+                      fg_color="#60448D", hover_color="#805AA9",
+                      command=self.check_mods).pack(side="left", padx=7)
+        self.diagnostic_status = ctk.CTkLabel(
+            self.content, text="STATUS MODA: NIEZWERYFIKOWANY",
+            text_color=PURPLE, font=ctk.CTkFont(size=12, weight="bold"))
+        self.diagnostic_status.pack(pady=(1, 3))
+        folder = Path(self.game_dir.get().strip())
+        if valid_game(folder):
+            status = inspect_install(folder, expected_mod=bundled_mod_dll())
+            if status.state != "broken":
+                self.launch_button.configure(state="normal")
+            self.show_diagnostic_state(status, popup=False)
 
     def update_lobby_toggle(self) -> None:
         self.large_lobby_picker.configure(
@@ -477,6 +524,7 @@ class ParadoxLauncher(ctk.CTk):
         if not messagebox.askyesno("Potwierdzenie", message, parent=self):
             return
         self.worker_busy = True
+        self.installed_after = None
         self.install_button.configure(state="disabled")
         self.set_progress(0.02, "Łączenie z serwerami")
         support = game / ".paradox-installer"
@@ -487,6 +535,8 @@ class ParadoxLauncher(ctk.CTk):
     def install_worker(self, game: Path, support: Path,
                        experimental_enabled: bool, capacity: int) -> None:
         try:
+            import time
+            started = time.time()
             with tempfile.TemporaryDirectory(prefix="paradox-verified-") as working:
                 payload = Path(working) / "payload"
                 payload.mkdir()
@@ -516,12 +566,17 @@ class ParadoxLauncher(ctk.CTk):
                 if process.wait() != 0:
                     raise RuntimeError("\n".join(output[-14:]).strip() or
                                        "Instalacja przerwana (PowerShell).")
+                health = inspect_install(game, expected_mod=bundled_mod_dll(),
+                                         installed_after=started)
+                if health.state == "broken":
+                    raise RuntimeError("Weryfikacja plików nie powiodła się: " +
+                                       diagnosis_text(health))
                 try:
                     write_lobby_config(game, experimental_enabled, capacity)
                 except Exception as config_error:
-                    self.events.put(("done_config_warning", str(config_error)))
+                    self.events.put(("done_config_warning", str(config_error), started))
                 else:
-                    self.events.put(("done", str(game)))
+                    self.events.put(("done", str(game), started))
         except Exception as exc:
             self.events.put(("error", str(exc)))
 
@@ -533,18 +588,23 @@ class ParadoxLauncher(ctk.CTk):
                     self.set_progress(event[1], event[2])
                 elif event[0] == "done":
                     self.worker_busy = False
-                    self.set_progress(1.0, "✓  INSTALACJA ZAKOŃCZONA")
-                    self.install_button.configure(state="normal", text="ZAINSTALUJ PONOWNIE")
+                    self.installed_after = event[2]
+                    self.set_progress(1.0, "PLIKI GOTOWE / TEST STARTU PRZED NAMI")
+                    self.install_button.configure(state="normal", text="NAPRAW / ZAINSTALUJ PONOWNIE")
                     self.launch_button.configure(state="normal")
-                    messagebox.showinfo("PARADOX AMONG US",
-                                        "Pobrano i zainstalowano BepInEx, Reactor i PARADOX.\n"
-                                        "Możesz uruchomić grę. Działanie w meczu wymaga "
-                                        "osobnego testu kompatybilności.", parent=self)
+                    self.check_mods(popup=False)
+                    messagebox.showinfo("PARADOX — pliki skopiowane",
+                                        "BepInEx, Reactor i PARADOX są w folderze gry.\n"
+                                        "To NIE oznacza jeszcze, że mod się uruchomił.\n\n"
+                                        "Kliknij URUCHOM AMONG US, a następnie SPRAWDŹ MODY, "
+                                        "żeby potwierdzić start pluginu w logu BepInEx.", parent=self)
                 elif event[0] == "done_config_warning":
                     self.worker_busy = False
-                    self.set_progress(1.0, "PLIKI INSTALACJI OK, KONFIGURACJA NIE")
-                    self.install_button.configure(state="normal", text="ZAINSTALUJ PONOWNIE")
+                    self.installed_after = event[2]
+                    self.set_progress(1.0, "PLIKI GOTOWE / KONFIGURACJA LOBBY NIE")
+                    self.install_button.configure(state="normal", text="NAPRAW / ZAINSTALUJ PONOWNIE")
                     self.launch_button.configure(state="normal")
+                    self.check_mods(popup=False)
                     messagebox.showwarning("PARADOX — ustawienia lobby",
                         "Mod został zainstalowany, ale nie zapisano wybranego "
                         "limitu graczy: " + event[1], parent=self)
@@ -559,13 +619,70 @@ class ParadoxLauncher(ctk.CTk):
         if self.winfo_exists():
             self.after(80, self.check_events)
 
+    def quick_diagnostics(self) -> None:
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            selected = filedialog.askdirectory(
+                title="Wskaż katalog gry Among Us do diagnostyki", parent=self)
+            if not selected:
+                return
+            self.game_dir.set(selected)
+        self.check_mods()
+
+    def show_diagnostic_state(self, status, popup: bool = True) -> None:
+        color = GREEN if status.state == "loaded" else (
+            RED if status.state in ("broken", "failed") else PURPLE)
+        if hasattr(self, "diagnostic_status") and self.diagnostic_status.winfo_exists():
+            self.diagnostic_status.configure(text=status.summary, text_color=color)
+        if popup:
+            if status.state == "loaded":
+                messagebox.showinfo("PARADOX — wykryto start pluginu",
+                                    diagnosis_text(status), parent=self)
+            elif status.state == "pending":
+                messagebox.showinfo("PARADOX — oczekuje na uruchomienie",
+                                    diagnosis_text(status), parent=self)
+            else:
+                messagebox.showwarning("PARADOX — wymagane naprawy",
+                                       diagnosis_text(status), parent=self)
+
+    def check_mods(self, popup: bool = True) -> None:
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            messagebox.showerror("PARADOX",
+                                 "Wskaż prawidłowy katalog Among Us.", parent=self)
+            return
+        status = inspect_install(game, expected_mod=bundled_mod_dll(),
+                                 installed_after=self.installed_after)
+        self.show_diagnostic_state(status, popup=popup)
+        if status.state == "broken" and hasattr(self, "launch_button"):
+            self.launch_button.configure(state="disabled")
+        elif hasattr(self, "launch_button"):
+            self.launch_button.configure(state="normal")
+
     def launch_game(self) -> None:
-        exe = Path(self.game_dir.get()) / "Among Us.exe"
-        if not exe.is_file():
+        game = Path(self.game_dir.get().strip())
+        exe = game / "Among Us.exe"
+        if not valid_game(game):
             messagebox.showerror("PARADOX", "Nie znaleziono gry.", parent=self)
             return
+        health = inspect_install(game, expected_mod=bundled_mod_dll(),
+                                 installed_after=self.installed_after)
+        if health.state == "broken":
+            self.show_diagnostic_state(health)
+            return
         try:
-            os.startfile(str(exe))  # type: ignore[attr-defined]
+            if os.name == "nt" and is_steam_install(game):
+                # The EXE installer may run elevated; Steam itself should start
+                # the game with its normal ownership, authentication and cwd.
+                try:
+                    os.startfile("steam://rungameid/945360")  # type: ignore[attr-defined]
+                except OSError:
+                    subprocess.Popen([str(exe)], cwd=str(game))
+            else:
+                subprocess.Popen([str(exe)], cwd=str(game))
+            self.diagnostic_status.configure(
+                text="ŻĄDANIE STARTU GRY — po załadowaniu sprawdź log BepInEx",
+                text_color=CYAN)
         except OSError as exc:
             messagebox.showerror("PARADOX", str(exc), parent=self)
 
