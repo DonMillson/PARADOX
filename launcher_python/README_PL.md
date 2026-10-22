@@ -1,29 +1,35 @@
-# PARADOX AMONG US — Launcher + Instalator w jednym EXE
+# PARADOX AMONG US — instalator online (Windows x64)
 
-Nowy, samodzielny instalator na Windows x64 oparty na Python 3.12 i CustomTkinter. Jeden plik `PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe` zawiera **cały oficjalny BepInEx IL2CPP x64 be.790, Reactor 2.5.1-ci.400, Paradox.dll** i bezpieczny backend instalacji. Instalator nie musi pobierać bibliotek ani wymagać Pythona od gracza.
+Nowy, mniejszy launcher `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe` nadal pokazuje ekran PARADOX, grę Impostor Hunt i zadanie matematyczne. Po odblokowaniu przycisku instalacji pobiera wymagane składniki przez HTTPS.
 
-## Ekrany
+## Co pobiera sam?
 
-- **Start:** PARADOX AMONG US / inicjalizacja, efekt neonowego logotypu PARADOX, przycisk rozpoczęcia misji.
-- **Misja 1:** złap poruszającego się Impostora 5 razy.
-- **Misja 2:** rozwiąż losowe działanie matematyczne (+, −, ×, potęgowanie).
-- **Misja 3:** wykryta ścieżka Steam lub ręczne wskazanie folderu gry, potwierdzenie, pasek procentowy odzwierciedlający faktyczne kopiowanie plików, a po zakończeniu uruchomienie oryginalnego Among Us.
+- **BepInEx Unity IL2CPP Windows x64**: aktualnie zatwierdzony dla PARADOX wariant `6.0.0-be.790+4e98359` z `builds.bepinex.dev`, bez Mono lub x86. SHA256 pobranego ZIP musi zgadzać się z manifestem. W przeciwnym razie instalacja się zatrzymuje.
+- **Reactor 2.5.1-ci.400**: kompatybilny z binarką PARADOX build z `nuget.reactor.gg`, pobierany jako NuGet `.nupkg` i sprawdzany przez oficjalny SHA512. Nie zamieniamy na dowolny `latest`, który mógłby zepsuć RPC lub Harmony.
+- **Paradox.dll**: dostarczony z launcherem, tak aby Reactor był zgodny z konkretną kompilacją.
 
-Instalacja nie zaczyna się przed zaliczeniem dwóch zadań. Powierzchnia GUI nigdy nie symuluje sukcesu: wymaga prawdziwych pakietów DLL, oryginalnego `Among Us.exe`, `GameAssembly.dll` i `Among Us_Data` oraz rzeczywistej architektury PE x64. Gdy brakuje paczki, przycisk zwraca błąd.
+## Automatyczna aktualizacja
 
-## Bezpieczeństwo
+Przy każdej instalacji launcher sprawdza manifest kompatybilności:
+[launcher_python/dependencies.json na gałęzi main](https://github.com/DonMillson/PARADOX/blob/main/launcher_python/dependencies.json).
 
-- Kopiuje zawartość pakietu z pliku EXE, nie podmienia samego `Among Us.exe`.
-- Wymaga zamknięcia uruchomionej gry, inaczej backend przerwie operację.
-- Zachowuje poprzednie wersje nadpisywanych plików; podczas nieudanej instalacji wykonuje rollback.
-- Nie usuwa innych pluginów z folderu gry.
-- Backend udostępnia autentyczne postępy `PARADOX_PROGRESS:x/y`, które GUI wyświetla w procentach.
-- Rejestr manifestu i kopie zapasowe: `<folder gry>/.paradox-installer/`.
+Gdy opublikujemy i zatwierdzimy nowy BepInEx, manifest może wskazać nową sprawdzoną paczkę bez ponownego wypuszczania całego launchera. Nowy Reactor, zmiana głównej wersji gry lub nowa wersja samego PARADOX wymagają przebudowy i testów — launcher celowo odmówi instalacji niezgodnego zestawu.
 
-## Pobieranie i budowa
+Wszystkie pliki są sprawdzane przed skopiowaniem do folderu gry; ZIP jest sprawdzany pod kątem ścieżek poza folderem docelowym. Program utrzymuje weryfikowany cache lokalny; brak dostępu do internetu uniemożliwi nową instalację, jeśli paczek nie ma w cache.
 
-Z menu **Actions** repozytorium wybierz zielony workflow **Build PARADOX AMONG US Launcher EXE** i pobierz artefakt `PARADOX-AMONG-US-LAUNCHER-ALL-IN-ONE-v0.7.0-dev.4-x64`, zawierający JEDEN `.exe`. Program wymaga Windows 10/11 x64; może wymagać uruchomienia jako administrator (zależnie od uprawnień instalacji gry).
+## Instalacja
 
-Budowanie ze źródeł w GitHub Actions: workflow `.github/workflows/python-launcher.yml` kompiluje oryginalny mod z biblioteki AmongUs.GameLibs 2026.9.29, pobiera oficjalne BepInEx be.790, dołącza Reactor CI400, sprawdza instalację / odinstalowanie na syntetycznej grze oraz testy Pythona, i dopiero potem tworzy PyInstaller `--onefile`.
+1. Pobierz instalator online z zielonego workflow `Build PARADOX AMONG US Online Launcher EXE` w [GitHub Actions](https://github.com/DonMillson/PARADOX/actions).
+2. Uruchom EXE, ukończ Impostor Hunt i kod matematyczny.
+3. Sprawdź wykryty folder Among Us lub wybierz go ręcznie.
+4. Kliknij **ZAINSTALUJ MODA**. Program pobierze i zweryfikuje paczki, wykona kopie zapasowe i instaluje kompletne BepInEx / Reactor / PARADOX. Pasek postępu obejmuje pobieranie i faktyczne kopiowanie.
+5. Dopiero po sukcesie użyj przycisku uruchomienia gry.
 
-**Testy modułów, instalacji i kompilacji NIE potwierdzają 100% działania moda wśród prawdziwych graczy Among Us v19.** Do tego potrzebne są testy startu i synchronizacji multiplayer z rzeczywistym klientem.
+**Zastrzeżenie:** kontrola sum, kompilacja DLL i testy instalatora nie zastępują testów uruchomienia prawdziwego Among Us 19.0.0 i multiplayer. Oficjalne `latest` może być nowsze, ale niekoniecznie zgodne z modem, dlatego używamy najnowszego *zaakceptowanego* wariantu.
+
+## Dla twórcy
+
+- `online_dependencies.py`: pobieranie, walidacja wersji i sum, cache, bezpieczna ekstrakcja.
+- `dependencies.json`: zatwierdzony zestaw `Among Us 19 / PARADOX dev.4 / Reactor CI400 / BepInEx`.
+- `test_online_dependencies.py`: testy walidacji złośliwych adresów, ścieżek ZIP, checksum, zgodności wersji.
+- `.github/workflows/python-launcher.yml`: build EXE bez dołączania paczek BepInEx/Reactor, ale z ich rzeczywistym pobraniem i testem instalacji w CI.
