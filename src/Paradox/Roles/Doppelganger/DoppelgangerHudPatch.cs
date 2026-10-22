@@ -1,5 +1,6 @@
 using Paradox.Core;
 using HarmonyLib;
+using Paradox.Roles.Corruptor;
 using Paradox.Settings;
 using UnityEngine;
 
@@ -25,6 +26,7 @@ public static class DoppelgangerHudPatch
 
         var canShow = local.Data != null &&
                       !local.Data.IsDead &&
+                      !local.Data.Disconnected &&
                       MeetingHud.Instance == null;
 
         __instance.AbilityButton.ToggleVisible(canShow);
@@ -35,25 +37,42 @@ public static class DoppelgangerHudPatch
         }
 
         var state = DoppelgangerRole.GetOrCreate(local.PlayerId);
-        CurrentTarget = DoppelgangerTargeting.FindClosestValidTarget(
-            local,
-            local.MaxReportDistance);
-
         var now = Time.time;
-        var isDisguised = state.IsDisguised(now);
-        var cooldownRemaining = state.CooldownRemaining(now);
-        var disguiseRemaining = state.DisguiseRemaining(now);
-        var displayedRemaining = isDisguised ? disguiseRemaining : cooldownRemaining;
-        var displayedMaximum = isDisguised
+        var disguised = state.IsDisguised(now);
+        var coolingDown = !state.IsReady(now);
+        var blocked = ParadoxEventRuntime.RoleAbilitiesBlocked ||
+                      CorruptorRole.IsCorrupted(local.PlayerId);
+        CurrentTarget = disguised
+            ? null
+            : DoppelgangerTargeting.FindClosestValidTarget(
+                local, local.MaxReportDistance);
+
+        var remaining = disguised
+            ? state.DisguiseRemaining(now)
+            : state.CooldownRemaining(now);
+        var maximum = disguised
             ? ParadoxRoleSettings.DoppelgangerDisguiseDurationSeconds
             : ParadoxRoleSettings.DoppelgangerCooldownSeconds;
 
-        __instance.AbilityButton.SetCoolDown(displayedRemaining, displayedMaximum);
+        __instance.AbilityButton.SetCoolDown(remaining, Math.Max(0.1f, maximum));
+
+        // Compact bilingual role-specific labels make the active phase and
+        // targeting state legible without a separate screen-space overlay.
+        var label = disguised
+            ? ParadoxPlugin.Localizer.Get("role.Doppelganger.active")
+                .Replace("{seconds}", Math.Ceiling(remaining).ToString())
+            : blocked
+                ? ParadoxPlugin.Localizer.Get("role.Doppelganger.blocked")
+                : !coolingDown && CurrentTarget == null
+                    ? ParadoxPlugin.Localizer.Get("role.Doppelganger.noTarget")
+                    : ParadoxPlugin.Localizer.Get("role.Doppelganger.ability");
+
+        __instance.AbilityButton.OverrideText(label);
 
         var canUse = local.CanMove &&
-                     !ParadoxEventRuntime.RoleAbilitiesBlocked &&
-                     !isDisguised &&
-                     state.IsReady(now) &&
+                     !blocked &&
+                     !disguised &&
+                     !coolingDown &&
                      CurrentTarget != null;
 
         if (canUse)
