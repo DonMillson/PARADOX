@@ -11,6 +11,7 @@
   },
   "reactor": {
     "version": "2.5.1-ci.400",
-    "feed": "https://nuget.reactor.gg/v3/index.json"
+    "feed": "https://nuget.reactor.gg/v3/index.json",
+    "dll_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 }
