@@ -6,5 +6,6 @@
   "bepinex_min_build": 790,
   "bepinex_fallback_url": "https://builds.bepinex.dev/projects/bepinex_be/790/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.790%2B4e98359.zip",
   "bepinex_fallback_sha256": "7e2c83e38db7744d6457839bc869b311aa29a47517938a3a7643be24d00c72ec",
-  "notes": "Reactor version is curated for the currently built PARADOX DLL; bump only after recompiling and runtime QA."
+  "notes": "Reactor SHA512 pinned from official NuGet restore of PARADOX; upgrades require recompilation and manifest update.",
+  "reactor_package_sha512": "TIEkofMDJmpzKlPpapVcQsEL+QUuEDv5s2yCis5xnVGx9H9yLJZ2QlZmOsFgbzqHlrLpqYfWKwe86fMFZS41Gg=="
 }
