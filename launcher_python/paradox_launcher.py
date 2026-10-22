@@ -178,7 +178,7 @@ class ParadoxLauncher(ctk.CTk):
         self.content.pack_propagate(False)
         foot = ctk.CTkFrame(self, fg_color="transparent")
         foot.pack(fill="x", padx=39, pady=(0, 15))
-        ctk.CTkLabel(foot, text="PARADOX by DonMillson  •  Offline installer",
+        ctk.CTkLabel(foot, text="PARADOX by DonMillson  •  Installer online + weryfikacja",
                      text_color=MUTED, font=ctk.CTkFont(size=12)).pack(side="left")
         ctk.CTkLabel(foot, text="Among Us 19 / Windows x64 • test build",
                      text_color=PURPLE, font=ctk.CTkFont(size=12)).pack(side="right")
@@ -212,8 +212,9 @@ class ParadoxLauncher(ctk.CTk):
             anchor="w", padx=30, pady=(0, 13))
 
     def welcome(self) -> None:
-        self.title_block("SYSTEM PARADOX  /  INICJALIZACJA",
-                         "Trzy etapy autoryzacji. Jedna paczka zawiera moda, Reactor i BepInEx IL2CPP.")
+        self.title_block("PARADOX  /  NOWA MISJA",
+                         "Among Us spotyka PARADOX: załoga, sabotaż i niestabilna rzeczywistość. "
+                         "Trzy etapy przed uruchomieniem modyfikacji.")
         panel = ctk.CTkFrame(self.content, fg_color="#0B142B", corner_radius=18)
         panel.pack(fill="both", expand=True, padx=31, pady=(8, 14))
         picture = tk.Canvas(panel, height=250, bg="#0B142B", highlightthickness=0)
@@ -221,15 +222,28 @@ class ParadoxLauncher(ctk.CTk):
         picture.update_idletasks()
         w = max(650, picture.winfo_width())
         cx = w / 2
-        for r in (99, 86, 71):
-            picture.create_oval(cx-r, 118-r, cx+r, 118+r,
-                                outline=("#253A60" if r != 86 else "#5AE5FA"), width=2)
-        picture.create_polygon(cx-53, 118, cx, 44, cx+53, 118, cx, 192,
-                               outline=PURPLE, fill="", width=3)
-        picture.create_text(cx, 115, text="P", fill=CYAN,
-                            font=("Segoe UI", 78, "bold"))
-        picture.create_text(cx, 224, text="PARADOX AMONG US",
-                            fill=TEXT, font=("Segoe UI", 22, "bold"))
+        for r, accent in ((104, "#284367"), (93, PURPLE), (76, "#275A77")):
+            picture.create_oval(cx-r, 110-r, cx+r, 110+r,
+                                outline=accent, width=2)
+        # Original spacesuit silhouette: recognisably Among Us-inspired,
+        # with PARADOX's luminous visor and unstable violet orbital field.
+        picture.create_oval(cx-72, 155, cx+70, 181, fill="#0A1227", outline="")
+        picture.create_polygon(cx-46, 76, cx-70, 79, cx-76, 135,
+                               cx-45, 147, fill="#792C63", outline=PURPLE, width=3)
+        picture.create_polygon(cx-47, 115, cx-36, 115, cx-37, 180,
+                               cx-7, 180, cx-5, 134, cx+8, 134,
+                               cx+13, 180, cx+43, 180, cx+47, 95,
+                               cx+29, 51, cx-18, 49, cx-45, 77,
+                               fill="#DC365E", outline="#F476AA",
+                               width=3, smooth=True)
+        picture.create_oval(cx-13, 70, cx+51, 111, fill="#23496A",
+                            outline="#6BDEFF", width=4)
+        picture.create_oval(cx-9, 74, cx+45, 104, fill="#8CE7F8", outline="")
+        picture.create_oval(cx+2, 77, cx+24, 85, fill="#EEFFFF", outline="")
+        picture.create_line(cx-91, 117, cx-68, 94, fill=CYAN, width=3)
+        picture.create_line(cx+65, 45, cx+82, 63, fill=PURPLE, width=3)
+        picture.create_text(cx, 222, text="PARADOX  //  AMONG US",
+                            fill=TEXT, font=("Segoe UI", 21, "bold"))
         ctk.CTkLabel(panel, text="IMPOSTOR HUNT   /   AUTORYZACJA   /   INSTALACJA",
                      text_color=PURPLE, font=ctk.CTkFont(size=13, weight="bold")
                      ).pack(pady=(8, 10))
@@ -272,15 +286,21 @@ class ParadoxLauncher(ctk.CTk):
         if c is None:
             return
         x, y = self.px, self.py
-        c.create_oval(x-38, y-48, x+36, y+47, fill="#C72546",
-                      outline="#50122B", width=4, tags="target")
-        c.create_rectangle(x-29, y+24, x-9, y+57, fill=RED,
-                           outline="#50122B", width=3, tags="target")
-        c.create_rectangle(x+9, y+24, x+30, y+57, fill=RED,
-                           outline="#50122B", width=3, tags="target")
-        c.create_oval(x-17, y-30, x+33, y+0, fill="#85F5FF",
-                      outline="#115073", width=4, tags="target")
-        c.create_oval(x-10, y-27, x+12, y-18, fill="#D4FCFF",
+        c.create_oval(x-43, y+37, x+40, y+66, fill="#060E20",
+                      outline="", tags="target")
+        c.create_rectangle(x-48, y-18, x-25, y+37, fill="#74275B",
+                           outline=PURPLE, width=3, tags="target")
+        c.create_rectangle(x-29, y+19, x-8, y+55, fill=RED,
+                           outline="#7D2444", width=3, tags="target")
+        c.create_rectangle(x+11, y+19, x+32, y+55, fill=RED,
+                           outline="#7D2444", width=3, tags="target")
+        c.create_oval(x-34, y-50, x+35, y+45, fill="#DA315A",
+                      outline="#FF6790", width=3, tags="target")
+        c.create_oval(x-12, y-30, x+38, y+3, fill="#245274",
+                      outline=CYAN, width=3, tags="target")
+        c.create_oval(x-8, y-25, x+32, y-2, fill="#8CDEF4",
+                      outline="", tags="target")
+        c.create_oval(x-2, y-23, x+16, y-17, fill="#F2FFFF",
                       outline="", tags="target")
 
     def move_target(self) -> None:
