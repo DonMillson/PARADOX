@@ -16,6 +16,7 @@ import threading
 import tempfile
 
 from launcher_python.online_dependencies import stage_live_dependencies
+from launcher_python.lobby_config import write_lobby_config
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -142,6 +143,8 @@ class ParadoxLauncher(ctk.CTk):
         self.math_passed = False
         self.problem, self.answer = new_challenge()
         self.game_dir = tk.StringVar(value=detect_among_us())
+        self.large_lobby_enabled = tk.BooleanVar(value=False)
+        self.large_lobby_capacity = tk.StringVar(value="50")
         self.events: queue.Queue[tuple] = queue.Queue()
         self.worker_busy = False
         self.animation_id: str | None = None
@@ -379,9 +382,32 @@ class ParadoxLauncher(ctk.CTk):
                                                      expand=True, padx=(0, 10))
         ctk.CTkButton(line, text="PRZEGLĄDAJ", command=self.browse_game,
                       width=132, height=42, fg_color="#395070").pack(side="right")
-        ctk.CTkLabel(form, text="ONLINE: aktualny BepInEx IL2CPP x64  •  zgodny Reactor  •  PARADOX dev.4",
+        ctk.CTkLabel(form, text="ONLINE: BepInEx IL2CPP x64  •  Reactor CI400  •  PARADOX",
                      text_color=GREEN, font=ctk.CTkFont(size=13)
-                     ).pack(anchor="w", padx=21, pady=(0, 19))
+                     ).pack(anchor="w", padx=21, pady=(0, 7))
+
+        lobby = ctk.CTkFrame(form, fg_color="#101C36", corner_radius=10)
+        lobby.pack(fill="x", padx=18, pady=(1, 15))
+        self.large_lobby_checkbox = ctk.CTkCheckBox(
+            lobby,
+            text="Eksperymentalne duże lobby (tylko prywatny serwer modowany)",
+            variable=self.large_lobby_enabled,
+            text_color=TEXT, font=ctk.CTkFont(size=12),
+            command=self.update_lobby_toggle)
+        self.large_lobby_checkbox.pack(anchor="w", padx=12, pady=(12, 5))
+        select_line = ctk.CTkFrame(lobby, fg_color="transparent")
+        select_line.pack(fill="x", padx=12, pady=(0, 11))
+        ctk.CTkLabel(select_line, text="Maksymalnie graczy:", text_color=MUTED
+                     ).pack(side="left", padx=(0, 15))
+        self.large_lobby_picker = ctk.CTkOptionMenu(
+            select_line, values=["15", "20", "30", "40", "50"],
+            variable=self.large_lobby_capacity, width=95,
+            state="disabled", fg_color="#344A73")
+        self.large_lobby_picker.pack(side="left")
+        ctk.CTkLabel(select_line, text="Wymaga zgodnego serwera; nie działa na oficjalnych.",
+                     text_color=MUTED, font=ctk.CTkFont(size=11)
+                     ).pack(side="left", padx=12)
+
         self.progress = ctk.CTkProgressBar(self.content, height=17,
                                            progress_color=CYAN, fg_color="#263550")
         self.progress.pack(fill="x", padx=33, pady=(24, 3))
@@ -400,6 +426,10 @@ class ParadoxLauncher(ctk.CTk):
                                            width=225, height=38, state="disabled",
                                            fg_color="#394C6A", command=self.launch_game)
         self.launch_button.pack(pady=(4, 7))
+
+    def update_lobby_toggle(self) -> None:
+        self.large_lobby_picker.configure(
+            state="normal" if self.large_lobby_enabled.get() else "disabled")
 
     def browse_game(self) -> None:
         found = filedialog.askdirectory(title="Wybierz katalog z Among Us.exe",
@@ -436,19 +466,26 @@ class ParadoxLauncher(ctk.CTk):
             messagebox.showerror("Brak instalatora",
                                  "Brakuje skryptu backendu instalacji.", parent=self)
             return
-        if not messagebox.askyesno("Potwierdzenie",
-                                   "Pobrać oficjalne pakiety BepInEx i Reactor, a potem zainstalować PARADOX?\n"
-                                   "Wymagane jest połączenie z internetem. Istniejące pliki otrzymają kopie zapasowe.",
-                                   parent=self):
+        enabled = bool(self.large_lobby_enabled.get())
+        maximum = int(self.large_lobby_capacity.get()) if enabled else 15
+        message = ("Pobrać biblioteki i zainstalować PARADOX?\n" +
+                   ("Włączysz eksperymentalny limit " + str(maximum) + " graczy. "
+                    "Wymaga prywatnego, kompatybilnego serwera.\n"
+                    if enabled else
+                    "Wielkość lobby pozostanie standardowa (15 graczy).\n") +
+                   "Istniejące pliki otrzymają kopie zapasowe.")
+        if not messagebox.askyesno("Potwierdzenie", message, parent=self):
             return
         self.worker_busy = True
         self.install_button.configure(state="disabled")
         self.set_progress(0.02, "Łączenie z serwerami")
         support = game / ".paradox-installer"
-        threading.Thread(target=self.install_worker, args=(game, support),
+        threading.Thread(target=self.install_worker,
+                         args=(game, support, enabled, maximum),
                          daemon=True, name="ParadoxInstallWorker").start()
 
-    def install_worker(self, game: Path, support: Path) -> None:
+    def install_worker(self, game: Path, support: Path,
+                       experimental_enabled: bool, capacity: int) -> None:
         try:
             with tempfile.TemporaryDirectory(prefix="paradox-verified-") as working:
                 payload = Path(working) / "payload"
@@ -479,7 +516,12 @@ class ParadoxLauncher(ctk.CTk):
                 if process.wait() != 0:
                     raise RuntimeError("\n".join(output[-14:]).strip() or
                                        "Instalacja przerwana (PowerShell).")
-                self.events.put(("done", str(game)))
+                try:
+                    write_lobby_config(game, experimental_enabled, capacity)
+                except Exception as config_error:
+                    self.events.put(("done_config_warning", str(config_error)))
+                else:
+                    self.events.put(("done", str(game)))
         except Exception as exc:
             self.events.put(("error", str(exc)))
 
@@ -498,6 +540,14 @@ class ParadoxLauncher(ctk.CTk):
                                         "Pobrano i zainstalowano BepInEx, Reactor i PARADOX.\n"
                                         "Możesz uruchomić grę. Działanie w meczu wymaga "
                                         "osobnego testu kompatybilności.", parent=self)
+                elif event[0] == "done_config_warning":
+                    self.worker_busy = False
+                    self.set_progress(1.0, "PLIKI INSTALACJI OK, KONFIGURACJA NIE")
+                    self.install_button.configure(state="normal", text="ZAINSTALUJ PONOWNIE")
+                    self.launch_button.configure(state="normal")
+                    messagebox.showwarning("PARADOX — ustawienia lobby",
+                        "Mod został zainstalowany, ale nie zapisano wybranego "
+                        "limitu graczy: " + event[1], parent=self)
                 elif event[0] == "error":
                     self.worker_busy = False
                     self.install_button.configure(state="normal")
