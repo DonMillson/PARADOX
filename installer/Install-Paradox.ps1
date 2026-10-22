@@ -52,10 +52,12 @@ if (Test-Path -LiteralPath $manifestPath) {
     foreach ($entry in @($stored.Files)) { $prior[$entry.RelativePath]=$entry }
 }
 $entries=New-Object 'System.Collections.Generic.List[object]'
+# An IL2CPP loader may contain a top-level dotnet runtime and other native
+# directories. Installing only BepInEx/* and winhttp.dll is incomplete.
+# Ship the *whole official ZIP*; the audit manifest itself is not a game file.
 $files=@(Get-ChildItem -LiteralPath $payload -File -Recurse | Where-Object {
     $rel=$_.FullName.Substring($payload.Length+1)
-    $rel.StartsWith('BepInEx\', [StringComparison]::OrdinalIgnoreCase) -or
-    $rel -in @('winhttp.dll','doorstop_config.ini','.doorstop_version')
+    $rel -ne 'PARADOX-PAYLOAD-MANIFEST.json'
 })
 $transaction=Join-Path $support '.transaction'
 New-Item -ItemType Directory -Force -Path $transaction | Out-Null
