@@ -59,7 +59,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path "mod" | Out-Null
           Copy-Item "src/Paradox/bin/Release/net6.0/Paradox.dll" "mod/Paradox.dll"
           New-Item -ItemType Directory -Force -Path "dist/installer/payload" | Out-Null
-          python -c "from pathlib import Path; from launcher_python.online_dependencies import assemble_payload; assemble_payload(Path('dist/installer/payload'), lambda name, frac: print(round(frac * 100), name))"
+          python -X utf8 -c "from pathlib import Path; from launcher_python.online_dependencies import assemble_payload; assemble_payload(Path('dist/installer/payload'), lambda name, frac: print(round(frac * 100), name.encode('ascii','replace').decode('ascii')))"
           if ($LASTEXITCODE -ne 0) { throw "Official vendor download or checksum validation failed" }
           ./installer/Test-Installer.ps1
           if ($LASTEXITCODE -ne 0) { throw "Installer integration test failed" }
