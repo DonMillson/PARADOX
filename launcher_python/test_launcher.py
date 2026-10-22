@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 from launcher_python.paradox_launcher import (
-    new_challenge, pe_machine, valid_game, bundled_mod_dll, install_backend
+    new_challenge, pe_machine, valid_game, bundled_mod_dll, install_backend, is_steam_install
 )
 
 
@@ -42,6 +42,10 @@ class StartupTests(unittest.TestCase):
             pe[0x84:0x86] = (0x14C).to_bytes(2, "little")
             (path / "Among Us.exe").write_bytes(pe)
             self.assertEqual(pe_machine(path / "Among Us.exe"), 0x14C)
+
+    def test_steam_folder_launch_strategy(self):
+        self.assertTrue(is_steam_install(Path(r"C:\\SteamLibrary\\steamapps\\common\\Among Us")))
+        self.assertFalse(is_steam_install(Path(r"D:\\Games\\Among Us")))
 
     def test_bundle_paths_are_separate(self):
         self.assertEqual(bundled_mod_dll().name, "Paradox.dll")
