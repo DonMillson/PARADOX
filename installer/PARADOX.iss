@@ -138,7 +138,7 @@ begin
   Result := True;
   if CurPageID = GamePage.ID then
     if not IsAmongUsDir(GamePage.Values[0]) then begin
-      MsgBox('Nie znaleziono kompletnej instalacji Among Us: wymagane Among Us.exe, GameAssembly.dll i Among Us_Data.' + #13#10 +
+      MsgBox('Nie znaleziono kompletnej instalacji Among Us: wymagane Among Us.exe, GameAssembly.dll i Among Us_Data.' + Chr(13) + Chr(10) +
              'Select the original Among Us game folder.', mbError, MB_OK);
       Result := False;
     end;
@@ -158,7 +158,7 @@ begin
           ExpandConstant('{app}') + '"';
   if (not Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
       Args, '', SW_HIDE, ewWaitUntilTerminated, Code)) or (Code <> 0) then begin
-    MsgBox('Instalacja PARADOX nie powiodla sie (kod ' + IntToStr(Code) + ').' + #13#10 +
+    MsgBox('Instalacja PARADOX nie powiodla sie (kod ' + IntToStr(Code) + ').' + Chr(13) + Chr(10) +
            'Sprawdz log instalatora i zamknij Among Us.', mbError, MB_OK);
     RaiseException('Instalacja plikow gry nie powiodla sie.');
   end;
@@ -177,5 +177,5 @@ begin
   if (not Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
       Args, '', SW_HIDE, ewWaitUntilTerminated, Code)) or (Code <> 0) then
     MsgBox('Nie mozna bezpiecznie wycofac plikow gry. Zachowano zmienione pliki i kopie.' +
-           #13#10 + 'Uninstall error: ' + IntToStr(Code), mbError, MB_OK);
+           Chr(13) + Chr(10) + 'Uninstall error: ' + IntToStr(Code), mbError, MB_OK);
 end;
