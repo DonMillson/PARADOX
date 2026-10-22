@@ -67,7 +67,7 @@ public static class DefaultTranslations
         AddRole(l, "Swapper", "Swapper", "Zamieniacz",
             "Swap all votes cast for two players during a meeting. If your swap ejects a Crewmate, you die.",
             "Zamień głosy oddane na dwóch graczy podczas narady. Jeśli przez zamianę wyrzucony zostanie członek załogi, giniesz.");
-        Add(l, "role.Swapper.help", "Type /swap ID1 ID2 during a meeting.", "Wpisz /swap ID1 ID2 podczas narady.");
+        Add(l, "role.Swapper.help", "Click two swap arrows or type /swap ID1 ID2.", "Kliknij dwie strzałki zamiany lub wpisz /swap ID1 ID2.");
         Add(l, "role.Swapper.selected", "Vote swap requested: {a} <-> {b}.", "Wysłano zamianę głosów: {a} <-> {b}.");
         Add(l, "role.Swapper.invalid", "Invalid swap targets.", "Nieprawidłowe cele zamiany.");
         Add(l, "role.Swapper.penalty", "Your swap ejected a Crewmate. You die.", "Twoja zamiana wyrzuciła członka załogi. Giniesz.");
