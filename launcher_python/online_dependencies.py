@@ -35,7 +35,9 @@ class DependencyError(RuntimeError):
 
 
 def bundled_root() -> Path:
-    return Path(getattr(__import__("sys"), "_MEIPASS", Path(__file__).resolve().parent))
+    # In development resources are relative to the repository root;
+    # in PyInstaller --onefile they live at sys._MEIPASS.
+    return Path(getattr(__import__("sys"), "_MEIPASS", Path(__file__).resolve().parent.parent))
 
 
 def bundled_manifest() -> Path:
