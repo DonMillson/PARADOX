@@ -61,6 +61,23 @@ jobs:
           python -m py_compile launcher_python/paradox_launcher.py
           if ($LASTEXITCODE -ne 0) { throw "Launcher syntax check failed" }
 
+      - name: Live end-to-end official dependency download verification
+        shell: pwsh
+        run: |
+          @'
+          from pathlib import Path
+          import tempfile
+          from launcher_python.online_dependencies import stage_live_dependencies
+          with tempfile.TemporaryDirectory(prefix="paradox-live-") as work:
+              result = stage_live_dependencies(
+                  Path(work) / "payload",
+                  Path("src/Paradox/bin/Release/net6.0/Paradox.dll"),
+                  lambda amount, status: print(f"{amount:.0%} {status}"),
+              )
+              print("PASS: official BepInEx and Reactor downloaded, hashes checked:", result)
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { throw "Official download integration test failed" }
+
       - name: Build single online updater launcher EXE
         shell: pwsh
         run: |
