@@ -1,4 +1,6 @@
 using Paradox.Networking;
+using Paradox.Core;
+using Paradox.Roles.Corruptor;
 using Paradox.Settings;
 using Reactor.Networking.Rpc;
 using UnityEngine;
@@ -23,13 +25,18 @@ public static class DoppelgangerRole
 
     public static bool TryDisguise(PlayerControl player, PlayerControl target)
     {
-        if (player == null || target == null || !AmongUsClient.Instance.AmHost)
+        if (player == null || target == null ||
+            AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
             return false;
 
+        // The host must validate the click independently of the client's HUD
+        // state. Never alter the outfit while movement/abilities are blocked.
         if (!IsDoppelganger(player.PlayerId) ||
-            player.Data == null || player.Data.IsDead || player.Data.Disconnected ||
-            target.Data == null || target.Data.IsDead || target.Data.Disconnected ||
-            player.PlayerId == target.PlayerId)
+            !player.CanMove ||
+            MeetingHud.Instance != null ||
+            ParadoxEventRuntime.RoleAbilitiesBlocked ||
+            CorruptorRole.IsCorrupted(player.PlayerId) ||
+            !DoppelgangerTargeting.IsValidTarget(player, target))
             return false;
 
         var distance = Vector2.Distance(player.GetTruePosition(), target.GetTruePosition());
@@ -116,7 +123,7 @@ public static class DoppelgangerRole
         }
         else
         {
-            state.ClearDisguise();
+            state.ApplySyncedStop(Time.time, cooldownSeconds);
         }
     }
 

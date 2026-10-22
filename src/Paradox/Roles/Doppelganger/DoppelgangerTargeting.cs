@@ -6,7 +6,8 @@ public static class DoppelgangerTargeting
 {
     public static PlayerControl? FindClosestValidTarget(PlayerControl source, float maxDistance)
     {
-        if (source == null || source.Data == null || source.Data.IsDead)
+        if (source == null || source.Data == null ||
+            source.Data.IsDead || source.Data.Disconnected)
             return null;
 
         PlayerControl? closest = null;
@@ -32,6 +33,9 @@ public static class DoppelgangerTargeting
     public static bool IsValidTarget(PlayerControl source, PlayerControl? target)
     {
         return source != null &&
+               source.Data != null &&
+               !source.Data.IsDead &&
+               !source.Data.Disconnected &&
                target != null &&
                target.PlayerId != source.PlayerId &&
                target.Data != null &&

@@ -34,6 +34,9 @@ jobs:
         shell: pwsh
         run: ./scripts/check-station-layout.ps1
 
+      - name: Test role state logic
+        run: dotnet run --project tests/Paradox.RoleStateTests/Paradox.RoleStateTests.csproj -c Release
+
       - name: Build
         run: dotnet build src/Paradox/Paradox.csproj -c Release
 
