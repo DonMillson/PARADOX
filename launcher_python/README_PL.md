@@ -1,29 +1,23 @@
-# PARADOX AMONG US — Launcher + Instalator w jednym EXE
+# PARADOX AMONG US — Launcher Online
 
-Nowy, samodzielny instalator na Windows x64 oparty na Python 3.12 i CustomTkinter. Jeden plik `PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe` zawiera **cały oficjalny BepInEx IL2CPP x64 be.790, Reactor 2.5.1-ci.400, Paradox.dll** i bezpieczny backend instalacji. Instalator nie musi pobierać bibliotek ani wymagać Pythona od gracza.
+**Jeden plik EXE** z ekranem powitalnym, mini-grą w łapanie Impostora, kodem matematycznym i instalacją. W nowej wersji launcher nie pakuje w sobie całego BepInEx/Reactora. Dzięki temu rozmiar pliku jest mniejszy, a instalator za każdym razem sprawdza oficjalne serwery.
 
-## Ekrany
+## Przebieg
 
-- **Start:** PARADOX AMONG US / inicjalizacja, efekt neonowego logotypu PARADOX, przycisk rozpoczęcia misji.
-- **Misja 1:** złap poruszającego się Impostora 5 razy.
-- **Misja 2:** rozwiąż losowe działanie matematyczne (+, −, ×, potęgowanie).
-- **Misja 3:** wykryta ścieżka Steam lub ręczne wskazanie folderu gry, potwierdzenie, pasek procentowy odzwierciedlający faktyczne kopiowanie plików, a po zakończeniu uruchomienie oryginalnego Among Us.
+1. Uruchom `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe` jako administrator na Windows x64.
+2. Przejdź mini-grę (5 kliknięć Impostora) i zadanie matematyczne. Instalacja jest wcześniej zablokowana.
+3. Launcher wykrywa Among Us w bibliotece Steam lub pozwala wskazać katalog ręcznie.
+4. Po kliknięciu „Zainstaluj moda” odczytuje [listę zgodności PARADOX](compatibility.json) z GitHub (z dołączonym zapasowym manifestem), wyszukuje **najnowsze BepInEx Unity.IL2CPP win-x64** na [oficjalnym serwerze](https://builds.bepinex.dev/projects/bepinex_be), pobiera je i sprawdza typ paczki oraz sumę SHA-256 dla przypiętej wersji zapasowej.
+5. Reactor pobierany jest jako oficjalny pakiet NuGet z [nuget.reactor.gg](https://nuget.reactor.gg/). **Wersja Reactor 2.5.1-ci.400 pozostaje kompatybilnościowo przypięta do skompilowanego PARADOX dev.4**, a archiwum weryfikowane jest sumą SHA-512 udostępnianą przez NuGet.
+6. Launcher wypakowuje pliki do katalogu tymczasowego i uruchamia dotychczasowy instalator z manifestem plików, kopiami zapasowymi i rollbackiem. Dopiero po pobraniu i sprawdzeniu wszystkich komponentów modyfikuje folder gry.
+7. Po sukcesie można uruchomić Among Us. W razie problemów sprawdź `BepInEx/LogOutput.log`.
 
-Instalacja nie zaczyna się przed zaliczeniem dwóch zadań. Powierzchnia GUI nigdy nie symuluje sukcesu: wymaga prawdziwych pakietów DLL, oryginalnego `Among Us.exe`, `GameAssembly.dll` i `Among Us_Data` oraz rzeczywistej architektury PE x64. Gdy brakuje paczki, przycisk zwraca błąd.
+**Dlaczego Reactor nie zawsze „latest”?** Nowy Reactor może wymagać rekompilacji PARADOX i zmienić API; automatycznie aktualizujemy źródło kompatybilności, ale nie podstawiamy niezweryfikowanego wydania. Jeśli aktualna lista wymaga innej wersji niż wbudowany mod, instalator zatrzyma się i poprosi o nowy build launchera.
 
-## Bezpieczeństwo
+**Bezpieczeństwo:** tylko HTTPS do zweryfikowanych domen, odrzucanie obcych przekierowań, limity wielkości pobrań, kontrola archiwum i ścieżek w ZIP, SHA-512 Reactor oraz backupy istniejących plików. Do instalacji wymagane jest połączenie z internetem. W razie niedostępności serwerów program nie symuluje sukcesu.
 
-- Kopiuje zawartość pakietu z pliku EXE, nie podmienia samego `Among Us.exe`.
-- Wymaga zamknięcia uruchomionej gry, inaczej backend przerwie operację.
-- Zachowuje poprzednie wersje nadpisywanych plików; podczas nieudanej instalacji wykonuje rollback.
-- Nie usuwa innych pluginów z folderu gry.
-- Backend udostępnia autentyczne postępy `PARADOX_PROGRESS:x/y`, które GUI wyświetla w procentach.
-- Rejestr manifestu i kopie zapasowe: `<folder gry>/.paradox-installer/`.
+**Ważne:** aktualne zależności **nie gwarantują**, że wszystkie role PARADOX działają w Among Us 19.0.0. Potrzebne są testy rozruchu i multiplayer.
 
-## Pobieranie i budowa
+## Budowa i testy
 
-Z menu **Actions** repozytorium wybierz zielony workflow **Build PARADOX AMONG US Launcher EXE** i pobierz artefakt `PARADOX-AMONG-US-LAUNCHER-ALL-IN-ONE-v0.7.0-dev.4-x64`, zawierający JEDEN `.exe`. Program wymaga Windows 10/11 x64; może wymagać uruchomienia jako administrator (zależnie od uprawnień instalacji gry).
-
-Budowanie ze źródeł w GitHub Actions: workflow `.github/workflows/python-launcher.yml` kompiluje oryginalny mod z biblioteki AmongUs.GameLibs 2026.9.29, pobiera oficjalne BepInEx be.790, dołącza Reactor CI400, sprawdza instalację / odinstalowanie na syntetycznej grze oraz testy Pythona, i dopiero potem tworzy PyInstaller `--onefile`.
-
-**Testy modułów, instalacji i kompilacji NIE potwierdzają 100% działania moda wśród prawdziwych graczy Among Us v19.** Do tego potrzebne są testy startu i synchronizacji multiplayer z rzeczywistym klientem.
+Workflow: `.github/workflows/python-launcher.yml`. Testy resolvera korzystają z mocków oficjalnych API, bez pobierania z Internetu. Kompilator moda używa `AmongUs.GameLibs.Steam 2026.9.29`, a PyInstaller dołącza tylko `Paradox.dll`, dane zgodności i skrypt instalacji.
