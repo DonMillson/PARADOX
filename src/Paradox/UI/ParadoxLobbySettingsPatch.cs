@@ -132,6 +132,9 @@ public static class ParadoxLobbySettingsPatch
 
         DestroyTranslator(_tabButton.buttonText);
         _tabButton.buttonText.text = "PARADOX";
+        _tabButton.buttonText.color = ParadoxVisualTheme.TextPrimary;
+        _tabButton.buttonText.outlineWidth = 0.08f;
+        _tabButton.buttonText.outlineColor = new Color32(9, 18, 35, 255);
 
         foreach (var go in new[] { _tabButton.activeSprites, _tabButton.selectedSprites })
         {
@@ -140,7 +143,7 @@ public static class ParadoxLobbySettingsPatch
 
             var renderer = go.GetComponent<SpriteRenderer>();
             if (renderer != null)
-                renderer.color = new Color(0.33f, 0.78f, 0.76f, 1f);
+                renderer.color = ParadoxVisualTheme.Cyan;
         }
 
         _tabButton.OnClick = new();
@@ -293,6 +296,14 @@ public static class ParadoxLobbySettingsPatch
         header.name = $"PARADOX_Header_{title}";
         DestroyTranslator(header.Title);
         header.Title.text = title;
+        header.Title.color = title switch
+        {
+            "IMPOSTOR ROLES" => ParadoxVisualTheme.FactionAccent(RoleFaction.Impostor),
+            "CREWMATE ROLES" => ParadoxVisualTheme.FactionAccent(RoleFaction.Crewmate),
+            "NEUTRAL ROLES" => ParadoxVisualTheme.FactionAccent(RoleFaction.Neutral),
+            "PARADOX METER" => ParadoxVisualTheme.Violet,
+            _ => ParadoxVisualTheme.Cyan
+        };
 
         var maskLayer = GameOptionsMenu.MASK_LAYER;
         header.Background.material.SetInt(PlayerMaterial.MaskLayer, maskLayer);
@@ -340,15 +351,16 @@ public static class ParadoxLobbySettingsPatch
 
         DestroyTranslator(row.TitleText);
         row.TitleText.text = definition.Title;
+        row.TitleText.color = ParadoxVisualTheme.TextPrimary;
+        row.TitleText.outlineWidth = 0.07f;
+        row.TitleText.outlineColor = new Color32(9, 13, 25, 255);
+        row.ValueText.outlineWidth = 0.06f;
+        row.ValueText.outlineColor = new Color32(9, 13, 25, 255);
 
         if (definition.Kind == RowKind.Role)
         {
-            row.LabelBackground.color = definition.Faction switch
-            {
-                RoleFaction.Impostor => new Color(0.64f, 0.18f, 0.18f, 1f),
-                RoleFaction.Crewmate => new Color(0.18f, 0.55f, 0.66f, 1f),
-                _ => new Color(0.60f, 0.48f, 0.15f, 1f)
-            };
+            row.LabelBackground.color =
+                ParadoxVisualTheme.FactionRow(definition.Faction);
         }
 
         Rows[row.Pointer] = definition;
@@ -408,6 +420,19 @@ public static class ParadoxLobbySettingsPatch
                     SetArrowsVisible(row, false);
                     break;
             }
+
+            // The value itself conveys the state. Do not rely on red/green
+            // alone: OFF and PLANNED always remain readable as text.
+            row.ValueText.color = definition.Kind switch
+            {
+                RowKind.Role when definition.Planned => ParadoxVisualTheme.Planned,
+                RowKind.Role when !ParadoxRoleSettings.IsEnabled(definition.Role) =>
+                    ParadoxVisualTheme.Off,
+                RowKind.Role => ParadoxVisualTheme.FactionAccent(definition.Faction),
+                RowKind.MeterGain => ParadoxVisualTheme.Violet,
+                RowKind.Info => ParadoxVisualTheme.TextMuted,
+                _ => ParadoxVisualTheme.Cyan
+            };
         }
     }
 
