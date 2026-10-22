@@ -66,6 +66,10 @@ public static class DefaultTranslations
 
         AddRole(l, "Doppelganger", "Doppelgänger", "Sobowtór",
             "Copy another player's identity temporarily.", "Tymczasowo skopiuj tożsamość innego gracza.");
+        Add(l, "role.Doppelganger.ability", "COPY", "KOPIUJ");
+        Add(l, "role.Doppelganger.active", "MASK {seconds}s", "MASKA {seconds}s");
+        Add(l, "role.Doppelganger.noTarget", "NO TARGET", "BRAK CELU");
+        Add(l, "role.Doppelganger.blocked", "BLOCKED", "BLOKADA");
         AddRole(l, "Parasite", "Parasite", "Pasożyt",
             "Infect players and let the infection develop.", "Zarażaj graczy i pozwól infekcji się rozwijać.");
         Add(l, "role.Parasite.ability", "INFECT", "ZARAŹ");
