@@ -79,6 +79,9 @@ def validate_manifest(doc: object) -> dict:
         raise DependencyError("Reactor nie pasuje do kompilacji PARADOX.")
     if reactor.get("feed") != "https://nuget.reactor.gg/v3/index.json":
         raise DependencyError("Nieznany adres oficjalnego indeksu NuGet.")
+    dll_sha = reactor.get("dll_sha256", "")
+    if not isinstance(dll_sha, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", dll_sha):
+        raise DependencyError("Brak odcisku biblioteki Reactor.dll zgodnej z modem.")
     return doc
 
 
@@ -128,6 +131,8 @@ def choose_manifest(progress: Progress | None = None) -> dict:
     try:
         remote = validate_manifest(json.loads(
             _fetch_bytes(UPSTREAM_MANIFEST, 32768).decode("utf-8")))
+        if remote["reactor"]["dll_sha256"].lower() != local["reactor"]["dll_sha256"].lower():
+            raise DependencyError("Zdalny manifest wymaga innego Reactora niż obecna kompilacja.")
         if progress:
             progress("Sprawdzono aktualną zgodną konfigurację PARADOX", 0.04)
         return remote
@@ -206,7 +211,7 @@ def _reactor_assembly(nupkg: bytes) -> bytes:
         return dll
 
 
-def reactor_download_urls(feed: str) -> tuple[str, str]:
+def reactor_download_urls(feed: str) -> str:
     """Resolve NuGet PackageBaseAddress from the vendor's actual V3 index."""
     if feed != "https://nuget.reactor.gg/v3/index.json":
         raise DependencyError("Nieprawidłowy NuGet feed.")
@@ -236,7 +241,7 @@ def reactor_download_urls(feed: str) -> tuple[str, str]:
         raise DependencyError("Oficjalny NuGet nie podał bezpiecznego adresu pakietów.")
     nupkg = f"reactor.{COMPILED_REACTOR}.nupkg"
     url = f"{base}/reactor/{COMPILED_REACTOR}/{nupkg}"
-    return url, url + ".sha512"
+    return url
 
 
 def assemble_payload(destination: Path, progress: Progress | None = None) -> dict:
@@ -249,18 +254,11 @@ def assemble_payload(destination: Path, progress: Progress | None = None) -> dic
     reactor = manifest["reactor"]
     bep_zip = _get_verified(bep["url"], "BepInEx", bep["sha256"], progress, .06, .33)
 
-    # NuGet's official SHA-512 sidecar is downloaded over HTTPS and must match
-    # the package bytes. The package version cannot change without a mod rebuild.
-    reactor_url, reactor_sha_url = reactor_download_urls(reactor["feed"])
-    sha_b64 = _fetch_bytes(reactor_sha_url, 4096).decode("ascii").strip()
-    try:
-        reactor_sha = base64.b64decode(sha_b64, validate=True)
-    except ValueError as exc:
-        raise DependencyError("Nieprawidłowa suma SHA512 od dostawcy Reactora.") from exc
-    if len(reactor_sha) != 64:
-        raise DependencyError("Nieprawidłowy rozmiar sumy SHA512 Reactora.")
-    # Cache the official package under its upstream SHA512-derived content ID.
-    nupkg = _get_verified_reactor(reactor_url, reactor_sha, progress)
+    # BaGetter's Reactor feed does not publish a standalone SHA512 sidecar.
+    # Verify the downloaded Reactor.dll against the EXACT binary that was
+    # resolved from NuGet during this PARADOX build.
+    reactor_url = reactor_download_urls(reactor["feed"])
+    nupkg = _get_verified_reactor(reactor_url, reactor["dll_sha256"], progress)
     _extract_safe(bep_zip, destination)
     required = [destination / "winhttp.dll", destination / "BepInEx" / "core"]
     if not all(p.exists() for p in required):
@@ -274,25 +272,34 @@ def assemble_payload(destination: Path, progress: Progress | None = None) -> dic
     return manifest
 
 
-def _get_verified_reactor(url: str, sha512: bytes, progress: Progress | None) -> bytes:
-    filename = "Reactor-" + sha512.hex()[:20] + ".nupkg"
-    cached = cache_root() / filename
-    cached.parent.mkdir(parents=True, exist_ok=True)
+def _get_verified_reactor(url: str, dll_sha256: str,
+                          progress: Progress | None) -> bytes:
+    cache = cache_root()
+    cache.mkdir(parents=True, exist_ok=True)
+    cached = cache / ("Reactor-" + dll_sha256[:20] + ".nupkg")
     if cached.exists():
         content = cached.read_bytes()
-        if hashlib.sha512(content).digest() == sha512:
-            if progress:
-                progress("Reactor z cache (SHA512)", .58)
-            return content
+        try:
+            dll = _reactor_assembly(content)
+            if hashlib.sha256(dll).hexdigest().lower() == dll_sha256.lower():
+                if progress:
+                    progress("Reactor z cache (SHA256 DLL)", .58)
+                return content
+        except (DependencyError, OSError, zipfile.BadZipFile):
+            pass
         cached.unlink()
     if progress:
         progress("Pobieram Reactor NuGet", .38)
     content = _fetch_bytes(url, MAX_DOWNLOAD)
-    if hashlib.sha512(content).digest() != sha512:
-        raise DependencyError("Reactor NuGet: niezgodna suma SHA512!")
+    try:
+        dll = _reactor_assembly(content)
+    except (OSError, zipfile.BadZipFile) as exc:
+        raise DependencyError("Pobrany pakiet Reactora nie jest poprawnym ZIP.") from exc
+    if hashlib.sha256(dll).hexdigest().lower() != dll_sha256.lower():
+        raise DependencyError("Reactor.dll nie zgadza się z biblioteką kompilacyjną PARADOX.")
     tmp = cached.with_suffix(".tmp")
     tmp.write_bytes(content)
     tmp.replace(cached)
     if progress:
-        progress("Reactor zweryfikowany SHA512", .58)
+        progress("Reactor.dll zweryfikowany SHA256", .58)
     return content
