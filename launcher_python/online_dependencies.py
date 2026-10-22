@@ -227,8 +227,6 @@ def assemble_payload(destination: Path, progress: Progress | None = None) -> dic
         raise DependencyError("Nieprawidłowa suma SHA512 od dostawcy Reactora.") from exc
     if len(reactor_sha) != 64:
         raise DependencyError("Nieprawidłowy rozmiar sumy SHA512 Reactora.")
-    reactor_zip = _get_verified(reactor["url"], "Reactor", progress=progress,
-                                sha256="", p1=.35, p2=.59) if False else None
     # Cache the official package under its upstream SHA512-derived content ID.
     nupkg = _get_verified_reactor(reactor["url"], reactor_sha, progress)
     _extract_safe(bep_zip, destination)
