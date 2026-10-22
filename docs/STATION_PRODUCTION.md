@@ -22,9 +22,10 @@ until the native map is integrated and tested.
   Neither bundle contains a finished `ShipStatus` game map.
 - New `Verify PARADOX Production Map Geometry` GitHub Actions workflow
   generates/checks the layout and uploads the JSON for Unity.
-- Old off-map F7 prototype entry, F6 blueprint and TESTUJ MAPĘ button are
-  disabled in normal builds. This is intentional: an incomplete map should
-  not be mistaken for a selectable production map.
+- Old off-map F7 prototype entry and F6 blueprint remain disabled in
+  normal builds. The `TESTUJ MAPĘ` / `TEST STATION` lobby button and its
+  creator code have been removed entirely. An unfinished prototype must not
+  be presented as a playable Among Us map.
 
 ## Build the Unity scene
 

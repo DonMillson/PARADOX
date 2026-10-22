@@ -4,7 +4,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 
 ## Development status
 
-**Production-map direction:** F6/F7 test-station entry and the TESTUJ MAPĘ lobby button are disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
+**Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
 **Current testing milestone: PARADOX 0.7.0-dev.1.** The project has 40 registered roles with gameplay MVP/foundation: 15 Impostor, 15 Crewmate and 10 Neutral roles. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
@@ -90,7 +90,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Host-side initial role assignment covers all 40 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
 - Lobby UI: role summary now shows six roles per page, cycles through faction pages with a click, and carries the PARADOX by DonMillson credit without a separate overlay obscuring Customize.
-- Former solo-map testing via F7 is disabled in release/dev standard builds. Production Unity geometry now lives separately under `unity/ParadoxStation/`.
+- Former solo-map testing via F7 is disabled in release/dev standard builds; the unfinished lobby map-test button was removed entirely. Production Unity geometry remains separate under `unity/ParadoxStation/`.
 - PARADOX STATION: production map geometry/build scripts now generate all 12 connected room positions, 16 full collision-aware corridor routes and asset-bundle-ready Unity scene authoring; native ShipStatus tasks, vents and map choice are still pending. See [Production map development](docs/STATION_PRODUCTION.md).
 - Match-end state reset for implemented MVP roles.
 - GitHub Actions checks all 40 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
