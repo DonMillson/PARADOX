@@ -466,13 +466,13 @@ class ParadoxLauncher(ctk.CTk):
                 assert process.stdout is not None
                 for line in process.stdout:
                     output.append(line)
-                    marker = re.search(r"PARADOX_PROGRESS:(\\d+)/(\\d+)", line)
+                    marker = re.search(r"PARADOX_PROGRESS:(\d+)/(\d+)", line)
                     if marker:
                         amount = int(marker[1]) / max(int(marker[2]), 1)
                         self.events.put(("progress", min(.99, .65 + .34 * amount),
                                          "Instaluję BepInEx, Reactor i PARADOX"))
                 if process.wait() != 0:
-                    raise RuntimeError("\\n".join(output[-14:]).strip() or
+                    raise RuntimeError("\n".join(output[-14:]).strip() or
                                        "Instalacja przerwana (PowerShell).")
             self.events.put(("done", str(game)))
         except Exception as exc:
