@@ -109,6 +109,9 @@ def get_manifest() -> dict:
     _validated_https(details.get("bepinex_fallback_url", ""), "builds.bepinex.dev")
     if not re.fullmatch(r"[0-9a-fA-F]{64}", details.get("bepinex_fallback_sha256", "")):
         raise DependencyError("Nieprawidłowy skrót kontrolny BepInEx.")
+    reactor_hash = details.get("reactor_package_sha512", "")
+    if reactor_hash and not re.fullmatch(r"[A-Za-z0-9+/]{86}==", reactor_hash):
+        raise DependencyError("Nieprawidłowy przypięty hash Reactor.")
     return details
 
 
@@ -240,10 +243,17 @@ def stage_live_dependencies(payload: Path, mod_dll: Path, report: REPORT) -> dic
     report(0.38, "Pobieram zgodny Reactor")
     reactor_url, checksum_url = reactor_package_url(COMPILED_REACTOR)
     reactor_blob = download_file(reactor_url, "nuget.reactor.gg")
-    expected = _text(checksum_url, "nuget.reactor.gg", 1024).strip()
+    # BaGetter may not expose the conventional .nupkg.sha512 endpoint
+    # (observed HTTP 404 in live Windows CI). Prefer a hash pinned in the
+    # PARADOX compatibility manifest, generated from our NuGet restore.
+    expected = manifest.get("reactor_package_sha512", "")
+    if not expected:
+        expected = _text(checksum_url, "nuget.reactor.gg", 1024).strip()
+    if not re.fullmatch(r"[A-Za-z0-9+/]{86}==", expected):
+        raise DependencyError("Brak poprawnego skrótu SHA-512 Reactor.")
     actual = base64.b64encode(hashlib.sha512(reactor_blob).digest()).decode("ascii")
     if expected != actual:
-        raise DependencyError("Reactor nie przeszedł kontroli SHA-512 NuGet.")
+        raise DependencyError("Reactor nie przeszedł kontroli SHA-512.")
     plugin_dir = payload / "BepInEx" / "plugins"
     plugin_dir.mkdir(parents=True, exist_ok=True)
     (plugin_dir / "Reactor.dll").write_bytes(_dll_from_nupkg(reactor_blob))
