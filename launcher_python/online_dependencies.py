@@ -92,10 +92,16 @@ def get_manifest() -> dict:
     try:
         details = json.loads(_text(MANIFEST_URL, "raw.githubusercontent.com", 64_000))
     except (DependencyError, ValueError, json.JSONDecodeError):
+        details = None
+
+    # A previous/latest GitHub main may advertise a manifest for a *different*
+    # PARADOX DLL. Such a manifest is never applied to this frozen EXE.
+    # Keep its bundled, build-specific pinned manifest as the safe fallback.
+    if details is None or details.get("mod_version") != MOD_VERSION:
         try:
             details = json.loads(fallback.read_text("utf-8"))
         except (OSError, ValueError) as exc:
-            raise DependencyError(f"Nie udało się uzyskać listy zgodności: {exc}") from exc
+            raise DependencyError(f"Nie udało się uzyskać zgodnej listy zależności: {exc}") from exc
 
     if (details.get("schema") != 1 or details.get("mod_version") != MOD_VERSION
             or details.get("game_baseline") != "19.0.0"
