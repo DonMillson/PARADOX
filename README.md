@@ -1,6 +1,6 @@
 # PARADOX
 
-Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release), targeting its supported Among Us 16.0.5–17.4 range.
+Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release), targeting its supported Among Us 16.0.5–17.4 range. **As of October 22, 2026, official Among Us v19.0.0 is newer than the versions supported by this Reactor build: PARADOX is NOT verified compatible with the latest game.** Confirm a compatible Reactor/GameLibs/BepInEx toolchain and real multiplayer startup before calling this a v19 release.
 
 ## Development status
 
