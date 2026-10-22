@@ -69,6 +69,12 @@ jobs:
           from pathlib import Path
           import tempfile
           from launcher_python.online_dependencies import stage_live_dependencies
+          import base64, hashlib, os
+          nuget_cache = Path.home() / ".nuget/packages/reactor/2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg"
+          if nuget_cache.is_file():
+              print("REACTOR_PIN_SHA512=" + base64.b64encode(
+                  hashlib.sha512(nuget_cache.read_bytes()).digest()
+              ).decode("ascii"))
           with tempfile.TemporaryDirectory(prefix="paradox-live-") as work:
               result = stage_live_dependencies(
                   Path(work) / "payload",
