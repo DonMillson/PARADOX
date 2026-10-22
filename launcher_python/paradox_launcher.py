@@ -13,6 +13,9 @@ import re
 import subprocess
 import sys
 import threading
+import tempfile
+
+from launcher_python.online_dependencies import stage_live_dependencies
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -39,8 +42,8 @@ def bundle_root() -> Path:
     return Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 
 
-def source_payload() -> Path:
-    return bundle_root() / "payload"
+def bundled_mod_dll() -> Path:
+    return bundle_root() / "mod" / "Paradox.dll"
 
 
 def install_backend() -> Path:
@@ -363,7 +366,7 @@ class ParadoxLauncher(ctk.CTk):
             self.show_stage(1 if not self.hunt_passed else 2)
             return
         self.title_block("MISJA 03  /  INSTALACJA",
-                         "Wybierz folder gry. Wszystkie pliki BepInEx, Reactor i PARADOX są już w launcherze.")
+                         "Wybierz folder gry. BepInEx i zgodny Reactor pobiorę teraz z oficjalnych serwerów.")
         form = ctk.CTkFrame(self.content, fg_color=CARD_ALT, corner_radius=13)
         form.pack(fill="x", padx=30, pady=(12, 19))
         ctk.CTkLabel(form, text="KATALOG Z GRĄ AMONG US", text_color=MUTED,
@@ -376,7 +379,7 @@ class ParadoxLauncher(ctk.CTk):
                                                      expand=True, padx=(0, 10))
         ctk.CTkButton(line, text="PRZEGLĄDAJ", command=self.browse_game,
                       width=132, height=42, fg_color="#395070").pack(side="right")
-        ctk.CTkLabel(form, text="PAKIET: BepInEx IL2CPP x64  •  Reactor CI400  •  PARADOX dev.4",
+        ctk.CTkLabel(form, text="ONLINE: aktualny BepInEx IL2CPP x64  •  zgodny Reactor  •  PARADOX dev.4",
                      text_color=GREEN, font=ctk.CTkFont(size=13)
                      ).pack(anchor="w", padx=21, pady=(0, 19))
         self.progress = ctk.CTkProgressBar(self.content, height=17,
@@ -414,7 +417,6 @@ class ParadoxLauncher(ctk.CTk):
         if self.worker_busy or not (self.hunt_passed and self.math_passed):
             return
         game = Path(self.game_dir.get().strip()).expanduser()
-        payload = source_payload()
         if not valid_game(game):
             messagebox.showerror("Nieprawidłowa ścieżka",
                                  "Wskaż folder zawierający Among Us.exe, GameAssembly.dll i Among Us_Data.",
@@ -424,12 +426,10 @@ class ParadoxLauncher(ctk.CTk):
             messagebox.showerror("Nieobsługiwana gra",
                                  "Instalator obsługuje Among Us x64.", parent=self)
             return
-        if not (payload / "winhttp.dll").is_file() or not (
-                payload / "BepInEx" / "plugins" / "Paradox.dll").is_file() or not (
-                payload / "BepInEx" / "plugins" / "Reactor.dll").is_file():
-            messagebox.showerror("Brak paczki",
-                                 "Brak BepInEx / PARADOX wewnątrz launchera. "
-                                 "Użyj pełnego pliku EXE z GitHub Actions.",
+        if not bundled_mod_dll().is_file():
+            messagebox.showerror("Brak moda",
+                                 "Nie znaleziono Paradox.dll w programie. "
+                                 "Pobierz oficjalny launcher PARADOX z GitHub Actions.",
                                  parent=self)
             return
         if not install_backend().is_file():
@@ -437,41 +437,49 @@ class ParadoxLauncher(ctk.CTk):
                                  "Brakuje skryptu backendu instalacji.", parent=self)
             return
         if not messagebox.askyesno("Potwierdzenie",
-                                   "Zainstalować BepInEx, Reactor i PARADOX do wybranego folderu?\n"
-                                   "Obecne pliki zostaną zachowane w kopiach zapasowych.",
+                                   "Pobrać oficjalne pakiety BepInEx i Reactor, a potem zainstalować PARADOX?\n"
+                                   "Wymagane jest połączenie z internetem. Istniejące pliki otrzymają kopie zapasowe.",
                                    parent=self):
             return
         self.worker_busy = True
         self.install_button.configure(state="disabled")
-        self.set_progress(0.02, "Kontrola plików")
+        self.set_progress(0.02, "Łączenie z serwerami")
         support = game / ".paradox-installer"
-        threading.Thread(target=self.install_worker, args=(game, payload, support),
+        threading.Thread(target=self.install_worker, args=(game, support),
                          daemon=True, name="ParadoxInstallWorker").start()
 
-    def install_worker(self, game: Path, payload: Path, support: Path) -> None:
+    def install_worker(self, game: Path, support: Path) -> None:
         try:
-            command = ["powershell.exe", "-NoProfile", "-NonInteractive",
-                       "-ExecutionPolicy", "Bypass", "-File", str(install_backend()),
-                       "-GamePath", str(game), "-PayloadRoot", str(payload),
-                       "-SupportRoot", str(support)]
-            startup = getattr(subprocess, "CREATE_NO_WINDOW", 0)
-            process = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT, text=True,
-                                       encoding="utf-8", errors="replace",
-                                       creationflags=startup)
-            output: list[str] = []
-            assert process.stdout is not None
-            for line in process.stdout:
-                output.append(line)
-                marker = re.search(r"PARADOX_PROGRESS:(\d+)/(\d+)", line)
-                if marker:
-                    amount = int(marker[1]) / max(int(marker[2]), 1)
-                    self.events.put(("progress", min(.98, .06 + .92 * amount),
-                                     "Instaluję komponenty"))
-            if process.wait() != 0:
-                raise RuntimeError("\n".join(output[-14:]).strip() or
-                                   "Instalacja przerwana (PowerShell).")
-            self.events.put(("done", str(game)))
+            with tempfile.TemporaryDirectory(prefix="paradox-verified-") as working:
+                payload = Path(working) / "payload"
+                payload.mkdir()
+                stage_live_dependencies(
+                    payload, bundled_mod_dll(),
+                    lambda fraction, message:
+                        self.events.put(("progress", fraction, message))
+                )
+                command = ["powershell.exe", "-NoProfile", "-NonInteractive",
+                           "-ExecutionPolicy", "Bypass", "-File", str(install_backend()),
+                           "-GamePath", str(game), "-PayloadRoot", str(payload),
+                           "-SupportRoot", str(support)]
+                startup = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                process = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                           stderr=subprocess.STDOUT, text=True,
+                                           encoding="utf-8", errors="replace",
+                                           creationflags=startup)
+                output: list[str] = []
+                assert process.stdout is not None
+                for line in process.stdout:
+                    output.append(line)
+                    marker = re.search(r"PARADOX_PROGRESS:(\d+)/(\d+)", line)
+                    if marker:
+                        amount = int(marker[1]) / max(int(marker[2]), 1)
+                        self.events.put(("progress", min(.99, .60 + .39 * amount),
+                                         "Instaluję pobrane komponenty"))
+                if process.wait() != 0:
+                    raise RuntimeError("\n".join(output[-14:]).strip() or
+                                       "Instalacja przerwana (PowerShell).")
+                self.events.put(("done", str(game)))
         except Exception as exc:
             self.events.put(("error", str(exc)))
 
@@ -487,7 +495,7 @@ class ParadoxLauncher(ctk.CTk):
                     self.install_button.configure(state="normal", text="ZAINSTALUJ PONOWNIE")
                     self.launch_button.configure(state="normal")
                     messagebox.showinfo("PARADOX AMONG US",
-                                        "Zainstalowano BepInEx, Reactor i PARADOX.\n"
+                                        "Pobrano i zainstalowano BepInEx, Reactor i PARADOX.\n"
                                         "Możesz uruchomić grę. Działanie w meczu wymaga "
                                         "osobnego testu kompatybilności.", parent=self)
                 elif event[0] == "error":

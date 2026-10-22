@@ -1,13 +1,13 @@
 # PARADOX
 
-## One-click Windows installer (Among Us 19, x64)
+## PARADOX AMONG US — instalator online (Among Us 19, x64)
 
-**New:** build GitHub Actions `PARADOX-FULL-INSTALLER-v0.7.0-dev.4-AmongUs19-x64` produces a single Windows `.exe`. Run it as administrator; it detects Steam installations or allows you to select the game folder, and installs **BepInEx 6 IL2CPP x64, Reactor CI400, and PARADOX** in one wizard. BepInEx is included in the EXE and no install-time download is required. The Windows uninstall entry restores backups and leaves unrelated mods/configuration alone.
+**Nowy:** samodzielny launcher Windows `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.4-x64.exe`.
+Po mini-grze i kodzie matematycznym instalator pobiera **najnowszy oficjalny BepInEx Unity IL2CPP x64** oraz **zgodny z tą kompilacją Reactor 2.5.1-ci.400** z serwera NuGet, zamiast dołączać te zależności do EXE. Kontroluje HTTPS, zawartość ZIP i sumy plików; zachowuje backup i wycofuje zmiany po błędzie. **Do instalacji wymagany jest internet.**
 
-See [installer README](installer/README-INSTALLER.md) and [full installation guide](docs/V19_INSTALL_PL.md). The installer and dependency smoke tests **do not mean** the mod has passed a live Among Us multiplayer test.
+**Nie pobieraj dowolnego „najnowszego” Reactora:** mod PARADOX musi być skompilowany na tę samą wersję API. Przypięta wersja jest ogłaszana w `launcher_python/compatibility.json`; nowszy niezatwierdzony pakiet nie jest instalowany automatycznie.
 
-
-Original Among Us mod project. **Experimental Among Us v19.0.0 (Steam 2026.9.29) compatibility branch**: compile against `AmongUs.GameLibs.Steam 2026.9.29` and `Reactor 2.5.1-ci.400`, matching the toolchain used in an independently reported v19-compatible Reactor mod (PropHunt). This is **NOT a claim of verified PARADOX runtime compatibility**. The official Reactor 2.5.1 release only supports Among Us through 17.4. Windows Steam/Epic v19 requires x64 BepInEx. [Read the v19 install/test guide](docs/V19_INSTALL_PL.md).
+Zobacz [instrukcję launchera](launcher_python/README_PL.md). Zgodność z realnym klientem Among Us 19.0.0 i multiplayer pozostaje **niezweryfikowana**.
 
 ## Development status
 
