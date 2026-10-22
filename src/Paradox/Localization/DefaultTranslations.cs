@@ -64,6 +64,13 @@ public static class DefaultTranslations
         Add(l, "event.100.blackout", "Blackout: visibility collapses into a deep global blackout for 10 seconds.", "Blackout: widoczność zapada się w głęboką globalną ciemność na 10 sekund.");
         Add(l, "event.100.nullField", "Null Field: reality darkens and all special role abilities are jammed for 12 seconds.", "Pole Zerowe: rzeczywistość ciemnieje, a wszystkie specjalne umiejętności ról są zablokowane na 12 sekund.");
 
+        AddRole(l, "Swapper", "Swapper", "Zamieniacz",
+            "Swap all votes cast for two players during a meeting. If your swap ejects a Crewmate, you die.",
+            "Zamień głosy oddane na dwóch graczy podczas narady. Jeśli przez zamianę wyrzucony zostanie członek załogi, giniesz.");
+        Add(l, "role.Swapper.help", "Type /swap ID1 ID2 during a meeting.", "Wpisz /swap ID1 ID2 podczas narady.");
+        Add(l, "role.Swapper.selected", "Vote swap requested: {a} <-> {b}.", "Wysłano zamianę głosów: {a} <-> {b}.");
+        Add(l, "role.Swapper.invalid", "Invalid swap targets.", "Nieprawidłowe cele zamiany.");
+        Add(l, "role.Swapper.penalty", "Your swap ejected a Crewmate. You die.", "Twoja zamiana wyrzuciła członka załogi. Giniesz.");
         AddRole(l, "Doppelganger", "Doppelgänger", "Sobowtór",
             "Copy another player's identity temporarily.", "Tymczasowo skopiuj tożsamość innego gracza.");
         Add(l, "role.Doppelganger.ability", "COPY", "KOPIUJ");
