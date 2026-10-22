@@ -1,0 +1,91 @@
+name: Build PARADOX AMONG US Launcher EXE
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "launcher_python/**"
+      - "installer/**"
+      - "src/Paradox/**"
+      - "nuget.config"
+      - ".github/workflows/python-launcher.yml"
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  offline-launcher:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout PARADOX
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Restore and compile PARADOX
+        shell: pwsh
+        run: |
+          dotnet restore src/Paradox/Paradox.csproj --configfile nuget.config
+          if ($LASTEXITCODE -ne 0) { throw "NuGet restore failed" }
+          dotnet build src/Paradox/Paradox.csproj -c Release --no-restore
+          if ($LASTEXITCODE -ne 0) { throw "PARADOX compilation failed" }
+
+      - name: Stage complete offline BepInEx / Reactor / PARADOX payload
+        shell: pwsh
+        run: ./installer/Stage-Payload.ps1
+
+      - name: Validate existing setup and rollback
+        shell: pwsh
+        run: ./installer/Test-Installer.ps1
+
+      - name: Install Python GUI and packaging dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check "customtkinter==5.2.2" "pyinstaller==6.16.0"
+          if ($LASTEXITCODE -ne 0) { throw "Python dependencies failed" }
+
+      - name: Check launcher logic without opening UI
+        shell: pwsh
+        run: |
+          python -m unittest -v launcher_python/test_launcher.py
+          if ($LASTEXITCODE -ne 0) { throw "Launcher unit tests failed" }
+          python -m py_compile launcher_python/paradox_launcher.py
+          if ($LASTEXITCODE -ne 0) { throw "Launcher syntax check failed" }
+
+      - name: Build single offline launcher EXE
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --name "PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64" --collect-all customtkinter --add-data "dist/installer/payload;payload" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
+          if ($LASTEXITCODE -ne 0) { throw "PyInstaller build failed" }
+          $exe=Get-Item "dist/PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe"
+          if ($exe.Length -lt 1000000) { throw "Missing or invalid bundled EXE" }
+          Write-Host "Launcher executable: $($exe.FullName)"
+          Write-Host "File size: $($exe.Length) bytes"
+          Write-Host "SHA256: $((Get-FileHash $exe.FullName -Algorithm SHA256).Hash)"
+
+      - name: Check bundled resources inside EXE archive
+        shell: pwsh
+        run: |
+          $archive=python -m PyInstaller.utils.cliutils.archive_viewer "dist/PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe" -b 2>&1
+          $txt=$archive | Out-String
+          foreach ($name in @('Install-Paradox.ps1', 'Paradox.dll', 'Reactor.dll', 'winhttp.dll')) {
+            if (-not $txt.Contains($name)) { throw "Missing archived component: $name" }
+          }
+          Write-Host "PASS: EXE contains backend and bundled loader"
+
+      - name: Upload one-click PARADOX launcher
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-AMONG-US-LAUNCHER-ALL-IN-ONE-v0.7.0-dev.4-x64
+          path: dist/PARADOX-AMONG-US-Launcher-v0.7.0-dev.4-x64.exe
+          if-no-files-found: error
+          retention-days: 30

@@ -62,6 +62,7 @@ $files=@(Get-ChildItem -LiteralPath $payload -File -Recurse | Where-Object {
 $transaction=Join-Path $support '.transaction'
 New-Item -ItemType Directory -Force -Path $transaction | Out-Null
 $changed=New-Object 'System.Collections.Generic.List[object]'
+$installedCount=0
 try {
     foreach($item in $files) {
         $rel=$item.FullName.Substring($payload.Length+1)
@@ -89,6 +90,10 @@ try {
         Copy-Item -LiteralPath $item.FullName -Destination $target -Force
         $sha=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
         $entries.Add([pscustomobject]@{ RelativePath=$rel; HadOriginal=$hadOriginal; InstalledSha256=$sha })
+        $installedCount++
+        if ($installedCount % 4 -eq 0 -or $installedCount -eq $files.Count) {
+            Write-Output "PARADOX_PROGRESS:$installedCount/$($files.Count)"
+        }
     }
     $data=[pscustomobject]@{
         GamePath=$game; Version='0.7.0-dev.4'; Files=@($entries.ToArray())
