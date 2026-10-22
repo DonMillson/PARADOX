@@ -33,7 +33,11 @@ var shortCooldown = new DoppelgangerState(4);
 Check(shortCooldown.TryStart(5, 0f, 12f, 3f), "short cooldown cast starts");
 Check(shortCooldown.IsReady(4f), "short cooldown expires");
 Check(!shortCooldown.TryStart(6, 4f, 12f, 3f), "overlapping cast rejected");
-Check(shortCooldown.TryStart(6, 12f, 12f, 3f), "cast possible after disguise ends");
+Check(!shortCooldown.TryStart(6, 12f, 12f, 3f),
+    "no recast until the host has restored the previous outfit");
+shortCooldown.ClearDisguise(); // mirrors the host's successful Restore + ClearDisguise
+Check(shortCooldown.TryStart(6, 12f, 12f, 3f),
+    "cast possible after previous outfit has been restored");
 
 // Synchronization and rejected action rollback remain deterministic.
 var remote = new DoppelgangerState(7);
