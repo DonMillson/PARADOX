@@ -7,7 +7,7 @@ Original Among Us mod project. Current PC baseline: Reactor 2.5.1 (2026 release)
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
-**Current testing milestone: PARADOX 0.7.0-dev.1.** The project has 41 registered roles with gameplay MVP/foundation: 15 Impostor, 16 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.7.0-dev.2.** The project has 41 registered roles with gameplay MVP/foundation: 15 Impostor, 16 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 40 registered roles now have an MVP/foundation; none remain Planned.
 
@@ -47,7 +47,7 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Dispatcher | Crewmate | Runs a synchronized status sweep reporting living players, deaths and current Paradox instability. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forensic | Crewmate | Examines bodies for real death age and recent ability residue. | Partial | Multiplayer/runtime verification and balance tuning |
 | Stabilizer | Crewmate | Reduces the Paradox Meter by up to 10 per use. | Partial | Multiplayer/runtime verification and balance tuning |
-| Swapper | Crewmate | During a meeting, privately choose two player IDs with \u0060/swap ID1 ID2\u0060. Votes for either candidate are exchanged. If this changes the exile to a Crewmate, Swapper dies. | Partial | Live vote tally, UI/Free Chat input, punishment synchronization and multiplayer verification |
+| Swapper | Crewmate | During meetings, click two swap arrows beside the players' voting cards, or use `/swap ID1 ID2` in Free Chat as a fallback. The votes FOR the two players are exchanged; if the swap changes the exile to a Crewmate, Swapper dies. | Partial | Live voting UI, post-exile punishment, compatibility and multiplayer verification |
 | Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
 | Forgotten | Neutral | Recovers memories from two unique dead bodies and wins immediately after completing the memory objective. | Partial | Multiplayer/runtime verification and balance tuning |
 | Collector | Neutral | Collects unique samples from three different living players and wins immediately after completing the collection. | Partial | Multiplayer/runtime verification and balance tuning |
