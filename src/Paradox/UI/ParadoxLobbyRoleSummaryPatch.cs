@@ -233,7 +233,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         background.transform.localScale = new Vector3(1.92f, 0.34f, 1f);
         var panel = background.AddComponent<SpriteRenderer>();
         panel.sprite = GetSolidSprite();
-        panel.color = new Color32(28, 109, 122, 235);
+        panel.color = new Color32(36, 124, 146, 235);
         panel.sortingOrder = 24;
         _stationButtonBackground = background;
 
@@ -310,7 +310,7 @@ public static class ParadoxLobbyRoleSummaryPatch
         frameGo.transform.localScale = new Vector3(1.92f, 0.94f, 1f);
         _frame = frameGo.AddComponent<SpriteRenderer>();
         _frame.sprite = sprite;
-        _frame.color = new Color32(70, 215, 210, 150);
+        _frame.color = new Color32(77, 186, 205, 145);
         _frame.sortingOrder = 20;
 
         var panelGo = new GameObject("PARADOX_RoleCardPanel");
@@ -318,8 +318,8 @@ public static class ParadoxLobbyRoleSummaryPatch
         panelGo.transform.localPosition = new Vector3(0.96f, -0.47f, 0.08f);
         panelGo.transform.localScale = new Vector3(1.86f, 0.88f, 1f);
         _panel = panelGo.AddComponent<SpriteRenderer>();
-        _panel.sprite = sprite;
-        _panel.color = new Color32(7, 15, 22, 220);
+        _panel.sprite = ParadoxVisualTheme.PanelSprite;
+        _panel.color = new Color32(255, 255, 255, 242);
         _panel.sortingOrder = 21;
 
         var accentGo = new GameObject("PARADOX_RoleCardAccent");
@@ -328,8 +328,32 @@ public static class ParadoxLobbyRoleSummaryPatch
         accentGo.transform.localScale = new Vector3(0.035f, 0.76f, 1f);
         _accent = accentGo.AddComponent<SpriteRenderer>();
         _accent.sprite = sprite;
-        _accent.color = new Color32(255, 90, 90, 255);
+        _accent.color = ParadoxVisualTheme.FactionAccent(RoleFaction.Impostor);
         _accent.sortingOrder = 22;
+
+        // Restrained sci-fi trim: a hairline, corner notches and a subtle footer.
+        // All parts are children of the lobby card root and clean up with it.
+        CreateTrim(parent, "HeaderHairline", new Vector3(0.96f, -0.045f, 0.035f),
+            new Vector3(1.80f, 0.012f, 1f), new Color32(91, 206, 225, 170));
+        CreateTrim(parent, "RightTopNotch", new Vector3(1.84f, -0.09f, 0.03f),
+            new Vector3(0.06f, 0.026f, 1f), new Color32(168, 117, 244, 210));
+        CreateTrim(parent, "RightBottomNotch", new Vector3(1.84f, -0.85f, 0.03f),
+            new Vector3(0.06f, 0.026f, 1f), new Color32(87, 222, 226, 150));
+        CreateTrim(parent, "FooterHairline", new Vector3(0.96f, -0.90f, 0.035f),
+            new Vector3(1.78f, 0.01f, 1f), new Color32(75, 100, 154, 105));
+    }
+
+    private static void CreateTrim(Transform parent, string name, Vector3 position,
+        Vector3 scale, Color32 color)
+    {
+        var go = new GameObject("PARADOX_RoleCard_" + name);
+        go.transform.SetParent(parent, false);
+        go.transform.localPosition = position;
+        go.transform.localScale = scale;
+        var renderer = go.AddComponent<SpriteRenderer>();
+        renderer.sprite = GetSolidSprite();
+        renderer.color = color;
+        renderer.sortingOrder = 23;
     }
 
     private static Sprite? GetSolidSprite()
@@ -361,8 +385,8 @@ public static class ParadoxLobbyRoleSummaryPatch
     {
         if (_frame != null)
             _frame.color = hover
-                ? new Color32(85, 240, 235, 220)
-                : new Color32(70, 215, 210, 150);
+                ? new Color32(119, 226, 242, 222)
+                : new Color32(77, 186, 205, 145);
     }
 
     private static void NextPage()
@@ -427,12 +451,7 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         if (_accent != null)
         {
-            _accent.color = faction switch
-            {
-                RoleFaction.Impostor => new Color32(255, 90, 90, 255),
-                RoleFaction.Crewmate => new Color32(85, 207, 232, 255),
-                _ => new Color32(231, 198, 75, 255)
-            };
+            _accent.color = ParadoxVisualTheme.FactionAccent(faction);
         }
 
         var factionName = faction switch
@@ -444,8 +463,8 @@ public static class ParadoxLobbyRoleSummaryPatch
 
         var lines = new List<string>
         {
-            "<size=59%><color=#59D4D2><b>PARADOX</b></color>  <color=#BDCBD4>BY DONMILLSON</color></size>",
-            $"<size=74%><color={color}><b>{factionName}</b></color>  <color=#8C99A4>{factionPage + 1}/{pagesInFaction}  ></color></size>"
+            "<size=62%><color=#57DEE2><b>PARADOX</b></color>  <color=#9AADD0>BY DONMILLSON</color></size>",
+            $"<size=74%><color={color}><b>{factionName}</b></color>  <color=#A0AEC3>{factionPage + 1}/{pagesInFaction}  ›</color></size>"
         };
 
         var roles = RoleRegistry.All
@@ -471,7 +490,7 @@ public static class ParadoxLobbyRoleSummaryPatch
                 var name = ParadoxPlugin.Localizer.Get(definition.NameKey);
                 var chance = ParadoxRoleSettings.GetSpawnChance(definition.Id);
                 lines.Add(
-                    $"<size=68%><color={color}>■</color> " +
+                    $"<size=68%><color={color}>◆</color> " +
                     $"<color=#F2F5F7>{name}</color>  " +
                     $"<color=#C9D2D9><b>{chance}%</b></color></size>");
             }
