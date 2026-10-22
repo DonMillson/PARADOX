@@ -58,6 +58,29 @@ class OnlineDependencyTests(unittest.TestCase):
             with self.assertRaises(online.DependencyError):
                 online._extract_safe(output.getvalue(), Path(temp))
 
+    def test_nuget_package_url_discovered_from_service_index(self):
+        service = {"resources": [
+            {"@id": "https://nuget.reactor.gg/custom-flatcontainer/",
+             "@type": "PackageBaseAddress/3.0.0"}
+        ]}
+        with patch.object(online, "_fetch_bytes",
+                          return_value=json.dumps(service).encode("utf-8")):
+            pkg, sha = online.reactor_download_urls(
+                "https://nuget.reactor.gg/v3/index.json")
+        self.assertEqual(pkg, "https://nuget.reactor.gg/custom-flatcontainer/reactor/"
+                              "2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg")
+        self.assertEqual(sha, pkg + ".sha512")
+
+    def test_untrusted_nuget_index_endpoint_rejected(self):
+        service = {"resources": [
+            {"@id": "https://evil.example.com/v3-flatcontainer/",
+             "@type": "PackageBaseAddress/3.0.0"}
+        ]}
+        with patch.object(online, "_fetch_bytes",
+                          return_value=json.dumps(service).encode("utf-8")):
+            with self.assertRaises(online.DependencyError):
+                online.reactor_download_urls("https://nuget.reactor.gg/v3/index.json")
+
     def test_reactor_zip_selects_expected_net6(self):
         output = io.BytesIO()
         with zipfile.ZipFile(output, "w") as z:
