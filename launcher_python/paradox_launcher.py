@@ -1,8 +1,9 @@
-"""PARADOX AMONG US — unified offline Windows installer/launcher.
+"""PARADOX AMONG US — online Windows installer/launcher.
 
-The PyInstaller --onefile build bundles official BepInEx x64, Reactor CI400,
-Paradox.dll and the audited PowerShell installation backend. Nothing downloads
-at install time. All UI controls are local and thread-safe through a queue.
+The PyInstaller --onefile build embeds Paradox.dll and an audited installer.
+Verified, pinned BepInEx IL2CPP and Reactor are downloaded over HTTPS.
+On-disk installation and actual plugin startup are verified separately.
+All UI controls are thread-safe through a queue.
 """
 from __future__ import annotations
 
