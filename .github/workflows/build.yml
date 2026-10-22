@@ -64,3 +64,45 @@ jobs:
           name: PARADOX-v0.7.0-dev.4-v19-test-NOT-RUNTIME-VERIFIED
           path: dist/PARADOX-v0.7.0-dev.4-v19-test/
           if-no-files-found: error
+
+      - name: Stage offline BepInEx 6 IL2CPP x64
+        shell: pwsh
+        run: ./installer/Stage-Payload.ps1
+
+      - name: Smoke test full installer and uninstaller
+        shell: pwsh
+        run: ./installer/Test-Installer.ps1
+
+      - name: Compile Windows setup EXE
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $base86=[Environment]::GetFolderPath('ProgramFilesX86')
+          $base64=[Environment]::GetFolderPath('ProgramFiles')
+          $paths=@(
+            (Join-Path $base86 'Inno Setup 6/ISCC.exe'),
+            (Join-Path $base64 'Inno Setup 6/ISCC.exe')
+          )
+          $compiler=$paths | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+          if (-not $compiler) {
+            choco install innosetup --yes --no-progress --limit-output
+            if ($LASTEXITCODE -ne 0) { throw "Inno Setup installation failed" }
+            $compiler=$paths | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+          }
+          if (-not $compiler) { throw "Inno Setup compiler ISCC.exe not found" }
+          & $compiler "installer/PARADOX.iss"
+          if ($LASTEXITCODE -ne 0) { throw "ISCC.exe could not compile the PARADOX setup" }
+          $setup=Get-ChildItem "dist/installer/out" -Filter 'PARADOX-Setup-*.exe' -File |
+            Select-Object -First 1
+          if (-not $setup -or $setup.Length -lt 200000) {
+            throw "Expected self-contained Windows EXE installer missing"
+          }
+          Write-Host "PARADOX Windows Setup: $($setup.FullName)"
+          Write-Host "SHA256: $((Get-FileHash $setup.FullName -Algorithm SHA256).Hash)"
+
+      - name: Upload complete Windows setup EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARADOX-FULL-INSTALLER-v0.7.0-dev.4-AmongUs19-x64
+          path: dist/installer/out/PARADOX-Setup-*.exe
+          if-no-files-found: error
