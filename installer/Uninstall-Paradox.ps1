@@ -19,11 +19,14 @@ $removed=0
 foreach($entry in @($data.Files)) {
     $rel=[string]$entry.RelativePath
     if ([IO.Path]::IsPathRooted($rel) -or $rel.Contains('..') -or
-        -not ($rel.StartsWith('BepInEx\', [StringComparison]::OrdinalIgnoreCase) -or
-              $rel -in @('winhttp.dll','doorstop_config.ini','.doorstop_version'))) {
+        $rel.Contains(':') -or $rel.StartsWith('\')) {
         Write-Warning "Pominieto nieznana sciezke: $rel"; $skipped++; continue
     }
-    $target=Join-Path $game $rel
+    # Only the manifest created at installation authorizes removal.
+    $target=[IO.Path]::GetFullPath((Join-Path $game $rel))
+    if (-not $target.StartsWith($game + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        Write-Warning "Pominieto sciezke spoza gry: $rel"; $skipped++; continue
+    }
     if (-not (Test-Path -LiteralPath $target -PathType Leaf)) { continue }
     if ((Get-Item -LiteralPath $target).Attributes -band [IO.FileAttributes]::ReparsePoint) {
         Write-Warning "Pominieto link: $rel"; $skipped++; continue
