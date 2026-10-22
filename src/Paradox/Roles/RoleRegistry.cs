@@ -15,7 +15,7 @@ public static class RoleRegistry
     {
         >= RoleId.Doppelganger and <= RoleId.Riftmaker => RoleFaction.Impostor,
         >= RoleId.Observer and <= RoleId.Stabilizer => RoleFaction.Crewmate,
-        RoleId.Swapper => RoleFaction.Crewmate,
+        RoleId.Swapper or RoleId.Sheriff or RoleId.RiftWarden => RoleFaction.Crewmate,
         _ => RoleFaction.Neutral
     };
 }

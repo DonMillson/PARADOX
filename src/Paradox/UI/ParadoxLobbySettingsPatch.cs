@@ -367,8 +367,25 @@ public static class ParadoxLobbySettingsPatch
         OrderedRows.Add((row, definition));
     }
 
+    private static string LocalizeSection(string key) => key switch
+    {
+        "GENERAL / OGÓLNE" => ParadoxPlugin.Localizer.Get("ui.lobby.section.general"),
+        "IMPOSTOR ROLES" => ParadoxPlugin.Localizer.Get("ui.lobby.section.impostor"),
+        "CREWMATE ROLES" => ParadoxPlugin.Localizer.Get("ui.lobby.section.crewmate"),
+        "NEUTRAL ROLES" => ParadoxPlugin.Localizer.Get("ui.lobby.section.neutral"),
+        "PARADOX METER" => ParadoxPlugin.Localizer.Get("ui.lobby.section.meter"),
+        "MECHANICS" => ParadoxPlugin.Localizer.Get("ui.lobby.section.mechanics"),
+        _ => key
+    };
+
     private static void RefreshRows()
     {
+        // Section titles are part of a persistent lobby tab. Re-translate them
+        // on language changes instead of keeping English labels until reopen.
+        foreach (var section in Headers)
+            if (section.Header != null && section.Header.Title != null)
+                section.Header.Title.text = LocalizeSection(section.Title);
+
         foreach (var item in OrderedRows)
         {
             var row = item.Row;

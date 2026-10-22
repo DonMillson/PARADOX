@@ -8,6 +8,12 @@ public static class DefaultTranslations
 
         Add(l, "ui.paradoxMeter", "Paradox Meter", "Miernik Paradoksu");
         Add(l, "ui.menu.title", "PARADOX SETTINGS", "USTAWIENIA PARADOX");
+        Add(l, "ui.lobby.section.general", "GENERAL", "OGÓLNE");
+        Add(l, "ui.lobby.section.impostor", "IMPOSTOR ROLES", "ROLE IMPOSTORÓW");
+        Add(l, "ui.lobby.section.crewmate", "CREWMATE ROLES", "ROLE ZAŁOGI");
+        Add(l, "ui.lobby.section.neutral", "NEUTRAL ROLES", "ROLE NEUTRALNE");
+        Add(l, "ui.lobby.section.meter", "PARADOX METER", "MIERNIK PARADOKSU");
+        Add(l, "ui.lobby.section.mechanics", "MECHANICS", "MECHANIKI");
         Add(l, "ui.menu.open", "PARADOX", "PARADOX");
         Add(l, "ui.menu.roles", "ROLES", "ROLE");
         Add(l, "ui.menu.mechanics", "MECHANICS", "MECHANIKI");
@@ -64,6 +70,19 @@ public static class DefaultTranslations
         Add(l, "event.100.blackout", "Blackout: visibility collapses into a deep global blackout for 10 seconds.", "Blackout: widoczność zapada się w głęboką globalną ciemność na 10 sekund.");
         Add(l, "event.100.nullField", "Null Field: reality darkens and all special role abilities are jammed for 12 seconds.", "Pole Zerowe: rzeczywistość ciemnieje, a wszystkie specjalne umiejętności ról są zablokowane na 12 sekund.");
 
+        AddRole(l, "Sheriff", "Sheriff", "Szeryf",
+            "Shoot a suspected Impostor. If you shoot anyone else, you die instead.",
+            "Strzel do podejrzanego Impostora. Jeśli strzelisz do kogoś innego, sam zginiesz.");
+        Add(l, "role.Sheriff.ability", "SHOOT", "STRZEL");
+        Add(l, "role.Sheriff.correct", "Correct suspect!", "Trafny podejrzany!");
+        Add(l, "role.Sheriff.wrong", "Wrong suspect! You face the penalty.", "Zły podejrzany! Ponosisz karę.");
+        AddRole(l, "RiftWarden", "Rift Warden", "Strażnik Szczelin",
+            "Once per match, break a global Paradox role-ability jam without reducing the Paradox Meter.",
+            "Raz na mecz przerwij globalną blokadę umiejętności wywołaną Paradoksem bez zmniejszania Miernika Paradoksu.");
+        Add(l, "role.RiftWarden.ability", "BREAK JAM", "PRZERWIJ");
+        Add(l, "role.RiftWarden.wait", "NO JAM", "BRAK BLOKADY");
+        Add(l, "role.RiftWarden.spent", "USED", "ZUŻYTE");
+        Add(l, "role.RiftWarden.success", "The Rift Warden broke the reality lock!", "Strażnik Szczelin przerwał blokadę rzeczywistości!");
         AddRole(l, "Swapper", "Swapper", "Zamieniacz",
             "Swap all votes cast for two players during a meeting. If your swap ejects a Crewmate, you die.",
             "Zamień głosy oddane na dwóch graczy podczas narady. Jeśli przez zamianę wyrzucony zostanie członek załogi, giniesz.");

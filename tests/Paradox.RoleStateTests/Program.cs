@@ -1,5 +1,8 @@
 using Paradox.Roles.Doppelganger;
 using Paradox.Roles.Swapper;
+using Paradox.Roles;
+using Paradox.Localization;
+using System.Text.RegularExpressions;
 
 static void Check(bool condition, string description)
 {
@@ -69,3 +72,37 @@ var rejected = false;
 try { SwapperVoteResolver.Swap(original, 2, 2); } catch (ArgumentException) { rejected = true; }
 Check(rejected, "reject identical targets");
 Console.WriteLine("PASS: Swapper voting tests (transfer, ties, skip, causality, invalid inputs).");
+
+// The actual production localization tables run here, not mocked strings.
+var translations = DefaultTranslations.Create();
+var englishKeys = translations.Keys(Language.English).ToHashSet();
+var polishKeys = translations.Keys(Language.Polish).ToHashSet();
+Check(englishKeys.SetEquals(polishKeys), "EN and PL language key coverage match");
+Check(Enum.GetValues<RoleId>().Length == 43, "43 unique registered roles");
+Check((int)RoleId.Swapper == 40 && (int)RoleId.Sheriff == 41 &&
+      (int)RoleId.RiftWarden == 42 && (int)RoleId.Anomaly == 30,
+      "network role identifiers are backward compatible");
+
+foreach (var role in Enum.GetNames<RoleId>())
+{
+    foreach (var language in new[] { Language.English, Language.Polish })
+    {
+        Check(translations.Has(language, $"role.{role}.name"),
+              $"{language} has name for {role}");
+        Check(translations.Has(language, $"role.{role}.description"),
+              $"{language} has description for {role}");
+    }
+}
+
+// Detect placeholder mistakes such as {count} versus {seconds}.
+foreach (var key in englishKeys)
+{
+    var en = translations.GetExact(Language.English, key)!;
+    var pl = translations.GetExact(Language.Polish, key)!;
+    var enTokens = Regex.Matches(en, @"\\{[A-Za-z][A-Za-z0-9]*\\}")
+        .Select(match => match.Value).OrderBy(x => x).ToArray();
+    var plTokens = Regex.Matches(pl, @"\\{[A-Za-z][A-Za-z0-9]*\\}")
+        .Select(match => match.Value).OrderBy(x => x).ToArray();
+    Check(enTokens.SequenceEqual(plTokens), $"localization token mismatch: {key}");
+}
+Console.WriteLine($"PASS: bilingual localization ({englishKeys.Count} EN/PL keys, 43 roles, placeholder parity).");

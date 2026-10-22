@@ -46,7 +46,9 @@ public static class ParadoxRoleSettings
         [RoleId.Dispatcher] = true,
         [RoleId.Locksmith] = true,
         [RoleId.Technician] = true,
-        [RoleId.Swapper] = true
+        [RoleId.Swapper] = true,
+        [RoleId.Sheriff] = true,
+        [RoleId.RiftWarden] = true
     };
 
     private static readonly Dictionary<RoleId, int> SpawnChance = new()
@@ -91,7 +93,9 @@ public static class ParadoxRoleSettings
         [RoleId.Dispatcher] = 100,
         [RoleId.Locksmith] = 100,
         [RoleId.Technician] = 100,
-        [RoleId.Swapper] = 100
+        [RoleId.Swapper] = 100,
+        [RoleId.Sheriff] = 100,
+        [RoleId.RiftWarden] = 100
     };
 
     public static bool DoppelgangerEnabled
@@ -196,6 +200,8 @@ public static class ParadoxRoleSettings
     public static float TechnicianShieldDurationSeconds { get; set; } = 15f;
     public static float TechnicianCooldownSeconds { get; set; } = 30f;
 
+    public static float SheriffCooldownSeconds { get; set; } = 30f;
+
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
         RoleId.Parasite or
@@ -237,7 +243,9 @@ public static class ParadoxRoleSettings
         RoleId.Dispatcher or
         RoleId.Locksmith or
         RoleId.Technician or
-        RoleId.Swapper;
+        RoleId.Swapper or
+        RoleId.Sheriff or
+        RoleId.RiftWarden;
 
     public static bool IsEnabled(RoleId role) =>
         IsImplemented(role) && Enabled.TryGetValue(role, out var enabled) && enabled;
@@ -356,5 +364,6 @@ public static class ParadoxRoleSettings
         LocksmithUseRange = 1.8f;
         TechnicianShieldDurationSeconds = 15f;
         TechnicianCooldownSeconds = 30f;
+        SheriffCooldownSeconds = 30f;
     }
 }

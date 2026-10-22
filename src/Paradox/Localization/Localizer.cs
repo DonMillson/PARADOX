@@ -14,6 +14,22 @@ public sealed class Localizer
         table[key] = value;
     }
 
+    // Exposed for automated coverage checks: unlike Get(), no language
+    // fallback hides missing Polish or English translations.
+    public bool Has(Language language, string key) =>
+        _strings.TryGetValue(language, out var table) &&
+        table.TryGetValue(key, out var value) &&
+        !string.IsNullOrWhiteSpace(value);
+
+    public string? GetExact(Language language, string key) =>
+        _strings.TryGetValue(language, out var table) &&
+        table.TryGetValue(key, out var value) ? value : null;
+
+    public IReadOnlyCollection<string> Keys(Language language) =>
+        _strings.TryGetValue(language, out var table)
+            ? table.Keys.ToArray()
+            : Array.Empty<string>();
+
     public string Get(string key)
     {
         if (_strings.TryGetValue(CurrentLanguage, out var current) &&

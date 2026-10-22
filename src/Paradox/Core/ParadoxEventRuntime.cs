@@ -31,6 +31,29 @@ public static class ParadoxEventRuntime
          (_activeThreshold == ParadoxThreshold.Event &&
           _activeFinalEvent == ParadoxFinalEventType.NullField));
 
+    /// <summary>
+    /// Rift Warden can break one active 50%/75%/Null Field ability jam.
+    /// The threshold remains marked as triggered; only the active effect ends.
+    /// </summary>
+    public static bool TryDispelJam()
+    {
+        if (!RoleAbilitiesBlocked)
+            return false;
+
+        var hud = HudManager.Instance;
+        if (hud != null)
+            EndActiveEffect(hud);
+        else
+        {
+            HideOverlay();
+            _activeThreshold = ParadoxThreshold.None;
+            _activeFinalEvent = null;
+            _effectStartedAt = 0f;
+            _effectEndsAt = 0f;
+        }
+        return true;
+    }
+
     public static void Trigger(ParadoxEvent paradoxEvent)
     {
         if (paradoxEvent == null ||
