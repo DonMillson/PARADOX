@@ -24,7 +24,10 @@ public sealed class DoppelgangerState
 
     public bool TryStart(byte targetPlayerId, float now, float durationSeconds, float cooldownSeconds)
     {
-        if (!IsReady(now) || targetPlayerId == PlayerId)
+        // Reject overlapping disguises even when a host chooses a cooldown
+        // shorter than the disguise duration.
+        if (!IsReady(now) || IsDisguised(now) ||
+            targetPlayerId == PlayerId || targetPlayerId == byte.MaxValue)
             return false;
 
         TargetPlayerId = targetPlayerId;
@@ -48,6 +51,14 @@ public sealed class DoppelgangerState
     {
         TargetPlayerId = null;
         DisguiseEndsAt = 0f;
+    }
+
+    public void ApplySyncedStop(float now, float cooldownRemainingSeconds)
+    {
+        ClearDisguise();
+        // The host sends remaining cooldown after an early cancellation
+        // (meeting, death, disconnect). Do not leave clients on a stale clock.
+        CooldownEndsAt = now + Math.Max(0f, cooldownRemainingSeconds);
     }
 
     public void CancelStart()
