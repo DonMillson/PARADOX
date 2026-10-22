@@ -78,15 +78,15 @@ public static class SwapperRole
                 continue;
             if (!area.AmDead && !area.DidVote)
                 return;
-            before.Add(!area.AmDead && area.DidVote ? area.VotedFor : byte.MaxValue);
+            before.Add(!area.AmDead && area.DidVote ? area.VotedForId : byte.MaxValue);
         }
 
         _votesBeforeSwap = before.ToArray();
         foreach (var area in meeting.playerStates)
         {
             if (area != null && !area.AmDead && area.DidVote)
-                area.VotedFor = SwapperVoteResolver.MapVote(
-                    area.VotedFor, _first, _second);
+                area.VotedForId = SwapperVoteResolver.MapVote(
+                    area.VotedForId, _first, _second);
         }
         _applied = true;
         ParadoxPlugin.Instance.Log.LogInfo(
