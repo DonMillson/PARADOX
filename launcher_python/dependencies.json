@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "among_us_major": 19,
+  "among_us_build": "2026.9.29",
+  "paradox": "0.7.0-dev.4",
+  "compiled_reactor": "2.5.1-ci.400",
+  "bepinex": {
+    "version": "6.0.0-be.790+4e98359",
+    "url": "https://builds.bepinex.dev/projects/bepinex_be/790/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.790%2B4e98359.zip",
+    "sha256": "7e2c83e38db7744d6457839bc869b311aa29a47517938a3a7643be24d00c72ec"
+  },
+  "reactor": {
+    "version": "2.5.1-ci.400",
+    "url": "https://nuget.reactor.gg/v3-flatcontainer/reactor/2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg",
+    "sha512_url": "https://nuget.reactor.gg/v3-flatcontainer/reactor/2.5.1-ci.400/reactor.2.5.1-ci.400.nupkg.sha512"
+  }
+}
