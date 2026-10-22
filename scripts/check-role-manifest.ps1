@@ -44,8 +44,8 @@ $rpc = Read-ProjectFile 'src/Paradox/Networking/ParadoxRpcId.cs'
 $impostor = Parse-CommaNames (Require-Match $roles '(?s)// Impostor\s*(.*?)\s*// Crewmate' 'RoleId Impostor')
 $crewmate = Parse-CommaNames (Require-Match $roles '(?s)// Crewmate\s*(.*?)\s*// Neutral' 'RoleId Crewmate')
 $neutral = Parse-CommaNames (Require-Match $roles '(?s)// Neutral\s*(.*?)\s*\}' 'RoleId Neutral')
-if ($impostor.Count -ne 15 -or $crewmate.Count -ne 16 -or $neutral.Count -ne 10) {
-    throw "Expected 15 Impostor, 16 Crewmate and 10 Neutral roles."
+if ($impostor.Count -ne 15 -or $crewmate.Count -ne 18 -or $neutral.Count -ne 10) {
+    throw "Expected 15 Impostor, 18 Crewmate and 10 Neutral roles."
 }
 $all = @($impostor) + @($crewmate) + @($neutral)
 Assert-Roster 'Unique RoleId values' $all $all
