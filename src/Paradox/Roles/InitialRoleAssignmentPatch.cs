@@ -55,9 +55,30 @@ public static class InitialRoleAssignmentPatch
             crew.RemoveAt(neutralIndex);
         }
 
+        // Swapper currently owns one global pair of targets per meeting.
+        // Assigning two Swappers would silently reject the second player's
+        // ability; keep at most one until multi-Swapper voting is supported.
+        var swapperAssigned = false;
         for (var i = 0; i < crew.Count && enabledCrewRoles.Count > 0; i++)
         {
             var role = enabledCrewRoles[i % enabledCrewRoles.Count];
+            if (role == RoleId.Swapper)
+            {
+                if (swapperAssigned)
+                {
+                    // Leave this player as vanilla Crewmate if Swapper is the
+                    // only eligible role, otherwise pick another active role.
+                    var replacement = enabledCrewRoles.FirstOrDefault(
+                        candidate => candidate != RoleId.Swapper, RoleId.Swapper);
+                    if (replacement == RoleId.Swapper)
+                        continue;
+                    role = replacement;
+                }
+                else
+                {
+                    swapperAssigned = true;
+                }
+            }
             RoleAssignment.Assign(crew[i], role);
         }
 
