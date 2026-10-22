@@ -9,5 +9,7 @@
     <!-- Compile the actual production state implementation without Unity or Reactor. -->
     <Compile Include="../../src/Paradox/Roles/Doppelganger/DoppelgangerState.cs"
              Link="DoppelgangerState.cs" />
+    <Compile Include="../../src/Paradox/Roles/Swapper/SwapperVoteResolver.cs"
+             Link="SwapperVoteResolver.cs" />
   </ItemGroup>
 </Project>

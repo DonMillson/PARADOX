@@ -1,4 +1,5 @@
 using Paradox.Roles.Doppelganger;
+using Paradox.Roles.Swapper;
 
 static void Check(bool condition, string description)
 {
@@ -51,3 +52,20 @@ Check(remote.TargetPlayerId == null && remote.CooldownRemaining(65f) == 0f,
     "rollback clears both active state and cooldown");
 
 Console.WriteLine("PASS: Doppelganger state tests (timers, overlap, cancel, sync, rollback).");
+
+var original = new byte[] { 1, 1, 1, 2, 2 };
+var swapped = SwapperVoteResolver.Swap(original, 1, 2);
+Check(swapped.SequenceEqual(new byte[]{ 2, 2, 2, 1, 1 }), "Swapper maps all ballots for both targets");
+Check(SwapperVoteResolver.FindExiled(original) == 1, "original winner");
+Check(SwapperVoteResolver.FindExiled(swapped) == 2, "swapped winner");
+Check(SwapperVoteResolver.ChangedExileTo(original, 1, 2, 2), "actual exile changed");
+Check(!SwapperVoteResolver.ChangedExileTo(original, 1, 2, 1), "no false punishment for old winner");
+Check(SwapperVoteResolver.FindExiled(new byte[]{ 1, 2, 253 }) == null, "tie with skip");
+Check(SwapperVoteResolver.FindExiled(new byte[]{ 253, 253, 1 }) == null, "skip majority");
+Check(SwapperVoteResolver.FindExiled(new byte[]{ 254, 255, 255 }) == null, "abstentions");
+Check(SwapperVoteResolver.Swap(new byte[]{ 253, 254, 255, 1 }, 1, 2)
+    .SequenceEqual(new byte[]{ 253, 254, 255, 2 }), "skip and missed votes untouched");
+var rejected = false;
+try { SwapperVoteResolver.Swap(original, 2, 2); } catch (ArgumentException) { rejected = true; }
+Check(rejected, "reject identical targets");
+Console.WriteLine("PASS: Swapper voting tests (transfer, ties, skip, causality, invalid inputs).");

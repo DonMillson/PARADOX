@@ -49,5 +49,6 @@ public enum ParadoxRpcId : uint
     StationMode = 44,
     StationTaskRequest = 45,
     StationTaskState = 46,
-    StationVentRequest = 47
+    StationVentRequest = 47,
+    SwapperMeeting = 48
 }

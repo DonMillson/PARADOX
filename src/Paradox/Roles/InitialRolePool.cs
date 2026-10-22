@@ -37,7 +37,8 @@ public static class InitialRolePool
         RoleId.Analyst,
         RoleId.Seer,
         RoleId.Forensic,
-        RoleId.Stabilizer
+        RoleId.Stabilizer,
+        RoleId.Swapper
     };
 
     public static IReadOnlyList<RoleId> Neutral { get; } = new[]
