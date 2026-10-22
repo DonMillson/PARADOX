@@ -1,6 +1,7 @@
 using Paradox.Roles.Doppelganger;
 using Paradox.Roles.Swapper;
 using Paradox.Roles;
+using Paradox.Settings;
 using Paradox.Localization;
 using System.Text.RegularExpressions;
 
@@ -106,3 +107,27 @@ foreach (var key in englishKeys)
     Check(enTokens.SequenceEqual(plTokens), $"localization token mismatch: {key}");
 }
 Console.WriteLine($"PASS: bilingual localization ({englishKeys.Count} EN/PL keys, 43 roles, placeholder parity).");
+
+
+// 50-seat mode must stay opt-in and must never unlock on official/unknown regions.
+Check(LargeLobbyPolicy.VanillaMaxPlayers == 15, "default Among Us cap stays 15");
+Check(LargeLobbyPolicy.ExperimentalMaxPlayers == 50, "PARADOX target maximum is 50");
+Check(LargeLobbyPolicy.ClampRequestedLimit(10) == 15, "requested minimum stays vanilla");
+Check(LargeLobbyPolicy.ClampRequestedLimit(20) == 20, "20 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(30) == 30, "30 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(40) == 40, "40 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(50) == 50, "50 player preset supported");
+Check(LargeLobbyPolicy.ClampRequestedLimit(500) == 50, "no unbounded 500 player setting");
+Check(LargeLobbyPolicy.EffectiveMaxPlayers(50, false, true) == 15,
+      "disabled large lobby mode cannot change default");
+Check(LargeLobbyPolicy.EffectiveMaxPlayers(50, true, false) == 15,
+      "public and unknown regions remain vanilla 15");
+Check(LargeLobbyPolicy.EffectiveMaxPlayers(50, true, true) == 50,
+      "private server can unlock experimental 50 in native selector");
+Check(LargeLobbyPolicy.IsLargeLobby(16) && !LargeLobbyPolicy.IsLargeLobby(15),
+      "only above vanilla 15 is large lobby");
+Check(LargeLobbyPolicy.WithinExperimentalTarget(50) &&
+      !LargeLobbyPolicy.WithinExperimentalTarget(51) &&
+      !LargeLobbyPolicy.WithinExperimentalTarget(-1),
+      "capacity target never exceeds signed-safe count or goes negative");
+Console.WriteLine("PASS: experimental 15/20/30/40/50 player policy and public-server safety.");
