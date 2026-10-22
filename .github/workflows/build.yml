@@ -73,6 +73,10 @@ jobs:
         shell: pwsh
         run: ./installer/Test-Installer.ps1
 
+      - name: Generate PARADOX-themed Windows installer artwork
+        shell: pwsh
+        run: ./installer/Generate-Branding.ps1
+
       - name: Compile Windows setup EXE
         shell: pwsh
         run: |
