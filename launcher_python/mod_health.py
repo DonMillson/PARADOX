@@ -172,15 +172,30 @@ def build_support_report(game: Path, expected_mod: Path | None = None) -> str:
     network addresses, access tokens or other user information.
     """
     result = inspect_install(game, expected_mod=expected_mod)
+    # Only explicit diagnostic categories and known relative filenames.
+    # Never copy arbitrary log lines: they may include private room codes,
+    # player names, IP addresses, Steam identifiers or authentication tokens.
+    safe_missing = [
+        "Brakuje pliku: " + name for name in REQUIRED
+        if not (Path(game) / name).is_file()
+    ]
+    error_markers = (
+        "PARADOX PATCH FAILED", "PARADOX PARTIAL LOAD",
+        "PARADOX UI ERROR", "Failed to build PARADOX lobby settings",
+        "PARADOX Harmony patch registration failed",
+    )
+    combined = "\n".join(result.details)
+    detected = [marker for marker in error_markers if marker.casefold() in combined.casefold()]
     lines = [
         "PARADOX / RAPORT DIAGNOSTYCZNY",
         "Status: " + result.state,
         result.summary,
-        *result.details,
+        *safe_missing,
+        *(("Wykryty typ błędu: " + marker) for marker in detected),
         "",
         "Potwierdzenie uruchomienia gry i patchy wymaga BepInEx LogOutput.",
         "Ustawienia PARADOX: HOST → własny pokój → opcje gry.",
-        "Wersje i szczegóły mogą ujawnić prywatne dane — sprawdź przed wysłaniem."
+        "Otwórz log osobno i usuń prywatne dane przed jego udostępnieniem.",
     ]
     # The report never copies arbitrary lines from game logs automatically.
     return "\n".join(lines)
