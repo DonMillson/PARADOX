@@ -54,7 +54,9 @@ public static class ParadoxLobbySettingsPatch
         TryCreateTab(__instance);
     }
 
-    private static void TryCreateTab(GameSettingMenu menu)
+    // Recovery hook and shortcut may retry when the game's menu existed
+    // before host ownership was established.
+    internal static void TryCreateTab(GameSettingMenu menu)
     {
         if (menu == null || ParadoxPlugin.Instance == null)
             return;
@@ -168,6 +170,13 @@ public static class ParadoxLobbySettingsPatch
 
         if (menu.ControllerSelectable != null)
             menu.ControllerSelectable.Add(_tabButton);
+    }
+
+    internal static void TryOpenViaShortcut(GameSettingMenu menu)
+    {
+        TryCreateTab(menu);
+        if (_menu != null && _tab != null && _menu.Pointer == menu.Pointer)
+            OpenParadoxTab();
     }
 
     private static void OpenParadoxTab()
