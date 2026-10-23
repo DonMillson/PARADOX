@@ -45,38 +45,54 @@ public static class ParadoxLobbySettingsPatch
         public bool Planned { get; init; }
     }
 
-    [HarmonyPatch(nameof(GameSettingMenu.Start))]
-    [HarmonyPostfix]
-    public static void StartPostfix(GameSettingMenu __instance)
+    // GameSettingMenu.Start can run before the local player becomes host.
+    // Retrying when the native tabs are opened avoids permanently losing
+    // PARADOX settings for a valid host after one early initialization.
+    private static void EnsureHostTab(GameSettingMenu menu)
     {
+        if (menu == null || AmongUsClient.Instance == null ||
+            !AmongUsClient.Instance.AmHost)
+            return;
+
+        if (_tab != null && _menu != null && _menu.Pointer == menu.Pointer)
+            return;
+
+        Cleanup();
+        _menu = menu;
+
         try
         {
-            Cleanup();
-            _menu = __instance;
-
-            if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
-                return;
-
-            CreateTab(__instance);
-            CreateTabButton(__instance);
-            BuildRows(__instance);
+            CreateTab(menu);
+            CreateTabButton(menu);
+            BuildRows(menu);
             ApplyPolishFontsIfNeeded();
-
-            ParadoxPlugin.Instance.Log.LogInfo("PARADOX native lobby settings tab created.");
+            ParadoxPlugin.Instance.Log.LogInfo(
+                "PARADOX UI READY: host lobby Settings -> PARADOX tab.");
         }
-        catch (Exception e)
+        catch (Exception error)
         {
-            ParadoxPlugin.Instance.Log.LogError($"Failed to build PARADOX lobby settings: {e}");
+            ParadoxPlugin.Instance.Log.LogError(
+                $"PARADOX UI ERROR: Failed to build PARADOX lobby settings: {error}");
             Cleanup();
         }
     }
 
+    [HarmonyPatch(nameof(GameSettingMenu.Start))]
+    [HarmonyPostfix]
+    public static void StartPostfix(GameSettingMenu __instance)
+    {
+        EnsureHostTab(__instance);
+    }
+
     [HarmonyPatch(nameof(GameSettingMenu.ChangeTab))]
     [HarmonyPrefix]
-    public static void ChangeTabPrefix(bool previewOnly)
+    public static void ChangeTabPrefix(GameSettingMenu __instance, bool previewOnly)
     {
         if (previewOnly)
             return;
+
+        if (_tab == null)
+            EnsureHostTab(__instance);
 
         if (_tab != null)
             _tab.gameObject.SetActive(false);
