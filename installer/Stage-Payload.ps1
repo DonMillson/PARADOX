@@ -34,7 +34,7 @@ Copy-Item $reactor.FullName (Join-Path $pluginDir 'Reactor.dll') -Force
 # The manifest is retained inside the Inno payload as an audit record.
 $manifest=[ordered]@{
   Game='Among Us 19.0.0 / Steam 2026.9.29 / Windows x64'
-  Paradox='0.7.0-dev.6'
+  Paradox='0.7.0-dev.7'
   Reactor='2.5.1-ci.400'
   BepInEx=$version
   BepInExSource=$url
