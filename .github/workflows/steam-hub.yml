@@ -85,3 +85,27 @@ jobs:
           path: dist/PARADOX-Hub-v0.7.0-dev.7-x64.exe
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish unofficial Steam companion beta as direct EXE
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag='v0.7.0-dev.7-hub-beta'
+          $file='dist/PARADOX-Hub-v0.7.0-dev.7-x64.exe'
+          $notes = @'
+          PARADOX HUB (BETA) by DonMillson — unofficial companion to Among Us.
+          Free Windows x64 EXE. Add it via Steam > Games > Add a Non-Steam Game.
+          It discovers an installed Among Us (AppID 945360), launches through
+          Steam, manages PARADOX + official dependencies, shows health and logs.
+          This is NOT a Steam Store publication and does NOT include Among Us.
+          It is not affiliated with, endorsed or sponsored by Innersloth LLC.
+          Gameplay v19 and large 50-player matches remain runtime-unverified.
+          '@
+          if (gh release view $tag --repo $env:GITHUB_REPOSITORY 2>$null) {
+            gh release upload $tag $file --clobber --repo $env:GITHUB_REPOSITORY
+          } else {
+            gh release create $tag $file --target $env:GITHUB_SHA --title 'PARADOX Hub dev.7 Beta (Steam companion)' --notes $notes --prerelease --repo $env:GITHUB_REPOSITORY
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Publishing PARADOX Hub beta failed' }
