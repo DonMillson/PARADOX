@@ -118,7 +118,7 @@ def inspect_install(game: Path, expected_mod: Path | None = None,
     # UI exceptions occur *after* the core marker. Checking the marker first
     # used to misreport "working mod" even when the PARADOX settings tab failed.
     critical_pattern = re.compile(
-        r"PARADOX PARTIAL LOAD|PARADOX PATCH FAILED|"
+        r"PARADOX PARTIAL LOAD|PARADOX PATCH FAILED|PARADOX UI ERROR|"
         r"PARADOX Harmony patch registration failed|"
         r"Failed to build PARADOX lobby settings|"
         r"PARADOX could not create lobby role card|"
