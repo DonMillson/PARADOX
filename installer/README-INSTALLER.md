@@ -1,13 +1,13 @@
 # PARADOX — automatyczny instalator Windows
 
-Uruchom `PARADOX-Setup-v0.7.0-dev.5-AmongUs19-x64.exe` jako administrator.
+Uruchom `PARADOX-Setup-v0.7.0-dev.6-AmongUs19-x64.exe` jako administrator.
 
 Instalator automatycznie wyszukuje Among Us w folderach Steam i bibliotekach dysków. Jeśli gry nie znajdzie, wskaż folder zawierający `Among Us.exe`.
 
 Wraz z PARADOX automatycznie instalowane są:
 - BepInEx Unity IL2CPP dla Windows x64, build **6.0.0-be.790+4e98359** (oficjalne archiwum BepInEx, pobrane przy kompilowaniu instalatora).
 - Reactor **2.5.1-ci.400** — wersja zależności, z którą kompilowany jest PARADOX.
-- PARADOX **0.7.0-dev.5** (`Paradox.dll`).
+- PARADOX **0.7.0-dev.6** (`Paradox.dll`).
 
 Po instalacji uruchom Among Us. W razie błędu zajrzyj do `BepInEx/LogOutput.log` w folderze gry.
 
