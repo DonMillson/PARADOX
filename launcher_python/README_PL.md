@@ -4,7 +4,7 @@
 
 ## Przebieg
 
-1. Uruchom `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe` jako administrator na Windows x64.
+1. Uruchom `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe` jako administrator na Windows x64.
 2. Przejdź mini-grę (5 kliknięć Impostora) i zadanie matematyczne. Instalacja jest wcześniej zablokowana.
 3. Launcher wykrywa Among Us w bibliotece Steam lub pozwala wskazać katalog ręcznie.
    W tym samym oknie można zaznaczyć **Eksperymentalne duże lobby** i wybrać
@@ -30,3 +30,18 @@
 ## Budowa i testy
 
 Workflow: `.github/workflows/python-launcher.yml`. Testy resolvera korzystają z mocków oficjalnych API, bez pobierania z Internetu. Kompilator moda używa `AmongUs.GameLibs.Steam 2026.9.29`, a PyInstaller dołącza tylko `Paradox.dll`, dane zgodności i skrypt instalacji.
+
+## Diagnostyka widoczności PARADOX (dev.6)
+
+**BepInEx** na ekranie/launcherze oznacza tylko, że loader działa. Po instalacji
+uruchom grę, utwórz lobby **jako host**, otwórz ustawienia lobby i wybierz
+zakładkę **PARADOX**. W menu głównym ani u gościa ta zakładka nie istnieje.
+
+Jeżeli ustawień lub karty ról nie widać, wróć do instalatora, kliknij
+**SPRAWDŹ MODY** i przeczytaj komunikat. Weryfikator sprawdza błędy Harmony i UI,
+a nie tylko obecność DLL. Do zgłoszenia błędu dołącz plik
+`<folder gry>/BepInEx/LogOutput.log` (czasem `LogOutput.txt`).
+
+Wersja dev.6 zgłasza każdy brakujący hook Harmony w logu jako
+`PARADOX PATCH FAILED`; błąd interfejsu jako `PARADOX UI ERROR`.
+Naprawy są weryfikowane przez build, **nie** przez pełny start Amid Us v19.
