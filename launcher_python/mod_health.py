@@ -25,7 +25,7 @@ LOADED_MARKER = "PARADOX loaded. Reactor RPC transport registered"
 
 @dataclass(frozen=True)
 class InstallHealth:
-    state: str  # broken, pending, loaded, failed
+    state: str  # broken, pending, loaded, partial, failed
     summary: str
     details: tuple[str, ...]
     log: Path | None = None
@@ -115,16 +115,38 @@ def inspect_install(game: Path, expected_mod: Path | None = None,
         return InstallHealth("failed", "Nie można odczytać logu BepInEx.",
                              (str(exc),), None)
 
-    if LOADED_MARKER.casefold() in content.casefold():
-        return InstallHealth("loaded", "PARADOX został załadowany przez BepInEx.",
-                             ("Potwierdzony start pluginu. Działanie ról i multiplayer wymaga osobnych testów.",), log)
+    # UI exceptions occur *after* the core marker. Checking the marker first
+    # used to misreport "working mod" even when the PARADOX settings tab failed.
+    critical_pattern = re.compile(
+        r"PARADOX PARTIAL LOAD|PARADOX PATCH FAILED|"
+        r"PARADOX Harmony patch registration failed|"
+        r"Failed to build PARADOX lobby settings|"
+        r"PARADOX could not create lobby role card|"
+        r"(?:error|exception|failed).*?(?:PARADOX|Reactor)",
+        re.I,
+    )
+    errors = [line.strip()[:600] for line in content.splitlines()
+              if critical_pattern.search(line)]
+    if errors:
+        return InstallHealth(
+            "partial" if LOADED_MARKER.casefold() in content.casefold()
+                         or "PARADOX PARTIAL LOAD" in content else "failed",
+            "PARADOX ma błędy ładowania lub interfejsu — wymaga naprawy.",
+            tuple(errors[-7:] + [
+                "Otwórz własny pokój (host) i sprawdź zakładkę PARADOX w opcjach pokoju.",
+                "Wyślij fragment LogOutput.log z widocznym błędem.",
+            ]),
+            log,
+        )
 
-    if (re.search(r"PARADOX Harmony patch registration failed", content, re.I)
-            or re.search(r"(?:error|exception|failed).*?(?:PARADOX|Reactor)", content, re.I)):
-        lines = [line.strip()[:350] for line in content.splitlines()
-                 if re.search(r"(?:error|exception|failed).*?(?:PARADOX|Reactor)", line, re.I)]
-        return InstallHealth("failed", "BepInEx zgłosił błąd moda lub Reactora.",
-                             tuple(lines[-4:] or ["Sprawdź szczegóły w LogOutput."]), log)
+    if LOADED_MARKER.casefold() in content.casefold():
+        return InstallHealth(
+            "loaded", "PARADOX core uruchomił się; ustawienia gry trzeba sprawdzić jako host.",
+            ("Zalogowanie pluginu zostało potwierdzone w logu.",
+             "Własny pokój → ustawienia gry → zakładka PARADOX.",
+             "Nie jest to potwierdzenie działania narad, 43 ról ani multiplayer."),
+            log,
+        )
 
     if "PARADOX v" in content:
         return InstallHealth("failed", "PARADOX rozpoczął start, lecz nie potwierdził załadowania.",
