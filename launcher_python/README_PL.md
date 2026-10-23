@@ -1,3 +1,9 @@
+# PARADOX AMONG US — Ship Launcher (edycja UI)
+
+**Nowa wersja wizualna instalatora** ma oryginalny rysunkowy styl Among Us/PARADOX. Zamiast ogólnych neonowych kart są wnętrza statku, załogant, emblemat PARADOX, oznaczenia bezpieczeństwa oraz osobne panele SECURITY, ELECTRICAL i CARGO BAY. Grafika powstaje lokalnie w Tkinter Canvas; nie pobiera zewnętrznych obrazów i nie zmienia zawartości gry.
+
+**Nowy plik do pobrania:** `PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.6-x64.exe`. Wewnątrz znajduje się mod `Paradox.dll` dev.6. Dodałem też przycisk **KOPIUJ RAPORT**, który zbiera stan plików i ważne fragmenty logu `BepInEx/LogOutput.log` do schowka, aby zgłosić niewidoczne menu PARADOX. Przed wysłaniem sprawdź, czy nie ma w nim prywatnych ścieżek.
+
 # PARADOX AMONG US — Launcher Online
 
 **Jeden plik EXE** z ekranem powitalnym, mini-grą w łapanie Impostora, kodem matematycznym i instalacją. W nowej wersji launcher nie pakuje w sobie całego BepInEx/Reactora. Dzięki temu rozmiar pliku jest mniejszy, a instalator za każdym razem sprawdza oficjalne serwery.
