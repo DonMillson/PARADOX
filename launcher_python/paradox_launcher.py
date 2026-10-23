@@ -19,6 +19,7 @@ import tempfile
 from launcher_python.online_dependencies import stage_live_dependencies
 from launcher_python.lobby_config import write_lobby_config
 from launcher_python.mod_health import inspect_install, diagnosis_text
+from launcher_python import paradox_visuals as art
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -27,15 +28,19 @@ import customtkinter as ctk
 
 APP_TITLE = "PARADOX AMONG US"
 MOD_VERSION = "0.7.0-dev.6"
-BACKGROUND = "#080D1B"
-CARD = "#141E35"
-CARD_ALT = "#1C2941"
-TEXT = "#EAF6FF"
-MUTED = "#91A9C5"
-CYAN = "#4CE6F5"
-PURPLE = "#AD86FE"
-RED = "#F55073"
-GREEN = "#78F4C3"
+# Among Us-inspired industrial spacecraft palette: ink, warning yellow,
+# emergency red, teal visor reflections. No generic neon AI dashboard.
+BACKGROUND = "#090E17"
+CARD = "#132236"
+CARD_ALT = "#1D3046"
+TEXT = "#F4F1E8"
+MUTED = "#B9C2CC"
+CYAN = "#82E3E1"
+PURPLE = "#AB91D8"
+RED = "#ED3E4D"
+GREEN = "#7EDFB7"
+YELLOW = "#FFD35A"
+FRAME = "#60758A"
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
@@ -163,31 +168,48 @@ class ParadoxLauncher(ctk.CTk):
         self.after(70, self.check_events)
 
     def _make_frame(self) -> None:
-        header = ctk.CTkFrame(self, fg_color="transparent")
-        header.pack(fill="x", padx=37, pady=(24, 18))
-        ctk.CTkLabel(header, text="◈  PARADOX", font=ctk.CTkFont(size=32, weight="bold"),
-                     text_color=CYAN).pack(side="left")
-        ctk.CTkLabel(header, text="AMONG US  /  LAUNCHER", text_color=PURPLE,
-                     font=ctk.CTkFont(size=16, weight="bold")).pack(side="right", pady=12)
-        self.headerline = ctk.CTkFrame(self, fg_color=CYAN, height=2)
-        self.headerline.pack(fill="x", padx=37)
-        self.steps = ctk.CTkFrame(self, fg_color=CARD, corner_radius=13)
-        self.steps.pack(fill="x", padx=37, pady=(16, 15))
+        # One complete fictional spacecraft console, not separate floating
+        # neumorphic/AI cards. The warning stripe is shared across all tasks.
+        top = ctk.CTkFrame(self, fg_color="#0D1727", corner_radius=0,
+                           border_width=2, border_color="#31485F")
+        top.pack(fill="x", padx=19, pady=(17, 8))
+        banner = tk.Canvas(top, width=930, height=96, bg="#0B1422",
+                           highlightthickness=0)
+        banner.pack(fill="x", padx=2, pady=2)
+        art.header(banner, 930, 96)
+
+        mission = ctk.CTkFrame(self, fg_color="#182838", corner_radius=7,
+                               border_width=1, border_color=FRAME)
+        mission.pack(fill="x", padx=19, pady=(2, 9))
+        self.steps = mission
         self.status_items: list[ctk.CTkLabel] = []
-        for title in ("01  MISJA", "02  KOD", "03  INSTALACJA"):
-            lbl = ctk.CTkLabel(self.steps, text=title, text_color=MUTED,
-                               font=ctk.CTkFont(size=14, weight="bold"))
-            lbl.pack(side="left", expand=True, pady=12)
+        for idx, label in enumerate(
+            ("01  |  SECURITY", "02  |  TASK", "03  |  DOWNLOAD"), start=1
+        ):
+            lbl = ctk.CTkLabel(
+                mission, text=label, text_color=MUTED,
+                font=ctk.CTkFont(family="Consolas", size=13, weight="bold"),
+                corner_radius=2, height=36)
+            lbl.pack(side="left", expand=True, padx=4, pady=3)
             self.status_items.append(lbl)
-        self.content = ctk.CTkFrame(self, fg_color=CARD, corner_radius=18)
-        self.content.pack(fill="both", expand=True, padx=37, pady=(0, 13))
+
+        self.content = ctk.CTkFrame(
+            self, fg_color=CARD, corner_radius=8,
+            border_width=2, border_color="#47607A")
+        self.content.pack(fill="both", expand=True, padx=19, pady=(0, 8))
         self.content.pack_propagate(False)
-        foot = ctk.CTkFrame(self, fg_color="transparent")
-        foot.pack(fill="x", padx=39, pady=(0, 15))
-        ctk.CTkLabel(foot, text="PARADOX by DonMillson  •  Installer online + weryfikacja",
-                     text_color=MUTED, font=ctk.CTkFont(size=12)).pack(side="left")
-        ctk.CTkLabel(foot, text="Among Us 19 / Windows x64 • test build",
-                     text_color=PURPLE, font=ctk.CTkFont(size=12)).pack(side="right")
+
+        foot = ctk.CTkFrame(self, fg_color="#132236", corner_radius=0)
+        foot.pack(fill="x", padx=19, pady=(0, 13))
+        ctk.CTkLabel(
+            foot, text="PARADOX  /  SHIP SYSTEMS  /  DONMILLSON",
+            text_color=YELLOW,
+            font=ctk.CTkFont(family="Consolas", size=12, weight="bold")
+        ).pack(side="left", padx=13, pady=5)
+        ctk.CTkLabel(
+            foot, text=f"AMONG US 19   •   {MOD_VERSION}   •   WINDOWS x64",
+            text_color=MUTED, font=ctk.CTkFont(family="Consolas", size=11)
+        ).pack(side="right", padx=13)
 
     def show_stage(self, stage: int) -> None:
         if self.animation_id:
@@ -198,8 +220,10 @@ class ParadoxLauncher(ctk.CTk):
             child.destroy()
         self.stage = stage
         for idx, label in enumerate(self.status_items, start=1):
-            label.configure(text_color=GREEN if stage > idx else
-                            CYAN if stage == idx else MUTED)
+            label.configure(
+                text_color=INK if stage == idx else (
+                    GREEN if stage > idx else MUTED),
+                fg_color=YELLOW if stage == idx else "#1B3045")
         if stage == 0:
             self.welcome()
         elif stage == 1:
@@ -210,82 +234,76 @@ class ParadoxLauncher(ctk.CTk):
             self.install_panel()
 
     def title_block(self, name: str, detail: str) -> None:
-        ctk.CTkLabel(self.content, text=name, text_color=TEXT,
-                     font=ctk.CTkFont(size=27, weight="bold")).pack(
-            anchor="w", padx=30, pady=(23, 5))
-        ctk.CTkLabel(self.content, text=detail, text_color=MUTED, justify="left",
-                     wraplength=818, font=ctk.CTkFont(size=14)).pack(
-            anchor="w", padx=30, pady=(0, 13))
+        ctk.CTkLabel(
+            self.content, text=name, text_color=YELLOW,
+            font=ctk.CTkFont(family="Segoe UI Black", size=25, weight="bold")
+        ).pack(anchor="w", padx=27, pady=(17, 4))
+        ctk.CTkLabel(
+            self.content, text=detail, text_color=MUTED, justify="left",
+            wraplength=860, font=ctk.CTkFont(family="Segoe UI", size=14)
+        ).pack(anchor="w", padx=27, pady=(0, 10))
 
     def welcome(self) -> None:
-        self.title_block("PARADOX  /  NOWA MISJA",
-                         "Among Us spotyka PARADOX: załoga, sabotaż i niestabilna rzeczywistość. "
-                         "Trzy etapy przed uruchomieniem modyfikacji.")
-        panel = ctk.CTkFrame(self.content, fg_color="#0B142B", corner_radius=18)
-        panel.pack(fill="both", expand=True, padx=31, pady=(8, 14))
-        picture = tk.Canvas(panel, height=250, bg="#0B142B", highlightthickness=0)
-        picture.pack(fill="x", padx=20, pady=(19, 0))
-        picture.update_idletasks()
-        w = max(650, picture.winfo_width())
-        cx = w / 2
-        for r, accent in ((104, "#284367"), (93, PURPLE), (76, "#275A77")):
-            picture.create_oval(cx-r, 110-r, cx+r, 110+r,
-                                outline=accent, width=2)
-        # Original spacesuit silhouette: recognisably Among Us-inspired,
-        # with PARADOX's luminous visor and unstable violet orbital field.
-        picture.create_oval(cx-72, 155, cx+70, 181, fill="#0A1227", outline="")
-        picture.create_polygon(cx-46, 76, cx-70, 79, cx-76, 135,
-                               cx-45, 147, fill="#792C63", outline=PURPLE, width=3)
-        picture.create_polygon(cx-47, 115, cx-36, 115, cx-37, 180,
-                               cx-7, 180, cx-5, 134, cx+8, 134,
-                               cx+13, 180, cx+43, 180, cx+47, 95,
-                               cx+29, 51, cx-18, 49, cx-45, 77,
-                               fill="#DC365E", outline="#F476AA",
-                               width=3, smooth=True)
-        picture.create_oval(cx-13, 70, cx+51, 111, fill="#23496A",
-                            outline="#6BDEFF", width=4)
-        picture.create_oval(cx-9, 74, cx+45, 104, fill="#8CE7F8", outline="")
-        picture.create_oval(cx+2, 77, cx+24, 85, fill="#EEFFFF", outline="")
-        picture.create_line(cx-91, 117, cx-68, 94, fill=CYAN, width=3)
-        picture.create_line(cx+65, 45, cx+82, 63, fill=PURPLE, width=3)
-        picture.create_text(cx, 222, text="PARADOX  //  AMONG US",
-                            fill=TEXT, font=("Segoe UI", 21, "bold"))
-        ctk.CTkLabel(panel, text="IMPOSTOR HUNT   /   AUTORYZACJA   /   INSTALACJA",
-                     text_color=PURPLE, font=ctk.CTkFont(size=13, weight="bold")
-                     ).pack(pady=(8, 10))
-        ctk.CTkButton(panel, text="ROZPOCZNIJ MISJĘ  →", height=49, width=280,
-                      fg_color=CYAN, hover_color="#2AB5C8", text_color="#08101F",
-                      font=ctk.CTkFont(size=17, weight="bold"),
-                      command=lambda: self.show_stage(1)).pack(pady=(7, 5))
-        ctk.CTkButton(panel, text="SPRAWDŹ INSTALACJĘ  /  LOGI",
-                      fg_color="#273854", hover_color="#3A527C",
-                      text_color=TEXT, width=280, height=39,
-                      command=self.quick_diagnostics).pack(pady=(3, 14))
+        self.title_block(
+            "EMERGENCY BROADCAST   /   PARADOX",
+            "Zaginął sygnał załogi. Rozpoznaj impostora, napraw konsolę "
+            "i przywróć systemy PARADOX."
+        )
+        panel = ctk.CTkFrame(
+            self.content, fg_color="#0B1525", corner_radius=7,
+            border_width=2, border_color="#476079")
+        panel.pack(fill="both", expand=True, padx=27, pady=(4, 12))
+
+        picture = tk.Canvas(panel, width=780, height=288,
+                            bg=art.SPACE, highlightthickness=0)
+        picture.pack(fill="x", padx=17, pady=(14, 9))
+        art.poster(picture, 780, 288)
+
+        ctk.CTkLabel(
+            panel, text="SECURITY / FIX WIRING / INSTALL PARADOX",
+            text_color=YELLOW,
+            font=ctk.CTkFont(family="Consolas", size=14, weight="bold")
+        ).pack(pady=(4, 8))
+        ctk.CTkButton(
+            panel, text="▶  ROZPOCZNIJ MISJĘ", width=305, height=53,
+            fg_color=RED, hover_color="#B92D3C", text_color=TEXT,
+            corner_radius=5, border_width=2, border_color="#F28387",
+            font=ctk.CTkFont(family="Segoe UI", size=18, weight="bold"),
+            command=lambda: self.show_stage(1)
+        ).pack(pady=(2, 8))
+        ctk.CTkButton(
+            panel, text="▣  SPRAWDŹ MODY / LOGI", width=305, height=40,
+            fg_color="#293F55", hover_color="#355873", text_color=WHITE,
+            corner_radius=5, border_width=1, border_color="#7994A8",
+            font=ctk.CTkFont(family="Consolas", size=13, weight="bold"),
+            command=self.quick_diagnostics
+        ).pack(pady=(0, 11))
 
     def hunt(self) -> None:
-        self.title_block("MISJA 01  /  ZŁAP IMPOSTORA",
-                         "Kliknij poruszającą się postać 5 razy, aby uzyskać kod autoryzacji.")
-        frame = ctk.CTkFrame(self.content, fg_color="#0B1428", corner_radius=11)
+        self.title_block("SECURITY CAM 01  /  ZŁAP IMPOSTORA",
+                         "Sabotaż wykryty! Kliknij czerwonego Impostora 5 razy, "
+                         "aby otworzyć terminal instalacji.")
+        frame = ctk.CTkFrame(self.content, fg_color="#080D16",
+                             corner_radius=7, border_width=2,
+                             border_color="#718296")
         frame.pack(padx=27)
-        self.board = tk.Canvas(frame, width=785, height=327, bg="#0B1428",
+        self.board = tk.Canvas(frame, width=785, height=327, bg=art.SPACE,
                                highlightthickness=0, cursor="crosshair")
         self.board.pack(padx=6, pady=6)
-        rng = random.Random(2026)
-        for _ in range(90):
-            x, y = rng.randrange(785), rng.randrange(327)
-            self.board.create_oval(x, y, x+2, y+2, fill="#3E577B", outline="")
+        art.hunt_backdrop(self.board, 785, 327)
         self.px, self.py, self.dx, self.dy = 130.0, 120.0, 3.2, 2.0
         self.draw_impostor()
         self.board.tag_bind("target", "<Button-1>", self.catch)
         buttons = ctk.CTkFrame(self.content, fg_color="transparent")
         buttons.pack(fill="x", padx=37, pady=20)
-        self.hits_text = ctk.CTkLabel(buttons, text=f"Złapano: {self.hits}/5",
-                                      text_color=CYAN,
+        self.hits_text = ctk.CTkLabel(buttons, text=f"PODEJRZANY: {self.hits}/5",
+                                      text_color=YELLOW,
                                       font=ctk.CTkFont(size=18, weight="bold"))
         self.hits_text.pack(side="left")
-        self.hunt_next = ctk.CTkButton(buttons, text="KOD AUTORYZACJI  →", width=250,
+        self.hunt_next = ctk.CTkButton(buttons, text="▶  NASTĘPNE ZADANIE", width=250,
                                        state="normal" if self.hunt_passed else "disabled",
-                                       fg_color=PURPLE, text_color="#091225",
+                                       fg_color=RED, text_color=WHITE,
+                                       hover_color="#B92D3C", corner_radius=5,
                                        command=lambda: self.show_stage(2))
         self.hunt_next.pack(side="right")
         if not self.hunt_passed:
@@ -331,10 +349,10 @@ class ParadoxLauncher(ctk.CTk):
         if self.board is None or self.hunt_passed:
             return
         self.hits += 1
-        self.hits_text.configure(text=f"Złapano: {self.hits}/5")
+        self.hits_text.configure(text=f"PODEJRZANY: {self.hits}/5")
         if self.hits == 5:
             self.hunt_passed = True
-            self.hits_text.configure(text="✓  IMPOSTOR ZŁAPANY", text_color=GREEN)
+            self.hits_text.configure(text="✓  IMPOSTOR WYKRYTY", text_color=GREEN)
             self.hunt_next.configure(state="normal")
             if self.animation_id:
                 self.after_cancel(self.animation_id)
@@ -350,11 +368,13 @@ class ParadoxLauncher(ctk.CTk):
         if not self.hunt_passed:
             self.show_stage(1)
             return
-        self.title_block("MISJA 02  /  KOD DOSTĘPU",
-                         "Rozwiąż losowe równanie. Dopiero prawidłowa odpowiedź odblokuje instalację.")
-        center = ctk.CTkFrame(self.content, fg_color=CARD_ALT, corner_radius=16)
+        self.title_block("ELECTRICAL  /  NAPRAW TERMINAL",
+                         "Awaria w Electrical. Rozwiąż równanie na panelu, "
+                         "aby przywrócić zasilanie instalatora.")
+        center = ctk.CTkFrame(self.content, fg_color="#182B38", corner_radius=6,
+                              border_width=3, border_color="#6C8897")
         center.pack(fill="x", padx=62, pady=(35, 20))
-        ctk.CTkLabel(center, text="ZASZYFROWANY KOD", text_color=PURPLE,
+        ctk.CTkLabel(center, text="REACTOR CONTROL  •  ELECTRICAL", text_color=YELLOW,
                      font=ctk.CTkFont(size=13, weight="bold")).pack(pady=(29, 6))
         ctk.CTkLabel(center, text=self.problem, text_color=TEXT,
                      font=ctk.CTkFont(family="Consolas", size=41, weight="bold")
@@ -366,16 +386,17 @@ class ParadoxLauncher(ctk.CTk):
         entry.pack(pady=(0, 17))
         entry.bind("<Return>", lambda _e: self.verify_answer())
         self.answer_entry = entry
-        ctk.CTkButton(center, text="POTWIERDŹ KOD", width=210, height=45,
-                      fg_color=CYAN, text_color="#091225",
+        ctk.CTkButton(center, text="⚡  PRZYWRÓĆ ZASILANIE", width=235, height=45,
+                      fg_color=YELLOW, hover_color="#DAAC34", text_color=INK,
+                      corner_radius=5,
                       command=self.verify_answer).pack(pady=(0, 12))
         self.math_message = ctk.CTkLabel(center, text="Wpisz wynik liczbowy.",
                                          text_color=MUTED)
         self.math_message.pack(pady=(0, 24))
-        self.math_next = ctk.CTkButton(self.content, text="PRZEJDŹ DO INSTALACJI  →",
+        self.math_next = ctk.CTkButton(self.content, text="▶  OTWÓRZ ŁADOWNIĘ",
                                        height=47, width=265, state="normal"
                                        if self.math_passed else "disabled",
-                                       fg_color=PURPLE, text_color="#091225",
+                                       fg_color=RED, text_color=WHITE, corner_radius=5,
                                        command=lambda: self.show_stage(3))
         self.math_next.pack(pady=13)
         entry.focus_set()
@@ -400,11 +421,13 @@ class ParadoxLauncher(ctk.CTk):
         if not self.hunt_passed or not self.math_passed:
             self.show_stage(1 if not self.hunt_passed else 2)
             return
-        self.title_block("MISJA 03  /  INSTALACJA",
-                         "Wybierz folder gry. BepInEx i zgodny Reactor pobiorę teraz z oficjalnych serwerów.")
-        form = ctk.CTkFrame(self.content, fg_color=CARD_ALT, corner_radius=13)
+        self.title_block("CARGO BAY  /  MONTAŻ SYSTEMÓW",
+                         "Cel: Among Us. Wybierz folder gry, przygotuj BepInEx i Reactor, "
+                         "a potem zainstaluj PARADOX.")
+        form = ctk.CTkFrame(self.content, fg_color="#1A2D40", corner_radius=6,
+                            border_width=2, border_color="#60758A")
         form.pack(fill="x", padx=30, pady=(12, 19))
-        ctk.CTkLabel(form, text="KATALOG Z GRĄ AMONG US", text_color=MUTED,
+        ctk.CTkLabel(form, text="DESTINATION / FOLDER AMONG US", text_color=YELLOW,
                      font=ctk.CTkFont(size=13, weight="bold")
                      ).pack(anchor="w", padx=21, pady=(20, 8))
         line = ctk.CTkFrame(form, fg_color="transparent")
@@ -412,17 +435,20 @@ class ParadoxLauncher(ctk.CTk):
         ctk.CTkEntry(line, textvariable=self.game_dir, height=42,
                      font=ctk.CTkFont(size=13)).pack(side="left", fill="x",
                                                      expand=True, padx=(0, 10))
-        ctk.CTkButton(line, text="PRZEGLĄDAJ", command=self.browse_game,
-                      width=132, height=42, fg_color="#395070").pack(side="right")
+        ctk.CTkButton(line, text="WYBIERZ", command=self.browse_game,
+                      width=132, height=42, fg_color="#40556D",
+                      corner_radius=4, border_width=1,
+                      border_color="#8399A8").pack(side="right")
         ctk.CTkLabel(form, text="ONLINE: BepInEx IL2CPP x64  •  Reactor CI400  •  PARADOX",
                      text_color=GREEN, font=ctk.CTkFont(size=13)
                      ).pack(anchor="w", padx=21, pady=(0, 7))
 
-        lobby = ctk.CTkFrame(form, fg_color="#101C36", corner_radius=10)
+        lobby = ctk.CTkFrame(form, fg_color="#0B1928", corner_radius=5,
+                             border_width=1, border_color="#405770")
         lobby.pack(fill="x", padx=18, pady=(1, 15))
         self.large_lobby_checkbox = ctk.CTkCheckBox(
             lobby,
-            text="Eksperymentalne duże lobby (tylko prywatny serwer modowany)",
+            text="EXPERIMENTAL / BIG LOBBY (serwer modowany)",
             variable=self.large_lobby_enabled,
             text_color=TEXT, font=ctk.CTkFont(size=12),
             command=self.update_lobby_toggle)
@@ -440,32 +466,36 @@ class ParadoxLauncher(ctk.CTk):
                      text_color=MUTED, font=ctk.CTkFont(size=11)
                      ).pack(side="left", padx=12)
 
-        self.progress = ctk.CTkProgressBar(self.content, height=17,
-                                           progress_color=CYAN, fg_color="#263550")
+        self.progress = ctk.CTkProgressBar(self.content, height=15,
+                                           progress_color=YELLOW, fg_color="#263550",
+                                           corner_radius=3)
         self.progress.pack(fill="x", padx=33, pady=(24, 3))
         self.progress.set(0)
         self.progress_status = ctk.CTkLabel(self.content, text="GOTOWY  /  0%",
                                             text_color=CYAN,
                                             font=ctk.CTkFont(size=16, weight="bold"))
         self.progress_status.pack(pady=(9, 13))
-        self.install_button = ctk.CTkButton(self.content, text="ZAINSTALUJ MODA",
-                                            width=285, height=53, fg_color=CYAN,
-                                            text_color="#07111D",
+        self.install_button = ctk.CTkButton(self.content, text="▶  ZAINSTALUJ PARADOX",
+                                            width=312, height=52, fg_color=RED,
+                                            hover_color="#BD253F", text_color=WHITE,
+                                            corner_radius=5, border_width=2,
+                                            border_color="#F47A88",
                                             font=ctk.CTkFont(size=18, weight="bold"),
                                             command=self.start_install)
         self.install_button.pack(pady=(11, 9))
         actions = ctk.CTkFrame(self.content, fg_color="transparent")
         actions.pack(pady=(4, 4))
-        self.launch_button = ctk.CTkButton(actions, text="▶  URUCHOM AMONG US",
+        self.launch_button = ctk.CTkButton(actions, text="▶  URUCHOM GRĘ",
                                            width=230, height=40, state="disabled",
-                                           fg_color="#365276", command=self.launch_game)
+                                           fg_color="#354F60", corner_radius=5,
+                                           command=self.launch_game)
         self.launch_button.pack(side="left", padx=7)
-        ctk.CTkButton(actions, text="✓  SPRAWDŹ MODY", width=210, height=40,
-                      fg_color="#60448D", hover_color="#805AA9",
+        ctk.CTkButton(actions, text="▣  DIAGNOSTYKA", width=210, height=40,
+                      fg_color="#41596B", hover_color="#5D7489", corner_radius=5,
                       command=self.check_mods).pack(side="left", padx=7)
         self.diagnostic_status = ctk.CTkLabel(
             self.content, text="STATUS MODA: NIEZWERYFIKOWANY",
-            text_color=PURPLE, font=ctk.CTkFont(size=12, weight="bold"))
+            text_color=YELLOW, font=ctk.CTkFont(size=12, weight="bold"))
         self.diagnostic_status.pack(pady=(1, 3))
         folder = Path(self.game_dir.get().strip())
         if valid_game(folder):
