@@ -3,7 +3,7 @@ import tempfile
 from pathlib import Path
 from unittest import TestCase
 
-from launcher_python.mod_health import REQUIRED, LOADED_MARKER, inspect_install
+from launcher_python.mod_health import REQUIRED, LOADED_MARKER, inspect_install, build_support_report
 
 
 class InstallHealthTests(TestCase):
@@ -24,6 +24,13 @@ class InstallHealthTests(TestCase):
         file = self.game / "BepInEx/LogOutput.txt"
         file.write_text(content, encoding="utf-8")
         return file
+
+    def test_report_summarizes_without_raw_log_dump(self):
+        self.log("[Error] PARADOX PATCH FAILED: Debug user PRIVATE_ROOM_1234")
+        report = build_support_report(self.game)
+        self.assertIn("RAPORT DIAGNOSTYCZNY", report)
+        self.assertIn("HOST", report)
+        self.assertNotIn("PRIVATE_ROOM_1234", report)
 
     def test_no_log_does_not_claim_mod_loaded(self):
         result = inspect_install(self.game)
