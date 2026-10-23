@@ -60,7 +60,7 @@ public partial class ParadoxPlugin : BasePlugin
             Log.LogInfo($"PARADOX diagnostic: game application version '{gameVersion}', " +
                         $"process {IntPtr.Size * 8}-bit, Reactor assembly {reactorAssembly}.");
             if (IntPtr.Size != 8)
-                Log.LogWarning("PARADOX dev.4 test package targets Windows x64 Among Us v19.");
+                Log.LogWarning("PARADOX v19 test package targets Windows x64.");
             if (!gameVersion.StartsWith("19.", StringComparison.Ordinal) &&
                 !gameVersion.Contains("2026.9.29", StringComparison.Ordinal))
                 Log.LogWarning($"PARADOX v19 test baseline does not recognize game version '{gameVersion}'.");
@@ -70,19 +70,49 @@ public partial class ParadoxPlugin : BasePlugin
             Log.LogWarning($"PARADOX could not read runtime diagnostics: {e.Message}");
         }
 
-        // Do not keep a half-installed group of Harmony patches if v19 has
-        // removed or renamed a method; log exactly why startup failed.
-        try
+        // Patch each feature independently: a renamed method in an optional
+        // overlay must not suppress *all* roles and the host's settings tab.
+        // This does not certify any feature as runtime-functional; it makes
+        // failures visible in LogOutput for an accurate bug report.
+        var patched = 0;
+        var failed = 0;
+        var failedTypes = new List<string>();
+        var assembly = typeof(ParadoxPlugin).Assembly;
+        foreach (var feature in assembly.GetTypes()
+            .Where(t => t.GetCustomAttributes(typeof(HarmonyPatch), true).Length > 0)
+            .OrderBy(t => t.FullName))
         {
-            Harmony.PatchAll();
+            try
+            {
+                Harmony.CreateClassProcessor(feature).Patch();
+                patched++;
+            }
+            catch (Exception e)
+            {
+                failed++;
+                failedTypes.Add(feature.FullName ?? feature.Name);
+                Log.LogError($"PARADOX PATCH FAILED [{feature.FullName}]: {e}");
+            }
         }
-        catch (Exception e)
+
+        if (patched == 0)
         {
-            Log.LogError($"PARADOX Harmony patch registration failed: {e}");
-            Harmony.UnpatchSelf();
-            throw;
+            Log.LogError("PARADOX Harmony patch registration failed: no patch could be installed.");
+            throw new InvalidOperationException("PARADOX has no working Harmony patches.");
         }
-        Log.LogInfo("PARADOX loaded. Reactor RPC transport registered; multiplayer test still required.");
+
+        Log.LogInfo($"PARADOX PATCH REPORT: successful={patched}; failed={failed}; " +
+                    $"game={UnityEngine.Application.version}; protocol={ParadoxInfo.ProtocolVersion}.");
+
+        if (failed > 0)
+        {
+            Log.LogError("PARADOX PARTIAL LOAD: " + string.Join(", ", failedTypes));
+            Log.LogWarning("PARADOX requires repair: code loaded, but some features may not work.");
+        }
+        else
+        {
+            Log.LogInfo("PARADOX loaded. Reactor RPC transport registered; multiplayer test still required.");
+        }
     }
 
     public void SetLanguage(Language language)
