@@ -3,6 +3,6 @@ namespace Paradox;
 public static class ParadoxInfo
 {
     public const string Name = "PARADOX";
-    public const string Version = "0.7.0-dev.5";
+    public const string Version = "0.7.0-dev.6";
     public const int ProtocolVersion = Networking.ParadoxProtocol.Version;
 }
