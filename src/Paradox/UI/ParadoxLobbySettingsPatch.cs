@@ -175,8 +175,10 @@ public static class ParadoxLobbySettingsPatch
         if (_menu == null || _tab == null)
             return;
 
-        _menu.ChangeTab(-1, false);
-
+        // Never call the native ChangeTab with an invented (-1) tab index.
+        // Recent Among Us builds validate the native tab range; sending -1
+        // can abort the click handler and make the PARADOX settings look dead.
+        // Deselect the original tabs explicitly and activate our custom panel.
         _menu.PresetsTab?.gameObject.SetActive(false);
         _menu.GameSettingsTab?.gameObject.SetActive(false);
         _menu.RoleSettingsTab?.gameObject.SetActive(false);
@@ -187,6 +189,8 @@ public static class ParadoxLobbySettingsPatch
 
         _tab.gameObject.SetActive(true);
         _tabButton?.SelectButton(true);
+
+        ParadoxPlugin.Instance?.Log.LogInfo("PARADOX SETTINGS OPENED: custom lobby tab visible.");
 
         if (_menu.MenuDescriptionText != null)
         {
