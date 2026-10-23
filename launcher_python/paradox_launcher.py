@@ -520,6 +520,11 @@ class ParadoxLauncher(ctk.CTk):
             self.content, text="STATUS MODA: NIEZWERYFIKOWANY",
             text_color=YELLOW, font=ctk.CTkFont(size=12, weight="bold"))
         self.diagnostic_status.pack(pady=(1, 3))
+        ctk.CTkLabel(
+            self.content,
+            text="W GRZE: ZAŁÓŻ WŁASNY POKÓJ → OPCJE → PARADOX  |  AWARYJNIE F10",
+            text_color=YELLOW, font=ctk.CTkFont(family="Consolas", size=12, weight="bold")
+        ).pack(pady=(0, 5))
         folder = Path(self.game_dir.get().strip())
         if valid_game(folder):
             status = inspect_install(folder, expected_mod=bundled_mod_dll())
@@ -740,7 +745,10 @@ class ParadoxLauncher(ctk.CTk):
                 "Log: " + str(health.log) + "\n" + str(error), parent=self)
 
     def show_diagnostic_state(self, status, popup: bool = True) -> None:
-        color = GREEN if status.state == "loaded" else (
+        # Green means actual host tab activation was observed, not merely
+        # that BepInEx started. Otherwise show an explicit verification warning.
+        visible_ui = "Otwarcie PARADOX: WYKRYTO" in status.details
+        color = (GREEN if visible_ui else YELLOW) if status.state == "loaded" else (
             RED if status.state in ("broken", "failed") else PURPLE)
         if hasattr(self, "diagnostic_status") and self.diagnostic_status.winfo_exists():
             self.diagnostic_status.configure(text=status.summary, text_color=color)
