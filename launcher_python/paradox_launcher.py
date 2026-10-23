@@ -279,7 +279,14 @@ class ParadoxLauncher(ctk.CTk):
             corner_radius=5, border_width=1, border_color="#7994A8",
             font=ctk.CTkFont(family="Consolas", size=13, weight="bold"),
             command=self.quick_diagnostics
-        ).pack(pady=(0, 11))
+        ).pack(pady=(0, 4))
+        ctk.CTkButton(
+            panel, text="📋  KOPIUJ RAPORT BŁĘDÓW", width=305, height=35,
+            fg_color="#253D50", hover_color="#345A70", text_color=YELLOW,
+            corner_radius=5,
+            font=ctk.CTkFont(family="Consolas", size=12, weight="bold"),
+            command=self.copy_support_report
+        ).pack(pady=(0, 9))
 
     def hunt(self) -> None:
         self.title_block("SECURITY CAM 01  /  ZŁAP IMPOSTORA",
@@ -495,6 +502,11 @@ class ParadoxLauncher(ctk.CTk):
         ctk.CTkButton(actions, text="▣  DIAGNOSTYKA", width=210, height=40,
                       fg_color="#41596B", hover_color="#5D7489", corner_radius=5,
                       command=self.check_mods).pack(side="left", padx=7)
+        ctk.CTkButton(
+            actions, text="📋  KOPIUJ RAPORT", width=180, height=40,
+            fg_color="#263F54", hover_color="#3B607A", text_color=YELLOW,
+            corner_radius=5, command=self.copy_support_report
+        ).pack(side="left", padx=7)
         self.diagnostic_status = ctk.CTkLabel(
             self.content, text="STATUS MODA: NIEZWERYFIKOWANY",
             text_color=YELLOW, font=ctk.CTkFont(size=12, weight="bold"))
@@ -660,6 +672,54 @@ class ParadoxLauncher(ctk.CTk):
                 return
             self.game_dir.set(selected)
         self.check_mods()
+
+    def copy_support_report(self) -> None:
+        """Make the real BepInEx/Harmony error easy to paste into a bug report."""
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            selected = filedialog.askdirectory(
+                title="Wskaż folder Among Us z logiem BepInEx", parent=self)
+            if not selected:
+                return
+            game = Path(selected)
+            self.game_dir.set(str(game))
+            if not valid_game(game):
+                messagebox.showerror("PARADOX", "Nieprawidłowy folder gry.", parent=self)
+                return
+        health = inspect_install(game, expected_mod=bundled_mod_dll(),
+                                 installed_after=self.installed_after)
+        lines = ["PARADOX / RAPORT DIAGNOSTYCZNY",
+                 f"Launcher: {MOD_VERSION}",
+                 f"Stan: {health.state}",
+                 diagnosis_text(health)]
+        if health.log is not None and health.log.is_file():
+            try:
+                with health.log.open("rb") as handle:
+                    handle.seek(max(0, health.log.stat().st_size - 1024 * 1024))
+                    log_data = handle.read().decode("utf-8", errors="replace")
+                needles = (
+                    "paradox", "reactor", "error", "exception", "harmonylib",
+                    "bepinex", "missingmethod", "typeload"
+                )
+                extracted = [line[:650] for line in log_data.splitlines()
+                             if any(term in line.casefold() for term in needles)]
+                lines += ["", "WYBRANE LINIE LOGU:", *extracted[-80:]]
+            except OSError as error:
+                lines += [f"Nie można odczytać logu: {error}"]
+        try:
+            self.clipboard_clear()
+            self.clipboard_append("\n".join(lines)[-20000:])
+            self.update()
+        except tk.TclError as error:
+            messagebox.showerror("PARADOX", str(error), parent=self)
+            return
+        messagebox.showinfo(
+            "PARADOX — raport skopiowany",
+            "Raport PARADOX / BepInEx jest w schowku.\n"
+            "Wklej go do rozmowy, żeby sprawdzić błąd ładowania moda.\n"
+            "Przejrzyj log przed udostępnieniem — może zawierać ścieżki z komputera.",
+            parent=self
+        )
 
     def show_diagnostic_state(self, status, popup: bool = True) -> None:
         color = GREEN if status.state == "loaded" else (
