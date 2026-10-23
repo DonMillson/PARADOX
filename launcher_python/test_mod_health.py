@@ -74,6 +74,25 @@ class InstallHealthTests(TestCase):
         self.assertEqual(result.state, "failed")
         self.assertIn("Harmony", " ".join(result.details))
 
+    def test_lobby_ui_failure_overrides_generic_loaded_marker(self):
+        self.log("BepInEx\n" + LOADED_MARKER +
+                 "\n[Error] PARADOX UI ERROR: Failed to build PARADOX lobby settings")
+        result = inspect_install(self.game)
+        self.assertEqual(result.state, "failed")
+        self.assertIn("Harmony/UI", result.summary)
+
+    def test_partial_harmony_registration_is_not_a_success(self):
+        self.log("BepInEx\n[Error] PARADOX PATCH FAILED: SomeAbility on v19\n"
+                 "PARADOX PARTIAL START: 1 failed class")
+        result = inspect_install(self.game)
+        self.assertEqual(result.state, "failed")
+
+    def test_success_includes_real_lobby_host_instruction(self):
+        self.log("BepInEx\n" + LOADED_MARKER)
+        result = inspect_install(self.game)
+        self.assertEqual(result.state, "loaded")
+        self.assertIn("HOSTA", " ".join(result.details))
+
     def test_log_extension_supported(self):
         self.log("BepInEx").rename(self.game / "BepInEx/LogOutput.log")
         self.assertEqual(inspect_install(self.game).state, "failed")
