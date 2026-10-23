@@ -90,9 +90,9 @@ jobs:
       - name: Build single online updater launcher EXE
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --name "PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --name "PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
           if ($LASTEXITCODE -ne 0) { throw "PyInstaller build failed" }
-          $exe=Get-Item "dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe"
+          $exe=Get-Item "dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe"
           if ($exe.Length -lt 1000000) { throw "Missing or invalid bundled EXE" }
           Write-Host "Launcher executable: $($exe.FullName)"
           Write-Host "File size: $($exe.Length) bytes"
@@ -101,7 +101,7 @@ jobs:
       - name: Check bundled resources inside EXE archive
         shell: pwsh
         run: |
-          $archive=python -m PyInstaller.utils.cliutils.archive_viewer "dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe" -b 2>&1
+          $archive=python -m PyInstaller.utils.cliutils.archive_viewer "dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe" -b 2>&1
           $txt=$archive | Out-String
           foreach ($name in @('Install-Paradox.ps1', 'Paradox.dll', 'compatibility.json')) {
             if (-not $txt.Contains($name)) { throw "Missing archived component: $name" }
@@ -112,8 +112,8 @@ jobs:
       - name: Upload online PARADOX launcher
         uses: actions/upload-artifact@v4
         with:
-          name: PARADOX-AMONG-US-ONLINE-INSTALLER-v0.7.0-dev.5-x64
-          path: dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe
+          name: PARADOX-AMONG-US-ONLINE-INSTALLER-v0.7.0-dev.6-x64
+          path: dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe
           if-no-files-found: error
           retention-days: 30
 
@@ -124,8 +124,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $tag = 'v0.7.0-dev.5-online'
-          $exe = 'dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe'
+          $tag = 'v0.7.0-dev.6-online'
+          $exe = 'dist/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe'
           if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Missing verified EXE' }
           $notes = @'
           PARADOX AMONG US — instalator online dla Windows x64.
@@ -140,7 +140,7 @@ jobs:
             gh release upload $tag $exe --clobber --repo $env:GITHUB_REPOSITORY
             if ($LASTEXITCODE -ne 0) { throw 'Unable to upload updated installer' }
           } else {
-            gh release create $tag $exe --target $env:GITHUB_SHA --title 'PARADOX AMONG US Online Installer v0.7.0-dev.5' --notes $notes --prerelease --repo $env:GITHUB_REPOSITORY
+            gh release create $tag $exe --target $env:GITHUB_SHA --title 'PARADOX AMONG US Online Installer v0.7.0-dev.6' --notes $notes --prerelease --repo $env:GITHUB_REPOSITORY
             if ($LASTEXITCODE -ne 0) { throw 'Unable to create public GitHub Release' }
           }
-          Write-Host "PUBLIC DOWNLOAD: https://github.com/$env:GITHUB_REPOSITORY/releases/download/$tag/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.5-x64.exe"
+          Write-Host "PUBLIC DOWNLOAD: https://github.com/$env:GITHUB_REPOSITORY/releases/download/$tag/PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe"
