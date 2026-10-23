@@ -23,7 +23,7 @@ import urllib.request
 import zipfile
 from typing import Callable
 
-MOD_VERSION = "0.7.0-dev.5"
+MOD_VERSION = "0.7.0-dev.6"
 COMPILED_REACTOR = "2.5.1-ci.400"
 MANIFEST_URL = (
     "https://raw.githubusercontent.com/DonMillson/PARADOX/"
