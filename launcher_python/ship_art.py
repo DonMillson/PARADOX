@@ -22,11 +22,11 @@ VIOLET = "#A58BD3"
 
 
 def _stripe(canvas: tk.Canvas, x: float, y: float, height: float) -> None:
-    canvas.create_rectangle(x, y, x + 29, y + height, fill=YELLOW, outline=INK, width=2)
+    canvas.create_rectangle(x, y, x + 29, y + height, fill=YELLOW, outline=INK, width=2, tags="art")
     for shift in range(0, int(height), 23):
         canvas.create_polygon(x, y + shift, x + 13, y + shift,
                               x + 29, y + shift + 17, x + 29, y + shift + 23,
-                              fill=INK, outline="")
+                              fill=INK, outline="", tags="art")
 
 
 def _crewmate(canvas: tk.Canvas, x: float, y: float,
@@ -88,8 +88,8 @@ def draw_bridge(canvas: tk.Canvas, width: int, height: int = 282) -> None:
             canvas.create_oval(xx-3,yy-3,xx+3, yy+3, fill="#6E8796",
                                outline=INK, tags=tag)
     # Suspicious visor silhouettes and original characters.
-    _crewmate(canvas, width*.23, height*.62, .83, RED, RED_DARK)
-    _crewmate(canvas, width*.81, height*.69, .63, TEAL, "#216B75")
+    _crewmate(canvas, width*.23, height*.62, .83, RED, RED_DARK, tag="art")
+    _crewmate(canvas, width*.81, height*.69, .63, TEAL, "#216B75", tag="art")
     # Strong block lettering with offset outline/drop shadow.
     tx = width * .51
     ty = height*.55
