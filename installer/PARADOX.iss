@@ -1,4 +1,4 @@
-#define AppVersion "0.7.0-dev.6"
+#define AppVersion "0.7.0-dev.7"
 [Setup]
 AppId={{BAD31444-9D27-4F0C-A2A3-5D9668EACC12}
 AppName=PARADOX Among Us Mod
@@ -24,7 +24,7 @@ WizardSmallImageFile=..\dist\installer\branding\paradox-header.bmp
 SetupLogging=yes
 UninstallDisplayName=PARADOX Mod - Among Us
 UsePreviousAppDir=yes
-VersionInfoVersion=0.7.0.6
+VersionInfoVersion=0.7.0.7
 VersionInfoDescription=PARADOX offline installer for Among Us 19.0.0 (experimental)
 
 [Languages]
