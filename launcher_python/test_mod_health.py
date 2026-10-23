@@ -98,6 +98,26 @@ class InstallHealthTests(TestCase):
         self.log("BepInEx").rename(self.game / "BepInEx/LogOutput.log")
         self.assertEqual(inspect_install(self.game).state, "failed")
 
+
+    def test_core_loaded_does_not_claim_lobby_ui_visible(self):
+        self.log("BepInEx\n" + LOADED_MARKER + "\n")
+        result = inspect_install(self.game)
+        self.assertEqual(result.state, "loaded")
+        self.assertIn("Karta ról lobby: BRAK POTWIERDZENIA", result.details)
+        self.assertIn("Zakładka hosta: BRAK POTWIERDZENIA", result.details)
+        self.assertIn("Otwarcie PARADOX: BRAK POTWIERDZENIA", result.details)
+
+    def test_separate_visible_lobby_milestones_in_diagnostics(self):
+        self.log("BepInEx\n" + LOADED_MARKER + "\n" +
+                 "PARADOX UI READY: lobby role card.\n" +
+                 "PARADOX SETTINGS TAB READY: host settings panel initialized.\n" +
+                 "PARADOX SETTINGS OPENED: custom lobby tab visible.\n")
+        result = inspect_install(self.game)
+        self.assertEqual(result.state, "loaded")
+        self.assertIn("Karta ról lobby: WYKRYTO", result.details)
+        self.assertIn("Zakładka hosta: WYKRYTO", result.details)
+        self.assertIn("Otwarcie PARADOX: WYKRYTO", result.details)
+
     def test_lobby_tab_failure_not_reported_as_loaded(self):
         self.log("BepInEx started\n" + LOADED_MARKER +
                  "\n[Error] Failed to build PARADOX lobby settings: NullReferenceException\n")
