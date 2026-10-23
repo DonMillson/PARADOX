@@ -1,3 +1,9 @@
+## PARADOX dev.7 — odzyskiwanie ustawień hosta
+
+Własny pokój (HOST) → **Opcje gry** → zakładka **PARADOX**. Jeśli zakładka się nie pojawia, przy otwartych opcjach naciśnij **F10**: patch próbuje ponownie zbudować menu (bez wywoływania niedozwolonego indeksu `ChangeTab(-1)`). W launcherze **SPRAWDŹ MODY / LOGI** rozróżnia start samego BepInEx, pluginu, utworzenie karty ról i utworzenie/otwarcie zakładki. W wersji dev.7 nie traktujemy samego napisu BepInEx jako dowodu działania PARADOX.
+
+**Ważne:** kompilacja i instalator nie zastępują uruchomienia moda na rzeczywistym Among Us v19 oraz testów multiplayer. Jeśli nadal nie widać PARADOX, użyj w launcherze **OTWÓRZ LOG BEPINEX**, a następnie podaj zanonimizowane wiersze z `PARADOX PATCH FAILED` / `PARADOX UI ERROR` i okolic błędu — bez kodów pokoju, danych konta i IP.
+
 ## Diagnostyka: BepInEx działa, ale PARADOX nie widać
 
 PARADOX dev.6 oddzielnie raportuje błędy patchy Harmony, a w main menu pokazuje
@@ -12,7 +18,7 @@ w rzeczywistej grze.
 
 ## PARADOX AMONG US — instalator online (Among Us 19, x64)
 
-**Nowy:** samodzielny launcher Windows `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.6-x64.exe`.
+**Nowy:** samodzielny launcher Windows `PARADOX-AMONG-US-Online-Launcher-v0.7.0-dev.7-x64.exe`.
 Po mini-grze i kodzie matematycznym instalator pobiera **zweryfikowany, przypięty BepInEx Unity IL2CPP x64 (be.790)** oraz **zgodny z tą kompilacją Reactor 2.5.1-ci.400** z serwera NuGet, zamiast dołączać te zależności do EXE. Kontroluje HTTPS, zawartość ZIP i sumy plików; zachowuje backup i wycofuje zmiany po błędzie. **Do instalacji wymagany jest internet.**
 
 **Nie pobieraj dowolnego „najnowszego” Reactora:** mod PARADOX musi być skompilowany na tę samą wersję API. Przypięta wersja jest ogłaszana w `launcher_python/compatibility.json`; nowszy niezatwierdzony pakiet nie jest instalowany automatycznie.
@@ -40,7 +46,7 @@ PARADOX now includes an **opt-in** 15–50 seat Create Game picker for a **custo
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
-**Current testing milestone: PARADOX 0.7.0-dev.6.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.7.0-dev.7.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
 Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 43 registered roles have an MVP/foundation; none is considered multiplayer-certified yet.
 

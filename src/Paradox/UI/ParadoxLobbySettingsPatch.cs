@@ -54,7 +54,9 @@ public static class ParadoxLobbySettingsPatch
         TryCreateTab(__instance);
     }
 
-    private static void TryCreateTab(GameSettingMenu menu)
+    // Recovery hook and shortcut may retry when the game's menu existed
+    // before host ownership was established.
+    internal static void TryCreateTab(GameSettingMenu menu)
     {
         if (menu == null || ParadoxPlugin.Instance == null)
             return;
@@ -170,13 +172,22 @@ public static class ParadoxLobbySettingsPatch
             menu.ControllerSelectable.Add(_tabButton);
     }
 
+    internal static void TryOpenViaShortcut(GameSettingMenu menu)
+    {
+        TryCreateTab(menu);
+        if (_menu != null && _tab != null && _menu.Pointer == menu.Pointer)
+            OpenParadoxTab();
+    }
+
     private static void OpenParadoxTab()
     {
         if (_menu == null || _tab == null)
             return;
 
-        _menu.ChangeTab(-1, false);
-
+        // Never call the native ChangeTab with an invented (-1) tab index.
+        // Recent Among Us builds validate the native tab range; sending -1
+        // can abort the click handler and make the PARADOX settings look dead.
+        // Deselect the original tabs explicitly and activate our custom panel.
         _menu.PresetsTab?.gameObject.SetActive(false);
         _menu.GameSettingsTab?.gameObject.SetActive(false);
         _menu.RoleSettingsTab?.gameObject.SetActive(false);
@@ -187,6 +198,8 @@ public static class ParadoxLobbySettingsPatch
 
         _tab.gameObject.SetActive(true);
         _tabButton?.SelectButton(true);
+
+        ParadoxPlugin.Instance?.Log.LogInfo("PARADOX SETTINGS OPENED: custom lobby tab visible.");
 
         if (_menu.MenuDescriptionText != null)
         {

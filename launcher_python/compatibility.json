@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "mod_version": "0.7.0-dev.6",
+  "mod_version": "0.7.0-dev.7",
   "game_baseline": "19.0.0",
   "reactor_version": "2.5.1-ci.400",
   "bepinex_min_build": 790,

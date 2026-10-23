@@ -2,7 +2,7 @@
 
 **Nowa wersja wizualna instalatora** ma oryginalny rysunkowy styl Among Us/PARADOX. Zamiast ogólnych neonowych kart są wnętrza statku, załogant, emblemat PARADOX, oznaczenia bezpieczeństwa oraz osobne panele SECURITY, ELECTRICAL i CARGO BAY. Grafika powstaje lokalnie w Tkinter Canvas; nie pobiera zewnętrznych obrazów i nie zmienia zawartości gry.
 
-**Nowy plik do pobrania:** `PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.6-x64.exe`. Wewnątrz znajduje się mod `Paradox.dll` dev.6. Dodałem też przycisk **KOPIUJ RAPORT**, który zbiera stan plików i ważne fragmenty logu `BepInEx/LogOutput.log` do schowka, aby zgłosić niewidoczne menu PARADOX. Przed wysłaniem sprawdź, czy nie ma w nim prywatnych ścieżek.
+**Nowy plik do pobrania:** `PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64.exe`. Wewnątrz znajduje się mod `Paradox.dll` dev.6. Dodałem też przycisk **KOPIUJ RAPORT**, który zbiera stan plików i ważne fragmenty logu `BepInEx/LogOutput.log` do schowka, aby zgłosić niewidoczne menu PARADOX. Przed wysłaniem sprawdź, czy nie ma w nim prywatnych ścieżek.
 
 # PARADOX AMONG US — Launcher Online
 
@@ -36,3 +36,12 @@
 ## Budowa i testy
 
 Workflow: `.github/workflows/python-launcher.yml`. Testy resolvera korzystają z mocków oficjalnych API, bez pobierania z Internetu. Kompilator moda używa `AmongUs.GameLibs.Steam 2026.9.29`, a PyInstaller dołącza tylko `Paradox.dll`, dane zgodności i skrypt instalacji.
+
+## Nie widzisz ustawień PARADOX w grze?
+
+1. Uruchom Among Us po instalacji i załóż **własny pokój** (host). Ustawienia PARADOX nie są zakładką konfiguracji globalnej w menu startowym.
+2. Otwórz opcje pokoju i poszukaj zakładki **PARADOX**. Jeśli jej brak, naciśnij **F10** przy otwartych opcjach hosta.
+3. Wróć do launchera, wybierz **SPRAWDŹ MODY / LOGI**. Sprawdź osobne potwierdzenia: plugin, karta ról, zakładka hosta, jej otwarcie. Żółty stan nie oznacza sukcesu uruchomienia interfejsu.
+4. Kliknij **OTWÓRZ LOG BEPINEX** i sprawdź wpisy `PARADOX PATCH FAILED`, `PARADOX UI ERROR` oraz `PARADOX SETTINGS TAB READY`. Usuń wrażliwe dane przed przekazaniem logu.
+
+Wszystkie elementy launchera mają motyw mostka statku, kamer bezpieczeństwa i zadań Among Us, z oryginalnym brandingiem PARADOX. Test rzeczywistej rozgrywki pozostaje konieczny.

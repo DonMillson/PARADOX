@@ -140,11 +140,25 @@ def inspect_install(game: Path, expected_mod: Path | None = None,
         )
 
     if LOADED_MARKER.casefold() in content.casefold():
+        # Runtime loading, lobby UI creation and actual access to the custom
+        # host tab are distinct milestones. Never imply that a successful core
+        # startup is evidence that clicking the tab worked.
+        ui_card = "PARADOX UI READY: lobby role card" in content or \
+                  "PARADOX compact lobby role card built" in content
+        ui_tab = "PARADOX SETTINGS TAB READY" in content
+        ui_opened = "PARADOX SETTINGS OPENED" in content
         return InstallHealth(
-            "loaded", "PARADOX core uruchomił się; ustawienia gry trzeba sprawdzić jako host.",
-            ("Zalogowanie pluginu zostało potwierdzone w logu.",
-             "Własny pokój → ustawienia gry → zakładka PARADOX.",
-             "Nie jest to potwierdzenie działania narad, 43 ról ani multiplayer."),
+            "loaded", "PARADOX core uruchomiony; sprawdź panel gry.",
+            (
+                "Plugin (BepInEx): TAK",
+                "Karta ról lobby: " + ("WYKRYTO" if ui_card else "BRAK POTWIERDZENIA"),
+                "Zakładka hosta: " + ("WYKRYTO" if ui_tab else "BRAK POTWIERDZENIA"),
+                "Otwarcie PARADOX: " + ("WYKRYTO" if ui_opened else "BRAK POTWIERDZENIA"),
+                "Ustawienia są w WŁASNYM POKOJU (host) → opcje gry → PARADOX.",
+                "Awaryjnie: otwórz opcje pokoju i naciśnij F10.",
+                "Brak potwierdzenia nie oznacza automatycznie błędu: mogłeś nie wejść do własnego lobby.",
+                "Działanie 43 ról i multiplayer nadal wymaga osobnych testów.",
+            ),
             log,
         )
 
