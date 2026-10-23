@@ -163,3 +163,24 @@ def diagnosis_text(result: InstallHealth) -> str:
     if result.log is not None:
         lines += ["", f"Log: {result.log}"]
     return "\n".join(lines)
+
+
+def build_support_report(game: Path, expected_mod: Path | None = None) -> str:
+    """User-copied, short diagnostic report; no automatic upload.
+
+    Don't include the full game log because it can contain room codes, names,
+    network addresses, access tokens or other user information.
+    """
+    result = inspect_install(game, expected_mod=expected_mod)
+    lines = [
+        "PARADOX / RAPORT DIAGNOSTYCZNY",
+        "Status: " + result.state,
+        result.summary,
+        *result.details,
+        "",
+        "Potwierdzenie uruchomienia gry i patchy wymaga BepInEx LogOutput.",
+        "Ustawienia PARADOX: HOST → własny pokój → opcje gry.",
+        "Wersje i szczegóły mogą ujawnić prywatne dane — sprawdź przed wysłaniem."
+    ]
+    # The report never copies arbitrary lines from game logs automatically.
+    return "\n".join(lines)
