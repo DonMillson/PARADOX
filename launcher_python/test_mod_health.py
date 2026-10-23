@@ -3,7 +3,7 @@ import tempfile
 from pathlib import Path
 from unittest import TestCase
 
-from launcher_python.mod_health import REQUIRED, LOADED_MARKER, inspect_install
+from launcher_python.mod_health import REQUIRED, LOADED_MARKER, inspect_install, build_support_report
 
 
 class InstallHealthTests(TestCase):
@@ -24,6 +24,19 @@ class InstallHealthTests(TestCase):
         file = self.game / "BepInEx/LogOutput.txt"
         file.write_text(content, encoding="utf-8")
         return file
+
+    def test_clipboard_report_has_error_categories_not_secret_log_lines(self):
+        self.log("[Error] PARADOX PATCH FAILED: Debug private ROOM_Q8XY17")
+        report = build_support_report(self.game)
+        self.assertIn("PARADOX / RAPORT DIAGNOSTYCZNY", report)
+        self.assertIn("PARADOX PATCH FAILED", report)
+        self.assertNotIn("ROOM_Q8XY17", report)
+
+    def test_report_respects_install_timestamp(self):
+        filename = self.log("BepInEx started\n" + LOADED_MARKER)
+        report = build_support_report(
+            self.game, installed_after=filename.stat().st_mtime + 100)
+        self.assertIn("Status: pending", report)
 
     def test_no_log_does_not_claim_mod_loaded(self):
         result = inspect_install(self.game)
