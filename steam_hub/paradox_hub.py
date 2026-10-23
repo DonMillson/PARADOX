@@ -71,7 +71,7 @@ class ParadoxHub(ctk.CTk):
         super().__init__()
         self.title("PARADOX HUB — Among Us Companion • by DonMillson")
         self.geometry("1150x820")
-        self.minsize(970, 735)
+        self.minsize(1130, 735)
         self.configure(fg_color=BG)
         self.protocol("WM_DELETE_WINDOW", self.on_close)
 
@@ -491,8 +491,7 @@ class ParadoxHub(ctk.CTk):
             cmd = [
                 "powershell.exe", "-NoProfile", "-NonInteractive",
                 "-ExecutionPolicy", "Bypass", "-File", str(uninstaller_ps1()),
-                "-GamePath", str(game), "-SupportRoot",
-                str(game / ".paradox-installer"),
+                "-SupportRoot", str(game / ".paradox-installer"),
             ]
             process = subprocess.run(cmd, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, text=True,
