@@ -28,14 +28,16 @@ public static class ParadoxLobbyRoleSummaryPatch
     private const int RolesPerPage = 6;
     private static int _pageIndex;
     private static float _nextRefresh;
-    private static bool _buildFailed;
+    private static int _buildFailures;
+    private static float _nextBuildRetry;
 
     [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Start))]
     [HarmonyPostfix]
     public static void StartPostfix(GameStartManager __instance)
     {
         DestroySummary();
-        _buildFailed = false;
+        _buildFailures = 0;
+        _nextBuildRetry = 0f;
         _pageIndex = 0;
         _nextRefresh = 0f;
 
@@ -51,7 +53,8 @@ public static class ParadoxLobbyRoleSummaryPatch
             ParadoxPlugin.Instance.Log.LogWarning(
                 $"PARADOX could not create lobby role card: {e}");
             DestroySummary();
-            _buildFailed = true;
+            _buildFailures++;
+            _nextBuildRetry = Time.realtimeSinceStartup + 2f;
         }
     }
 
@@ -65,14 +68,24 @@ public static class ParadoxLobbyRoleSummaryPatch
             return;
         }
 
-        if (_roleSummary == null && !_buildFailed)
+        // A transient HUD/font initialization problem must not hide the role
+        // card for the rest of the entire lobby. Retry a few times at most.
+        if (_roleSummary == null && _buildFailures < 5 &&
+            Time.realtimeSinceStartup >= _nextBuildRetry)
         {
-            try { Build(__instance); }
+            _nextBuildRetry = Time.realtimeSinceStartup + 2f;
+            try
+            {
+                Build(__instance);
+                if (_roleSummary != null)
+                    ParadoxPlugin.Instance.Log.LogInfo("PARADOX UI READY: lobby role card.");
+            }
             catch (Exception e)
             {
+                _buildFailures++;
                 ParadoxPlugin.Instance.Log.LogWarning(
-                    $"PARADOX lobby role card late build failed: {e.Message}");
-                _buildFailed = true;
+                    $"PARADOX UI ERROR: lobby role card attempt {_buildFailures}/5 failed: {e}");
+                DestroySummary();
             }
         }
 
@@ -158,7 +171,10 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (_roleSummary == null)
         {
             DestroySummary();
-            _buildFailed = true;
+            _buildFailures++;
+            _nextBuildRetry = Time.realtimeSinceStartup + 2f;
+            ParadoxPlugin.Instance.Log.LogWarning(
+                "PARADOX UI ERROR: lobby card TMP template was unavailable.");
             return;
         }
 
