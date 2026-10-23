@@ -27,7 +27,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 APP_TITLE = "PARADOX AMONG US"
-MOD_VERSION = "0.7.0-dev.6"
+MOD_VERSION = "0.7.0-dev.7"
 # Among Us-inspired industrial spacecraft palette: ink, warning yellow,
 # emergency red, teal visor reflections. No generic neon AI dashboard.
 BACKGROUND = "#090E17"
