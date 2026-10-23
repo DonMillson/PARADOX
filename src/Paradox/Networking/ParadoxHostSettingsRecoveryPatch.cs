@@ -17,8 +17,14 @@ public static class ParadoxHostSettingsRecoveryPatch
     [HarmonyPostfix]
     public static void GameStartUpdatePostfix()
     {
-        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost ||
-            Time.realtimeSinceStartup < _nextScan)
+        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+            return;
+
+        // Shortcut detection must happen on *every* frame. If it were
+        // throttled together with the expensive scene scan, a short F10
+        // keystroke could be missed between 750 ms polling intervals.
+        var shortcut = Input.GetKeyDown(KeyCode.F10);
+        if (!shortcut && Time.realtimeSinceStartup < _nextScan)
             return;
 
         _nextScan = Time.realtimeSinceStartup + 0.75f;
@@ -32,7 +38,7 @@ public static class ParadoxHostSettingsRecoveryPatch
 
                 // A reliable second chance when role/lobby settings prefab
                 // has been kept alive from a previous non-host session.
-                if (Input.GetKey(KeyCode.F10))
+                if (shortcut)
                     ParadoxLobbySettingsPatch.TryOpenViaShortcut(menu);
                 else
                     ParadoxLobbySettingsPatch.TryCreateTab(menu);
