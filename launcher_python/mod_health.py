@@ -115,9 +115,29 @@ def inspect_install(game: Path, expected_mod: Path | None = None,
         return InstallHealth("failed", "Nie można odczytać logu BepInEx.",
                              (str(exc),), None)
 
+    # A chainloader/partial-start message is not proof that lobby UI exists.
+    # Check hook failures *before* accepting the generic loaded marker.
+    patch_errors = [line.strip()[:500] for line in content.splitlines()
+                    if re.search(
+                        r"PARADOX (?:PATCH FAILED|PARTIAL START|UI ERROR)"
+                        r"|Failed to build PARADOX lobby settings"
+                        r"|PARADOX could not create lobby role card"
+                        r"|PARADOX lobby role card late build failed",
+                        line, re.I)]
+    if patch_errors:
+        return InstallHealth(
+            "failed", "PARADOX ma błędy startu lub interfejsu (Harmony/UI).",
+            tuple(patch_errors[-7:] +
+                  ["Mod nie jest w pełni sprawny. Prześlij BepInEx/LogOutput.log."]),
+            log)
+
     if LOADED_MARKER.casefold() in content.casefold():
-        return InstallHealth("loaded", "PARADOX został załadowany przez BepInEx.",
-                             ("Potwierdzony start pluginu. Działanie ról i multiplayer wymaga osobnych testów.",), log)
+        return InstallHealth(
+            "loaded", "PARADOX uruchomił plugin w BepInEx.",
+            ("Zakładka PARADOX jest dostępna tylko dla HOSTA: utwórz pokój, "
+             "otwórz jego USTAWIENIA i wybierz PARADOX.",
+             "W menu głównym gry nie ma zakładki PARADOX. "
+             "Działanie ról/multiplayer wymaga osobnego testu."), log)
 
     if (re.search(r"PARADOX Harmony patch registration failed", content, re.I)
             or re.search(r"(?:error|exception|failed).*?(?:PARADOX|Reactor)", content, re.I)):
