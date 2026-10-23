@@ -77,3 +77,18 @@ class InstallHealthTests(TestCase):
     def test_log_extension_supported(self):
         self.log("BepInEx").rename(self.game / "BepInEx/LogOutput.log")
         self.assertEqual(inspect_install(self.game).state, "failed")
+
+    def test_lobby_tab_failure_not_reported_as_loaded(self):
+        self.log("BepInEx started\n" + LOADED_MARKER +
+                 "\n[Error] Failed to build PARADOX lobby settings: NullReferenceException\n")
+        result = inspect_install(self.game)
+        self.assertEqual(result.state, "partial")
+        self.assertIn("settings", " ".join(result.details))
+
+    def test_partial_patch_load_not_claimed_healthy(self):
+        self.log("BepInEx started\nPARADOX v0.7.0-dev.6 loading...\n"
+                 "[Error] PARADOX PATCH FAILED [Paradox.UI.ParadoxLobbySettingsPatch]: MissingMethodException\n"
+                 "[Error] PARADOX PARTIAL LOAD: Paradox.UI.ParadoxLobbySettingsPatch")
+        result = inspect_install(self.game)
+        self.assertIn(result.state, ("partial", "failed"))
+        self.assertIn("PARADOX PATCH FAILED", " ".join(result.details))
