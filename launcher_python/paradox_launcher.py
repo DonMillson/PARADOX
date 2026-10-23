@@ -18,7 +18,7 @@ import tempfile
 
 from launcher_python.online_dependencies import stage_live_dependencies
 from launcher_python.lobby_config import write_lobby_config
-from launcher_python.mod_health import inspect_install, diagnosis_text
+from launcher_python.mod_health import inspect_install, diagnosis_text, build_support_report
 from launcher_python import paradox_visuals as art
 from pathlib import Path
 import tkinter as tk
@@ -286,6 +286,11 @@ class ParadoxLauncher(ctk.CTk):
             corner_radius=5,
             font=ctk.CTkFont(family="Consolas", size=12, weight="bold"),
             command=self.copy_support_report
+        ).pack(pady=(0, 2))
+        ctk.CTkButton(
+            panel, text="OTWÓRZ LOG BEPINEX", width=305, height=32,
+            fg_color="#263F54", hover_color="#3B607A", text_color=YELLOW,
+            corner_radius=5, command=self.open_log
         ).pack(pady=(0, 9))
 
     def hunt(self) -> None:
@@ -507,6 +512,10 @@ class ParadoxLauncher(ctk.CTk):
             fg_color="#263F54", hover_color="#3B607A", text_color=YELLOW,
             corner_radius=5, command=self.copy_support_report
         ).pack(side="left", padx=7)
+        ctk.CTkButton(actions, text="OTWÓRZ LOG", width=125, height=40,
+                      fg_color="#263F54", hover_color="#3B607A",
+                      text_color=YELLOW, corner_radius=5,
+                      command=self.open_log).pack(side="left", padx=5)
         self.diagnostic_status = ctk.CTkLabel(
             self.content, text="STATUS MODA: NIEZWERYFIKOWANY",
             text_color=YELLOW, font=ctk.CTkFont(size=12, weight="bold"))
@@ -674,11 +683,41 @@ class ParadoxLauncher(ctk.CTk):
         self.check_mods()
 
     def copy_support_report(self) -> None:
-        """Make the real BepInEx/Harmony error easy to paste into a bug report."""
+        """Copy only report categories; never copy raw logs automatically."""
         game = Path(self.game_dir.get().strip())
         if not valid_game(game):
             selected = filedialog.askdirectory(
-                title="Wskaż folder Among Us z logiem BepInEx", parent=self)
+                title="Wskaż folder gry Among Us", parent=self)
+            if not selected:
+                return
+            game = Path(selected)
+            self.game_dir.set(str(game))
+            if not valid_game(game):
+                messagebox.showerror("PARADOX", "Nieprawidłowy folder gry.", parent=self)
+                return
+        summary = build_support_report(
+            game, expected_mod=bundled_mod_dll(),
+            installed_after=self.installed_after)
+        try:
+            self.clipboard_clear()
+            self.clipboard_append(summary)
+            self.update()
+        except tk.TclError as error:
+            messagebox.showerror("PARADOX", str(error), parent=self)
+            return
+        messagebox.showinfo(
+            "PARADOX — raport gotowy",
+            "Raport diagnostyczny jest w schowku. Nie zawiera całego logu.\n"
+            "Aby ustalić dokładny błąd Harmony, otwórz log osobno i usuń z niego "
+            "prywatne kody pokoju, identyfikatory i adresy przed udostępnieniem.",
+            parent=self)
+
+    def open_log(self) -> None:
+        """Open the user-selected game's latest BepInEx log, without uploading it."""
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            selected = filedialog.askdirectory(
+                title="Wskaż folder Among Us do otwarcia logu", parent=self)
             if not selected:
                 return
             game = Path(selected)
@@ -688,38 +727,17 @@ class ParadoxLauncher(ctk.CTk):
                 return
         health = inspect_install(game, expected_mod=bundled_mod_dll(),
                                  installed_after=self.installed_after)
-        lines = ["PARADOX / RAPORT DIAGNOSTYCZNY",
-                 f"Launcher: {MOD_VERSION}",
-                 f"Stan: {health.state}",
-                 diagnosis_text(health)]
-        if health.log is not None and health.log.is_file():
-            try:
-                with health.log.open("rb") as handle:
-                    handle.seek(max(0, health.log.stat().st_size - 1024 * 1024))
-                    log_data = handle.read().decode("utf-8", errors="replace")
-                needles = (
-                    "paradox", "reactor", "error", "exception", "harmonylib",
-                    "bepinex", "missingmethod", "typeload"
-                )
-                extracted = [line[:650] for line in log_data.splitlines()
-                             if any(term in line.casefold() for term in needles)]
-                lines += ["", "WYBRANE LINIE LOGU:", *extracted[-80:]]
-            except OSError as error:
-                lines += [f"Nie można odczytać logu: {error}"]
-        try:
-            self.clipboard_clear()
-            self.clipboard_append("\n".join(lines)[-20000:])
-            self.update()
-        except tk.TclError as error:
-            messagebox.showerror("PARADOX", str(error), parent=self)
+        if health.log is None:
+            messagebox.showwarning("PARADOX — brak logu",
+                "Nie wykryto LogOutput.log ani LogOutput.txt. Uruchom Among Us, "
+                "zamknij grę i ponów próbę. Brak logu może oznaczać, że "
+                "BepInEx w ogóle nie wystartował.", parent=self)
             return
-        messagebox.showinfo(
-            "PARADOX — raport skopiowany",
-            "Raport PARADOX / BepInEx jest w schowku.\n"
-            "Wklej go do rozmowy, żeby sprawdzić błąd ładowania moda.\n"
-            "Przejrzyj log przed udostępnieniem — może zawierać ścieżki z komputera.",
-            parent=self
-        )
+        try:
+            os.startfile(str(health.log))  # type: ignore[attr-defined]
+        except (OSError, AttributeError) as error:
+            messagebox.showwarning("PARADOX — log",
+                "Log: " + str(health.log) + "\n" + str(error), parent=self)
 
     def show_diagnostic_state(self, status, popup: bool = True) -> None:
         color = GREEN if status.state == "loaded" else (
