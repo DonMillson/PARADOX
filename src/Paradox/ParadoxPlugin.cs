@@ -70,19 +70,53 @@ public partial class ParadoxPlugin : BasePlugin
             Log.LogWarning($"PARADOX could not read runtime diagnostics: {e.Message}");
         }
 
-        // Do not keep a half-installed group of Harmony patches if v19 has
-        // removed or renamed a method; log exactly why startup failed.
-        try
+        // A single v19 method signature mismatch used to abort PatchAll(),
+        // leaving *every* PARADOX UI/role patch unavailable. Register each
+        // attributed Harmony class separately and report all failures.
+        // Never claim a complete boot when any runtime patch could not bind.
+        RegisterPatchesWithDiagnostics();
+    }
+
+    private void RegisterPatchesWithDiagnostics()
+    {
+        var errors = new List<string>();
+        var successful = 0;
+
+        var patchClasses = typeof(ParadoxPlugin).Assembly.GetTypes()
+            .Where(type => Attribute.IsDefined(type, typeof(HarmonyPatch), false))
+            // The lobby/settings diagnostic UI needs priority, so it can
+            // still appear when an unrelated ability patch is incompatible.
+            .OrderBy(type => type.Namespace == "Paradox.UI" ? 0 : 1)
+            .ThenBy(type => type.FullName, StringComparer.Ordinal)
+            .ToArray();
+
+        foreach (var patchClass in patchClasses)
         {
-            Harmony.PatchAll();
+            try
+            {
+                Harmony.CreateClassProcessor(patchClass).Patch();
+                successful++;
+            }
+            catch (Exception ex)
+            {
+                var name = patchClass.FullName ?? patchClass.Name;
+                errors.Add(name);
+                Log.LogError($"PARADOX PATCH FAILED: {name} on Among Us v19: {ex}");
+            }
         }
-        catch (Exception e)
+
+        Log.LogInfo($"PARADOX Harmony audit: {successful}/{patchClasses.Length} patch classes registered.");
+        if (errors.Count > 0)
         {
-            Log.LogError($"PARADOX Harmony patch registration failed: {e}");
-            Harmony.UnpatchSelf();
-            throw;
+            Log.LogError($"PARADOX PARTIAL START: {errors.Count} failed classes: " +
+                         string.Join(", ", errors) +
+                         ". Settings/abilities can be missing. Send BepInEx/LogOutput.log for diagnosis.");
+            return;
         }
+
         Log.LogInfo("PARADOX loaded. Reactor RPC transport registered; multiplayer test still required.");
+        Log.LogInfo("PARADOX UI: host -> Create Game -> lobby Settings -> PARADOX tab; " +
+                    "other clients have the lobby role card, not host-only settings.");
     }
 
     public void SetLanguage(Language language)
