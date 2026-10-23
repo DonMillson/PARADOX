@@ -106,7 +106,7 @@ try {
         }
     }
     $data=[pscustomobject]@{
-        GamePath=$game; Version='0.7.0-dev.5'; Files=@($entries.ToArray())
+        GamePath=$game; Version='0.7.0-dev.6'; Files=@($entries.ToArray())
     }
     $tmp=Join-Path $support 'installed-files.json.tmp'
     $data | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $tmp -Encoding UTF8
