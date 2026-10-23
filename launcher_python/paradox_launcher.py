@@ -26,7 +26,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 APP_TITLE = "PARADOX AMONG US"
-MOD_VERSION = "0.7.0-dev.5"
+MOD_VERSION = "0.7.0-dev.6"
 BACKGROUND = "#080D1B"
 CARD = "#141E35"
 CARD_ALT = "#1C2941"

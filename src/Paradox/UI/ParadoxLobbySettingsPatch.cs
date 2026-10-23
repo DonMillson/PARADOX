@@ -49,34 +49,50 @@ public static class ParadoxLobbySettingsPatch
     [HarmonyPostfix]
     public static void StartPostfix(GameSettingMenu __instance)
     {
+        // GameSettingMenu can be initialized before the local player becomes
+        // host. Build the host-only tab now, or retry on the next tab change.
+        TryCreateTab(__instance);
+    }
+
+    private static void TryCreateTab(GameSettingMenu menu)
+    {
+        if (menu == null || ParadoxPlugin.Instance == null)
+            return;
+        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
+            return;
+        if (_tab != null && _menu != null && _menu.Pointer == menu.Pointer)
+            return;
+
         try
         {
             Cleanup();
-            _menu = __instance;
-
-            if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost)
-                return;
-
-            CreateTab(__instance);
-            CreateTabButton(__instance);
-            BuildRows(__instance);
+            _menu = menu;
+            CreateTab(menu);
+            CreateTabButton(menu);
+            BuildRows(menu);
             ApplyPolishFontsIfNeeded();
-
-            ParadoxPlugin.Instance.Log.LogInfo("PARADOX native lobby settings tab created.");
+            ParadoxPlugin.Instance.Log.LogInfo(
+                "PARADOX SETTINGS TAB READY: host settings panel initialized.");
         }
         catch (Exception e)
         {
-            ParadoxPlugin.Instance.Log.LogError($"Failed to build PARADOX lobby settings: {e}");
+            ParadoxPlugin.Instance.Log.LogError(
+                $"Failed to build PARADOX lobby settings: {e}");
             Cleanup();
         }
     }
 
     [HarmonyPatch(nameof(GameSettingMenu.ChangeTab))]
     [HarmonyPrefix]
-    public static void ChangeTabPrefix(bool previewOnly)
+    public static void ChangeTabPrefix(GameSettingMenu __instance, bool previewOnly)
     {
         if (previewOnly)
             return;
+
+        // If the same reusable settings prefab was opened as a non-host,
+        // GameSettingMenu.Start won't fire again after hosting a new room.
+        if (_tab == null)
+            TryCreateTab(__instance);
 
         if (_tab != null)
             _tab.gameObject.SetActive(false);
