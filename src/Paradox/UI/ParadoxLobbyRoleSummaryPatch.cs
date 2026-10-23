@@ -171,7 +171,10 @@ public static class ParadoxLobbyRoleSummaryPatch
         if (_roleSummary == null)
         {
             DestroySummary();
-            _buildFailed = true;
+            _buildFailures++;
+            _nextBuildRetry = Time.realtimeSinceStartup + 2f;
+            ParadoxPlugin.Instance.Log.LogWarning(
+                "PARADOX UI ERROR: lobby card TMP template was unavailable.");
             return;
         }
 
