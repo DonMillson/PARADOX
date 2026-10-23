@@ -41,6 +41,8 @@ RED = "#ED3E4D"
 GREEN = "#7EDFB7"
 YELLOW = "#FFD35A"
 FRAME = "#60758A"
+INK = BACKGROUND
+WHITE = TEXT
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
