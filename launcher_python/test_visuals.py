@@ -20,7 +20,7 @@ class VisualTests(unittest.TestCase):
     def test_header_contains_crew_and_game_branding(self):
         canvas = RecordingCanvas()
         art.header(canvas)
-        labels = [str(args) for fn, args, kw in canvas.calls if fn == "create_text"]
+        labels = [str(kw.get("text", "")) for fn, args, kw in canvas.calls if fn == "create_text"]
         self.assertTrue(any("PARADOX" in t for t in labels))
         self.assertTrue(any("AMONG US" in t for t in labels))
         self.assertGreater(len(canvas.calls), 20)
@@ -28,14 +28,14 @@ class VisualTests(unittest.TestCase):
     def test_space_ship_poster_draws_crewmate(self):
         canvas = RecordingCanvas()
         art.poster(canvas)
-        texts = [str(args) for fn, args, kw in canvas.calls if fn == "create_text"]
+        texts = [str(kw.get("text", "")) for fn, args, kw in canvas.calls if fn == "create_text"]
         self.assertTrue(any("PARADOX" in text for text in texts))
         self.assertGreater(len(canvas.calls), 90)
 
     def test_security_camera_backdrop_renders(self):
         canvas = RecordingCanvas()
         art.hunt_backdrop(canvas)
-        texts = [str(args) for fn, args, kw in canvas.calls if fn == "create_text"]
+        texts = [str(kw.get("text", "")) for fn, args, kw in canvas.calls if fn == "create_text"]
         self.assertTrue(any("FIND THE IMPOSTOR" in text for text in texts))
         self.assertGreater(len(canvas.calls), 50)
 
