@@ -18,7 +18,7 @@ import tempfile
 
 from launcher_python.online_dependencies import stage_live_dependencies
 from launcher_python.lobby_config import write_lobby_config
-from launcher_python.mod_health import inspect_install, diagnosis_text
+from launcher_python.mod_health import inspect_install, diagnosis_text, build_support_report
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -286,9 +286,17 @@ class ParadoxLauncher(ctk.CTk):
         ctk.CTkButton(panel, text="ROZPOCZNIJ MISJĘ  ▶",
                       width=336, height=54,
                       command=lambda: self.show_stage(1)).pack(pady=(4, 6))
-        ctk.CTkButton(panel, text="SPRAWDŹ INSTALACJĘ I LOGI",
-                      width=336, height=41,
-                      command=self.quick_diagnostics).pack(pady=(2, 11))
+        buttons = ctk.CTkFrame(panel, fg_color="transparent")
+        buttons.pack(pady=(2, 7))
+        ctk.CTkButton(buttons, text="SPRAWDŹ MODY",
+                      width=173, height=42,
+                      command=self.quick_diagnostics).pack(side="left", padx=4)
+        ctk.CTkButton(buttons, text="OTWÓRZ LOG",
+                      width=148, height=42,
+                      command=self.open_log).pack(side="left", padx=4)
+        ctk.CTkButton(panel, text="KOPIUJ RAPORT DIAGNOSTYCZNY",
+                      width=338, height=35,
+                      command=self.copy_report).pack(pady=(0, 9))
         ctk.CTkLabel(panel, text="TRYB TESTOWY   /   NIE JEST TO URUCHOMIONA GRA",
                      text_color=MUTED, font=ctk.CTkFont(size=11)
                      ).pack(pady=(0, 10))
@@ -475,9 +483,10 @@ class ParadoxLauncher(ctk.CTk):
                                            width=230, height=40, state="disabled",
                                            fg_color="#365276", command=self.launch_game)
         self.launch_button.pack(side="left", padx=7)
-        ctk.CTkButton(actions, text="✓  SPRAWDŹ MODY", width=210, height=40,
-                      fg_color="#60448D", hover_color="#805AA9",
+        ctk.CTkButton(actions, text="SPRAWDŹ MODY", width=185, height=40,
                       command=self.check_mods).pack(side="left", padx=7)
+        ctk.CTkButton(actions, text="OTWÓRZ LOG", width=148, height=40,
+                      command=self.open_log).pack(side="left", padx=7)
         self.diagnostic_status = ctk.CTkLabel(
             self.content, text="STATUS MODA: NIEZWERYFIKOWANY",
             text_color=PURPLE, font=ctk.CTkFont(size=12, weight="bold"))
@@ -633,6 +642,35 @@ class ParadoxLauncher(ctk.CTk):
             pass
         if self.winfo_exists():
             self.after(80, self.check_events)
+
+    def open_log(self) -> None:
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            self.quick_diagnostics()
+            return
+        result = inspect_install(game)
+        if result.log is None:
+            messagebox.showwarning("PARADOX — log BepInEx",
+                "Brak logu BepInEx. Uruchom Among Us, zamknij grę, "
+                "a następnie sprawdź ponownie.", parent=self)
+            return
+        try:
+            os.startfile(str(result.log))  # type: ignore[attr-defined]
+        except (OSError, AttributeError) as error:
+            messagebox.showwarning("PARADOX — log BepInEx",
+                "Plik logu: " + str(result.log) + "\n" + str(error), parent=self)
+
+    def copy_report(self) -> None:
+        game = Path(self.game_dir.get().strip())
+        if not valid_game(game):
+            self.quick_diagnostics()
+            return
+        text = build_support_report(game, expected_mod=bundled_mod_dll())
+        self.clipboard_clear()
+        self.clipboard_append(text)
+        messagebox.showinfo("PARADOX — raport skopiowany",
+            "Raport skopiowany do schowka. Sprawdź jego treść "
+            "przed wysłaniem. Pełny log można otworzyć osobno.", parent=self)
 
     def quick_diagnostics(self) -> None:
         game = Path(self.game_dir.get().strip())
