@@ -74,6 +74,13 @@ class InstallHealthTests(TestCase):
         self.assertEqual(result.state, "failed")
         self.assertIn("Harmony", " ".join(result.details))
 
+    def test_lobby_retry_error_is_not_success(self):
+        self.log("BepInEx started\\n" + LOADED_MARKER +
+                 "\\n[Warning] PARADOX UI ERROR: lobby role card attempt 1/5 failed")
+        result = inspect_install(self.game)
+        self.assertIn(result.state, ("partial", "failed"))
+        self.assertIn("PARADOX UI ERROR", " ".join(result.details))
+
     def test_log_extension_supported(self):
         self.log("BepInEx").rename(self.game / "BepInEx/LogOutput.log")
         self.assertEqual(inspect_install(self.game).state, "failed")
