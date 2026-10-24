@@ -46,9 +46,11 @@ PARADOX now includes an **opt-in** 15–50 seat Create Game picker for a **custo
 **Production-map direction:** The unfinished `TESTUJ MAPĘ` / `TEST STATION` button has been **removed from the lobby code**, not merely hidden. F6/F7 prototype entries remain disabled in the standard plugin. See [PARADOX STATION production map](docs/STATION_PRODUCTION.md) for the linked 12-room Unity scene, actual corridor collision layout and remaining Among Us integration work. **No playable selectable custom map is available yet.**
 
 
-**Current testing milestone: PARADOX 0.7.0-dev.7.** The project has 43 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 10 Neutral roles. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
+**Current testing milestone: PARADOX 0.7.0-dev.7.** The project has 44 registered roles with gameplay MVP/foundation: 15 Impostor, 18 Crewmate and 11 Neutral roles. PARADOX + Anomaly form one experimental neutral team, not two independent neutral winners. The new Swapper role is experimental and requires in-game multiplayer verification. Compilation and manifest checks are automated, but this is **not yet a multiplayer-verified stable release**.
 
-Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 43 registered roles have an MVP/foundation; none is considered multiplayer-certified yet.
+Status legend: **Partial** = code/foundation exists but the role is not yet end-to-end runtime-verified. All 44 registered roles have an MVP/foundation; none is considered multiplayer-certified yet.
+
+New team QA checklist: [PARADOX + Anomaly](docs/PARADOX_TEAM_QA.md). This is a development milestone, not a confirmed live multiplayer release.
 
 Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronized randomized 100% final event are implemented in code; in-game runtime verification is still required.
 
@@ -89,7 +91,8 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 | Swapper | Crewmate | During meetings, click two swap arrows beside the players' voting cards, or use `/swap ID1 ID2` in Free Chat as a fallback. The votes FOR the two players are exchanged; if the swap changes the exile to a Crewmate, Swapper dies. | Partial | Live voting UI, post-exile punishment, compatibility and multiplayer verification |
 | Sheriff | Crewmate | Shoots a suspected Impostor; shooting a non-Impostor instead eliminates Sheriff. | Partial | Host/client murder sync, protection interactions and real match testing |
 | Rift Warden | Crewmate | Original PARADOX role: once per match, breaks one global Paradox role-ability jam without reducing instability. | Partial | Event ordering, Null Field, multi-client synchronization and UI testing |
-| Anomaly | Neutral | Raises the Paradox Meter with Reality Rupture and wins if a living Anomaly survives the 100% event. | Partial | Multiplayer/runtime verification and balance tuning |
+| Anomaly | Neutral | PARADOX's sidekick: +5 Meter pulse; wins alongside a living PARADOX after 100% is held for 15 seconds. Inherits PARADOX once if the leader dies, reducing Meter by 20. | Partial | Multiplayer/runtime verification and balance tuning |
+| PARADOX | Neutral | Neutral leader: +8 Meter rupture, 30s cooldown. Hold 100% for 15s to win with a living Anomaly. Identities unlock after 30s; a private F5 direction hint is available every 60s. | Partial | Host/client tests, victory countdown, succession, HUD cues |
 | Forgotten | Neutral | Recovers memories from two unique dead bodies and wins immediately after completing the memory objective. | Partial | Multiplayer/runtime verification and balance tuning |
 | Collector | Neutral | Collects unique samples from three different living players and wins immediately after completing the collection. | Partial | Multiplayer/runtime verification and balance tuning |
 | Bounty Hunter | Neutral | Receives a synchronized bounty target and wins immediately by eliminating that exact target. | Partial | Multiplayer/runtime verification and balance tuning |
@@ -129,13 +132,13 @@ Current Paradox threshold runtime: 25%, 50%, 75% and a host-selected synchronize
 - Stabilizer can reduce the Paradox Meter by up to 10 with a synchronized cooldown.
 - Reactor custom RPC foundation, handshake/client registry, role assignment and meter synchronization.
 - Host can now tune Paradox Meter gains for kills, sabotages, role abilities and Anomaly from the native lobby tab. Values persist and synchronize via host-verified RPC 43 (protocol v40).
-- Host-side initial role assignment covers all 43 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. One enabled Neutral role is selected for the neutral slot and keeps its own objective/win flow. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
+- Host-side initial role assignment covers all 44 registered roles. Eligible Impostor/Crewmate role pools and players are shuffled every match instead of following a fixed roster order. The neutral team slot selects a single independent neutral OR a PARADOX+Anomaly pair (when both pass spawn rolls and two crew slots are available). Anomaly never spawns alone. A role's spawn chance controls its eligibility roll, not the percentage of players who receive it.
 - English/Polish localization foundation.
 - Lobby UI: role summary now shows six roles per page, cycles through faction pages with a click, and carries the PARADOX by DonMillson credit without a separate overlay obscuring Customize.
 - Former solo-map testing via F7 is disabled in release/dev standard builds; the unfinished lobby map-test button was removed entirely. Production Unity geometry remains separate under `unity/ParadoxStation/`.
 - PARADOX STATION: production map geometry/build scripts now generate all 12 connected room positions, 16 full collision-aware corridor routes and asset-bundle-ready Unity scene authoring; native ShipStatus tasks, vents and map choice are still pending. See [Production map development](docs/STATION_PRODUCTION.md).
 - Match-end state reset for implemented MVP roles.
-- GitHub Actions checks all 43 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
+- GitHub Actions checks all 44 registered roles/RPC identifiers and the station room graph, then compiles and packages Paradox.dll.
 
 ## Twelve-room station artwork
 
@@ -146,7 +149,7 @@ PARADOX STATION now has **12 distinct illustrated room concepts**, each exported
 1. Runtime-test Doppelgänger ability UX, host validation, synchronized disguise timer/cooldown and restoration.
 2. Runtime-test Parasite, Guardian, Medic and Stabilizer interactions in multiplayer.
 3. Runtime-test Witness/Observer HUD and replace placeholder clues/traces with real match evidence.
-4. Runtime-test Anomaly neutral assignment, Reality Rupture ability and 100% custom win condition.
+4. Runtime-test PARADOX + Anomaly duo assignment, separate abilities, 15-second 100% hold, promotion on death, partner reveal and joint win screen.
 5. Add host settings UI for role pool, spawn chances, cooldowns, Meter and events.
 6. Complete PARADOX STATION gameplay map and tasks.
 7. Expand the Paradox event pool and continue implementing registered roles.
