@@ -52,5 +52,6 @@ public enum ParadoxRpcId : uint
     StationVentRequest = 47,
     SwapperMeeting = 48,
     SheriffShot = 49,
-    RiftWardenBurst = 50
+    RiftWardenBurst = 50,
+    ParadoxRupture = 51
 }

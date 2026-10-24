@@ -12,8 +12,6 @@ public static class AnomalyHudPatch
     [HarmonyPostfix]
     public static void HudUpdatePostfix(HudManager __instance)
     {
-        AnomalyRole.UpdateHost();
-
         var local = PlayerControl.LocalPlayer;
         if (local == null || __instance.AbilityButton == null)
             return;

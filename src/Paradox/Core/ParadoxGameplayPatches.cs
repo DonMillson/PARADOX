@@ -25,6 +25,7 @@ using ParadoxSeerRole = Paradox.Roles.Seer.SeerRole;
 using Paradox.Roles.Forensic;
 using Paradox.Roles.Stabilizer;
 using Paradox.Roles.Anomaly;
+using Paradox.Roles.ParadoxTeam;
 using ParadoxBountyHunterRole = Paradox.Roles.BountyHunter.BountyHunterRole;
 using ParadoxHarbingerRole = Paradox.Roles.Harbinger.HarbingerRole;
 using ParadoxCollectorRole = Paradox.Roles.Collector.CollectorRole;
@@ -121,6 +122,7 @@ public static class ParadoxGameplayPatches
         ForensicRole.ResetRuntime();
         StabilizerRole.ResetRuntime();
         AnomalyRole.ResetRuntime();
+        ParadoxRole.ResetRuntime();
         ParadoxBountyHunterRole.ResetRuntime();
         ParadoxHarbingerRole.ResetRuntime();
         ParadoxCollectorRole.ResetRuntime();

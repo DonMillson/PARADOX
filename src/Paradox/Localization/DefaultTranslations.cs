@@ -102,10 +102,21 @@ public static class DefaultTranslations
         Add(l, "role.Parasite.feedback.source", "Target infected. Incubation: {seconds}s.", "Cel zarażony. Inkubacja: {seconds}s.");
         Add(l, "role.Parasite.feedback.target", "Something feels wrong...", "Coś jest nie tak...");
         AddRole(l, "Anomaly", "Anomaly", "Anomalia",
-            "Drive the Paradox Meter toward 100%.", "Doprowadź Miernik Paradoksu do 100%.");
+            "Help your hidden PARADOX ally charge the meter to 100%. Win together.",
+            "Pomagaj ukrytemu sojusznikowi PARADOX naładować miernik do 100%. Wygrajcie razem.");
         Add(l, "role.Anomaly.ability", "RUPTURE", "ROZERWIJ");
         Add(l, "role.Anomaly.pulse", "Reality rupture: Paradox Meter +5.", "Rozdarcie rzeczywistości: Miernik Paradoksu +5.");
-        Add(l, "role.Anomaly.win", "ANOMALY WINS", "ANOMALIA WYGRYWA");
+        Add(l, "role.Anomaly.win", "PARADOX TEAM WINS", "DRUŻYNA PARADOX WYGRYWA");
+        AddRole(l, "Paradox", "PARADOX", "PARADOX",
+            "Raise the Paradox Meter to 100% and survive the 15-second collapse with Anomaly.",
+            "Podnieś Miernik Paradoksu do 100% i przetrwaj 15 sekund rozpadu razem z Anomalią.");
+        Add(l, "role.Paradox.ability", "RUPTURE", "PĘKNIĘCIE");
+        Add(l, "role.Paradox.win", "REALITY HAS COLLAPSED — PARADOX WINS", "RZECZYWISTOŚĆ UPADŁA — PARADOX WYGRYWA");
+        Add(l, "role.Paradox.hidden", "An ally exists. Identity reveals after 30 seconds.", "Masz sojusznika. Tożsamość ujawni się po 30 sekundach.");
+        Add(l, "role.Paradox.revealed", "ALLY: {player} (color {color}). Press F5 for direction once every 60s.", "SOJUSZNIK: {player} (kolor {color}). F5 wskazuje kierunek raz na 60 s.");
+        Add(l, "role.Paradox.near", "PARADOX LINK — ally nearby.", "WIĘŹ PARADOX — sojusznik jest blisko.");
+        Add(l, "role.Paradox.direction", "ALLY DIRECTION: {direction}", "KIERUNEK SOJUSZNIKA: {direction}");
+        Add(l, "role.Paradox.promoted", "ANOMALY ASCENDS. Meter -20. You are PARADOX.", "ANOMALIA PRZEJMUJE WŁADZĘ. Miernik -20. Jesteś PARADOXEM.");
         AddRole(l, "Observer", "Observer", "Obserwator",
             "Detect traces left by unusual abilities.", "Wykrywaj ślady pozostawione przez niezwykłe zdolności.");
         Add(l, "role.Observer.trace", "Observer: ability trace detected (player {player}).", "Obserwator: wykryto ślad użycia zdolności (gracz {player}).");

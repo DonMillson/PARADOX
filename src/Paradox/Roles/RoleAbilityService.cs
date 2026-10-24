@@ -5,7 +5,7 @@ namespace Paradox.Roles;
 
 public static class RoleAbilityService
 {
-    public static bool Use(PlayerControl source, RoleId role)
+    public static bool Use(PlayerControl source, RoleId role, bool chargeMeter = true)
     {
         if (source == null ||
             AmongUsClient.Instance == null ||
@@ -31,7 +31,8 @@ public static class RoleAbilityService
             assignedRole != role)
             return false;
 
-        ParadoxGame.AddFrom(ParadoxMeterSource.RoleAbility);
+        if (chargeMeter)
+            ParadoxGame.AddFrom(ParadoxMeterSource.RoleAbility);
         ObserverNetwork.BroadcastTrace(source);
 
         ParadoxPlugin.Instance.Log.LogInfo(

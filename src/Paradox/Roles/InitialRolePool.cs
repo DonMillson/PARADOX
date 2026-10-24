@@ -46,6 +46,7 @@ public static class InitialRolePool
     public static IReadOnlyList<RoleId> Neutral { get; } = new[]
     {
         RoleId.Anomaly,
+        RoleId.Paradox,
         RoleId.Forgotten,
         RoleId.BountyHunter,
         RoleId.Survivor,

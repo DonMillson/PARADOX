@@ -33,6 +33,7 @@ public static class ParadoxRoleSettings
         [RoleId.Forensic] = true,
         [RoleId.Stabilizer] = true,
         [RoleId.Anomaly] = true,
+        [RoleId.Paradox] = true,
         [RoleId.Forgotten] = true,
         [RoleId.BountyHunter] = true,
         [RoleId.Survivor] = true,
@@ -80,6 +81,7 @@ public static class ParadoxRoleSettings
         [RoleId.Forensic] = 100,
         [RoleId.Stabilizer] = 100,
         [RoleId.Anomaly] = 100,
+        [RoleId.Paradox] = 100,
         [RoleId.Forgotten] = 100,
         [RoleId.BountyHunter] = 100,
         [RoleId.Survivor] = 100,
@@ -201,6 +203,8 @@ public static class ParadoxRoleSettings
     public static float TechnicianCooldownSeconds { get; set; } = 30f;
 
     public static float SheriffCooldownSeconds { get; set; } = 30f;
+    public static float ParadoxRuptureCooldownSeconds { get; set; } = 30f;
+    public static float ParadoxRuptureMeterGain { get; set; } = 8f;
 
     public static bool IsImplemented(RoleId role) => role is
         RoleId.Doppelganger or
@@ -230,6 +234,7 @@ public static class ParadoxRoleSettings
         RoleId.Forensic or
         RoleId.Stabilizer or
         RoleId.Anomaly or
+        RoleId.Paradox or
         RoleId.Forgotten or
         RoleId.BountyHunter or
         RoleId.Survivor or
@@ -365,5 +370,7 @@ public static class ParadoxRoleSettings
         TechnicianShieldDurationSeconds = 15f;
         TechnicianCooldownSeconds = 30f;
         SheriffCooldownSeconds = 30f;
+        ParadoxRuptureCooldownSeconds = 30f;
+        ParadoxRuptureMeterGain = 8f;
     }
 }

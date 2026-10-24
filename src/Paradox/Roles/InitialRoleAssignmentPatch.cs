@@ -14,6 +14,7 @@ public static class InitialRoleAssignmentPatch
             return;
 
         RoleAssignment.Reset();
+        Paradox.Roles.ParadoxTeam.ParadoxRole.ResetRuntime();
 
         var enabledImpostorRoles = BuildEnabledPool(InitialRolePool.Impostor);
         var enabledCrewRoles = BuildEnabledPool(InitialRolePool.Crewmate);
@@ -44,15 +45,33 @@ public static class InitialRoleAssignmentPatch
             RoleAssignment.Assign(impostors[i], role);
         }
 
-        if (crew.Count > 0 && enabledNeutralRoles.Count > 0)
-        {
-            var neutralIndex = UnityEngine.Random.Range(0, crew.Count);
-            var neutralPlayer = crew[neutralIndex];
-            var neutralRole = enabledNeutralRoles[
-                UnityEngine.Random.Range(0, enabledNeutralRoles.Count)];
+        // PARADOX + Anomaly are one neutral *team* and require two crew seats.
+        // Lone Anomaly cannot be picked; both roles must pass their spawn rolls.
+        var candidates = enabledNeutralRoles
+            .Where(role => role != RoleId.Anomaly && role != RoleId.Paradox)
+            .ToList();
+        if (crew.Count >= 2 &&
+            enabledNeutralRoles.Contains(RoleId.Paradox) &&
+            enabledNeutralRoles.Contains(RoleId.Anomaly))
+            candidates.Add(RoleId.Paradox);
 
-            RoleAssignment.Assign(neutralPlayer, neutralRole);
-            crew.RemoveAt(neutralIndex);
+        if (crew.Count > 0 && candidates.Count > 0)
+        {
+            var choice = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+            var firstIndex = UnityEngine.Random.Range(0, crew.Count);
+            var first = crew[firstIndex];
+            RoleAssignment.Assign(first, choice);
+            crew.RemoveAt(firstIndex);
+
+            if (choice == RoleId.Paradox)
+            {
+                var secondIndex = UnityEngine.Random.Range(0, crew.Count);
+                var second = crew[secondIndex];
+                RoleAssignment.Assign(second, RoleId.Anomaly);
+                Paradox.Roles.ParadoxTeam.ParadoxRole.InitializePairHost(
+                    first.PlayerId, second.PlayerId);
+                crew.RemoveAt(secondIndex);
+            }
         }
 
         // Swapper currently owns one global pair of targets per meeting.

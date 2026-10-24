@@ -14,5 +14,5 @@ public enum RoleId
 
     // Neutral
     Anomaly = 30, Forgotten, Collector, BountyHunter, Survivor,
-    Revenant, JesterX, Phantom, Opportunist, Harbinger
+    Revenant, JesterX, Phantom, Opportunist, Harbinger, Paradox = 43
 }

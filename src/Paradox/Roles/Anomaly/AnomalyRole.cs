@@ -10,12 +10,7 @@ namespace Paradox.Roles.Anomaly;
 
 public static class AnomalyRole
 {
-    public const int CustomWinReason = 120;
-
     private static readonly Dictionary<byte, float> CooldownEndsAt = new();
-    private static bool _winArmed;
-    private static bool _endSent;
-    private static float _winAt;
 
     public static bool IsAnomaly(byte playerId) =>
         PlayerRoleRegistry.TryGet(playerId, out var role) && role == RoleId.Anomaly;
@@ -64,57 +59,6 @@ public static class AnomalyRole
             Time.time + Math.Max(0f, cooldownSeconds);
     }
 
-    public static void UpdateHost()
-    {
-        if (AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost || _endSent)
-            return;
-
-        var anomaly = FindLivingAnomaly();
-        if (anomaly == null)
-        {
-            _winArmed = false;
-            _winAt = 0f;
-            return;
-        }
-
-        if (ParadoxGame.State.Meter < 100f)
-            return;
-
-        if (!_winArmed)
-        {
-            _winArmed = true;
-            _winAt = Time.time + 12f;
-            ParadoxPlugin.Instance.Log.LogInfo(
-                $"Anomaly win armed for player {anomaly.PlayerId}; resolving after the 100% event.");
-            return;
-        }
-
-        if (Time.time < _winAt)
-            return;
-
-        _endSent = true;
-        GameManager.Instance.RpcEndGame(
-            (GameOverReason)CustomWinReason,
-            false);
-    }
-
-    private static PlayerControl? FindLivingAnomaly()
-    {
-        foreach (var player in PlayerControl.AllPlayerControls)
-        {
-            if (player == null ||
-                !IsAnomaly(player.PlayerId) ||
-                player.Data == null ||
-                player.Data.IsDead ||
-                player.Data.Disconnected)
-                continue;
-
-            return player;
-        }
-
-        return null;
-    }
-
     private static void BroadcastAcceptedPulse(byte playerId)
     {
         var sender = PlayerControl.LocalPlayer;
@@ -150,11 +94,5 @@ public static class AnomalyRole
         }
     }
 
-    public static void ResetRuntime()
-    {
-        CooldownEndsAt.Clear();
-        _winArmed = false;
-        _endSent = false;
-        _winAt = 0f;
-    }
+    public static void ResetRuntime() => CooldownEndsAt.Clear();
 }

@@ -79,9 +79,10 @@ var translations = DefaultTranslations.Create();
 var englishKeys = translations.Keys(Language.English).ToHashSet();
 var polishKeys = translations.Keys(Language.Polish).ToHashSet();
 Check(englishKeys.SetEquals(polishKeys), "EN and PL language key coverage match");
-Check(Enum.GetValues<RoleId>().Length == 43, "43 unique registered roles");
+Check(Enum.GetValues<RoleId>().Length == 44, "44 unique registered roles");
 Check((int)RoleId.Swapper == 40 && (int)RoleId.Sheriff == 41 &&
-      (int)RoleId.RiftWarden == 42 && (int)RoleId.Anomaly == 30,
+      (int)RoleId.RiftWarden == 42 && (int)RoleId.Anomaly == 30 &&
+      (int)RoleId.Paradox == 43,
       "network role identifiers are backward compatible");
 
 foreach (var role in Enum.GetNames<RoleId>())
@@ -106,8 +107,31 @@ foreach (var key in englishKeys)
         .Select(match => match.Value).OrderBy(x => x).ToArray();
     Check(enTokens.SequenceEqual(plTokens), $"localization token mismatch: {key}");
 }
-Console.WriteLine($"PASS: bilingual localization ({englishKeys.Count} EN/PL keys, 43 roles, placeholder parity).");
+Console.WriteLine($"PASS: bilingual localization ({englishKeys.Count} EN/PL keys, 44 roles, placeholder parity).");
 
+
+
+// The production PARADOX duel-state rules (headless).
+var duo = new Paradox.Roles.ParadoxTeam.ParadoxTeamRules();
+Check(!duo.Tick(0f, 99f, true), "PARADOX cannot win under 100%");
+Check(!duo.Tick(1f, 100f, true), "PARADOX starts at 100%");
+Check(!duo.Tick(15f, 100f, true), "PARADOX requires 15 seconds");
+Check(duo.Tick(16f, 100f, true), "PARADOX win after 15 seconds");
+Check(!duo.Tick(17f, 100f, true), "no duplicate victory");
+duo.Reset();
+Check(!duo.Tick(1f, 100f, true), "new round starts a new countdown");
+Check(!duo.Tick(10f, 99f, true), "stabilizer cancels countdown");
+Check(!duo.Tick(11f, 100f, true), "countdown restarts");
+Check(!duo.Tick(25f, 100f, true), "no early win after drop");
+Check(duo.Tick(26f, 100f, true), "full restarted hold wins");
+duo.Reset();
+Check(!duo.TryPromote(true, true), "no promotion with living leader");
+Check(!duo.TryPromote(false, false), "dead sidekick cannot promote");
+Check(duo.TryPromote(false, true), "sidekick inherits once");
+Check(!duo.TryPromote(false, true), "no duplicate promotion");
+Check(Paradox.Roles.ParadoxTeam.ParadoxTeamRules.SuccessionMeterPenalty == 20f,
+    "promotion lowers meter by 20");
+Console.WriteLine("PASS: PARADOX countdown, cancel and Anomaly succession.");
 
 // 50-seat mode must stay opt-in and must never unlock on official/unknown regions.
 Check(LargeLobbyPolicy.VanillaMaxPlayers == 15, "default Among Us cap stays 15");
