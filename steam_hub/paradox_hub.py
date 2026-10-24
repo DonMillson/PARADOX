@@ -21,6 +21,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 from launcher_python import paradox_visuals as art
+from launcher_python.paradox_exact_install import ParadoxExactInstall
 from launcher_python.paradox_install_ui import ParadoxInstallProgress
 from launcher_python.lobby_config import write_lobby_config
 from launcher_python.mod_health import (
@@ -84,6 +85,7 @@ class ParadoxHub(ctk.CTk):
         self.busy = False
         self.installed_since: float | None = None
         self.events: queue.Queue[tuple] = queue.Queue()
+        self.exact_overlay = None
         self.nav_buttons: dict[str, ctk.CTkButton] = {}
         self.progress_label = None
         self.progress_bar = None
@@ -393,6 +395,14 @@ class ParadoxHub(ctk.CTk):
     def _set_progress(self, amount: float, text: str) -> None:
         if self.progress_bar is not None and self.progress_label is not None:
             self.progress_bar.set(amount, text)
+        if self.exact_overlay is not None and self.exact_overlay.winfo_exists():
+            self.exact_overlay.set_progress(amount, text)
+
+    def _close_exact_overlay(self):
+        if self.exact_overlay is not None:
+            if self.exact_overlay.winfo_exists():
+                self.exact_overlay.close()
+            self.exact_overlay = None
 
     def install_mod(self):
         if self.busy:
@@ -415,6 +425,8 @@ class ParadoxHub(ctk.CTk):
         ):
             return
         self.busy = True
+        self.exact_overlay = ParadoxExactInstall(
+            self, width=min(1280, max(900, self.winfo_screenwidth()-40)))
         self._set_progress(0.02, "KONTROLA PRZED INSTALACJĄ")
         threading.Thread(target=self._install_worker,
                          args=(game, enabled, cap),
@@ -512,6 +524,7 @@ class ParadoxHub(ctk.CTk):
                     self.busy = False
                     self.installed_since = event[-1] if event[0] != "uninstalled" else None
                     self._set_progress(1, "PLIKI GOTOWE / SPRAWDŹ GRĘ")
+                    self._close_exact_overlay()
                     if event[0] == "warning":
                         messagebox.showwarning("PARADOX",
                             "Pliki skopiowano, ale ustawienia lobby nie zostały "
@@ -529,6 +542,7 @@ class ParadoxHub(ctk.CTk):
                         self.refresh_health()
                 elif event[0] == "error":
                     self.busy = False
+                    self._close_exact_overlay()
                     messagebox.showerror("PARADOX / ERROR",
                                          event[1][-2000:], parent=self)
         except queue.Empty:

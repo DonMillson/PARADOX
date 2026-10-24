@@ -21,6 +21,7 @@ from launcher_python.lobby_config import write_lobby_config
 from launcher_python.mod_health import inspect_install, diagnosis_text, build_support_report
 from launcher_python import paradox_visuals as art
 from launcher_python.paradox_install_ui import ParadoxInstallProgress
+from launcher_python.paradox_exact_install import ParadoxExactInstall
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -162,6 +163,7 @@ class ParadoxLauncher(ctk.CTk):
         self.large_lobby_capacity = tk.StringVar(value="50")
         self.events: queue.Queue[tuple] = queue.Queue()
         self.worker_busy = False
+        self.exact_overlay = None
         self.installed_after: float | None = None
         self.animation_id: str | None = None
         self.board: tk.Canvas | None = None
@@ -541,6 +543,8 @@ class ParadoxLauncher(ctk.CTk):
         if self.stage != 3:
             return
         self.progress.set(amount, message)
+        if self.exact_overlay is not None and self.exact_overlay.winfo_exists():
+            self.exact_overlay.set_progress(amount, message)
 
     def start_install(self) -> None:
         if self.worker_busy or not (self.hunt_passed and self.math_passed):
@@ -578,6 +582,9 @@ class ParadoxLauncher(ctk.CTk):
         self.worker_busy = True
         self.installed_after = None
         self.install_button.configure(state="disabled")
+        # Display the actual approved installer artwork while the real worker runs.
+        self.exact_overlay = ParadoxExactInstall(
+            self, width=min(1280, max(900, self.winfo_screenwidth()-40)))
         self.set_progress(0.02, "Łączenie z serwerami")
         support = game / ".paradox-installer"
         threading.Thread(target=self.install_worker,
@@ -632,6 +639,12 @@ class ParadoxLauncher(ctk.CTk):
         except Exception as exc:
             self.events.put(("error", str(exc)))
 
+    def _close_exact_overlay(self) -> None:
+        if self.exact_overlay is not None:
+            if self.exact_overlay.winfo_exists():
+                self.exact_overlay.close()
+            self.exact_overlay = None
+
     def check_events(self) -> None:
         try:
             while True:
@@ -645,6 +658,7 @@ class ParadoxLauncher(ctk.CTk):
                     self.install_button.configure(state="normal", text="NAPRAW / ZAINSTALUJ PONOWNIE")
                     self.launch_button.configure(state="normal")
                     self.check_mods(popup=False)
+                    self._close_exact_overlay()
                     messagebox.showinfo("PARADOX — pliki skopiowane",
                                         "BepInEx, Reactor i PARADOX są w folderze gry.\n"
                                         "To NIE oznacza jeszcze, że mod się uruchomił.\n\n"
@@ -657,6 +671,7 @@ class ParadoxLauncher(ctk.CTk):
                     self.install_button.configure(state="normal", text="NAPRAW / ZAINSTALUJ PONOWNIE")
                     self.launch_button.configure(state="normal")
                     self.check_mods(popup=False)
+                    self._close_exact_overlay()
                     messagebox.showwarning("PARADOX — ustawienia lobby",
                         "Mod został zainstalowany, ale nie zapisano wybranego "
                         "limitu graczy: " + event[1], parent=self)
@@ -664,6 +679,7 @@ class ParadoxLauncher(ctk.CTk):
                     self.worker_busy = False
                     self.install_button.configure(state="normal")
                     self.progress_status.configure(text="BŁĄD INSTALACJI", text_color=RED)
+                    self._close_exact_overlay()
                     messagebox.showerror("PARADOX — błąd", event[1][-1800:],
                                          parent=self)
         except queue.Empty:

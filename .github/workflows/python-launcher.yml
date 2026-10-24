@@ -97,7 +97,7 @@ jobs:
       - name: Build single online updater launcher EXE
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --icon "dist/branding/paradox.ico" --name "PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --icon "dist/branding/paradox.ico" --name "PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64" --collect-all customtkinter --collect-all PIL --add-data "launcher_python/assets/paradox_installer_reference.webp;launcher_python/assets" --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
           if ($LASTEXITCODE -ne 0) { throw "PyInstaller build failed" }
           $exe=Get-Item "dist/PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64.exe"
           if ($exe.Length -lt 1000000) { throw "Missing or invalid bundled EXE" }
@@ -110,7 +110,7 @@ jobs:
         run: |
           $archive=python -m PyInstaller.utils.cliutils.archive_viewer "dist/PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64.exe" -b 2>&1
           $txt=$archive | Out-String
-          foreach ($name in @('Install-Paradox.ps1', 'Paradox.dll', 'compatibility.json')) {
+          foreach ($name in @('Install-Paradox.ps1', 'Paradox.dll', 'compatibility.json', 'paradox_installer_reference.webp')) {
             if (-not $txt.Contains($name)) { throw "Missing archived component: $name" }
           }
           if ($txt.Contains('BepInEx/core') -or $txt.Contains('Reactor.dll')) { throw "Online EXE must not bundle outdated loader files" }
