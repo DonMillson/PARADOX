@@ -20,6 +20,7 @@ from launcher_python.online_dependencies import stage_live_dependencies
 from launcher_python.lobby_config import write_lobby_config
 from launcher_python.mod_health import inspect_install, diagnosis_text, build_support_report
 from launcher_python import paradox_visuals as art
+from launcher_python.paradox_install_ui import ParadoxInstallProgress
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -147,8 +148,8 @@ class ParadoxLauncher(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
         self.title("PARADOX AMONG US • Launcher / Installer")
-        self.geometry("1000x840")
-        self.minsize(880, 770)
+        self.geometry("1230x900")
+        self.minsize(990, 730)
         self.configure(fg_color=BACKGROUND)
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.stage = 0
@@ -175,10 +176,10 @@ class ParadoxLauncher(ctk.CTk):
         top = ctk.CTkFrame(self, fg_color="#0D1727", corner_radius=0,
                            border_width=2, border_color="#31485F")
         top.pack(fill="x", padx=19, pady=(17, 8))
-        banner = tk.Canvas(top, width=930, height=96, bg="#0B1422",
+        banner = tk.Canvas(top, width=1160, height=122, bg="#0B1422",
                            highlightthickness=0)
         banner.pack(fill="x", padx=2, pady=2)
-        art.header(banner, 930, 96)
+        art.header(banner, 1160, 122)
 
         mission = ctk.CTkFrame(self, fg_color="#182838", corner_radius=7,
                                border_width=1, border_color=FRAME)
@@ -195,11 +196,10 @@ class ParadoxLauncher(ctk.CTk):
             lbl.pack(side="left", expand=True, padx=4, pady=3)
             self.status_items.append(lbl)
 
-        self.content = ctk.CTkFrame(
-            self, fg_color=CARD, corner_radius=8,
-            border_width=2, border_color="#47607A")
+        self.content = ctk.CTkScrollableFrame(
+            self, fg_color="#0B1023", corner_radius=8,
+            border_width=2, border_color="#7544B7")
         self.content.pack(fill="both", expand=True, padx=19, pady=(0, 8))
-        self.content.pack_propagate(False)
 
         foot = ctk.CTkFrame(self, fg_color="#132236", corner_radius=0)
         foot.pack(fill="x", padx=19, pady=(0, 13))
@@ -435,9 +435,9 @@ class ParadoxLauncher(ctk.CTk):
         if not self.hunt_passed or not self.math_passed:
             self.show_stage(1 if not self.hunt_passed else 2)
             return
-        self.title_block("CARGO BAY  /  MONTAŻ SYSTEMÓW",
-                         "Cel: Among Us. Wybierz folder gry, przygotuj BepInEx i Reactor, "
-                         "a potem zainstaluj PARADOX.")
+        self.title_block("INSTALOWANIE SYSTEMÓW PARADOX",
+                         "PARADOX / AMONG US MOD • Wybierz folder gry, "
+                         "przygotuj BepInEx oraz Reactor i rozpocznij instalację.")
         form = ctk.CTkFrame(self.content, fg_color="#1A2D40", corner_radius=6,
                             border_width=2, border_color="#60758A")
         form.pack(fill="x", padx=30, pady=(12, 19))
@@ -480,15 +480,10 @@ class ParadoxLauncher(ctk.CTk):
                      text_color=MUTED, font=ctk.CTkFont(size=11)
                      ).pack(side="left", padx=12)
 
-        self.progress = ctk.CTkProgressBar(self.content, height=15,
-                                           progress_color=YELLOW, fg_color="#263550",
-                                           corner_radius=3)
-        self.progress.pack(fill="x", padx=33, pady=(24, 3))
+        self.progress = ParadoxInstallProgress(self.content)
+        self.progress.pack(fill="x", padx=30, pady=(13, 10))
         self.progress.set(0)
-        self.progress_status = ctk.CTkLabel(self.content, text="GOTOWY  /  0%",
-                                            text_color=CYAN,
-                                            font=ctk.CTkFont(size=16, weight="bold"))
-        self.progress_status.pack(pady=(9, 13))
+        self.progress_status = self.progress.status_label
         self.install_button = ctk.CTkButton(self.content, text="▶  ZAINSTALUJ PARADOX",
                                             width=312, height=52, fg_color=RED,
                                             hover_color="#BD253F", text_color=WHITE,
@@ -545,8 +540,7 @@ class ParadoxLauncher(ctk.CTk):
     def set_progress(self, amount: float, message: str) -> None:
         if self.stage != 3:
             return
-        self.progress.set(max(0.0, min(1.0, amount)))
-        self.progress_status.configure(text=f"{message}   /   {int(amount * 100)}%")
+        self.progress.set(amount, message)
 
     def start_install(self) -> None:
         if self.worker_busy or not (self.hunt_passed and self.math_passed):

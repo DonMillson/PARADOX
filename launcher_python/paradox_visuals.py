@@ -135,20 +135,67 @@ def poster(canvas: tk.Canvas, width: int = 780, height: int = 290) -> None:
 
 
 def header(canvas: tk.Canvas, width: int = 920, height: int = 96) -> None:
-    canvas.create_rectangle(0, 0, width, height, fill="#0B1422", outline="")
-    hazard_stripe(canvas, 0, height - 12, width, 12)
-    canvas.create_rectangle(13, 13, 71, 74, fill="#16243A",
-                            outline="#7895A8", width=2)
-    crew(canvas, 44, 52, .43, RED)
-    canvas.create_text(89, 31, text="PARADOX", anchor="w",
-                       font=("Segoe UI Black", 32, "bold"), fill=WHITE)
-    canvas.create_text(90, 62, text="AMONG US  //  MOD INSTALLER",
-                       anchor="w", font=("Consolas", 14, "bold"), fill=YELLOW)
-    canvas.create_text(width - 20, 30, text="SECURITY LEVEL: RED",
-                       anchor="e", font=("Consolas", 11, "bold"), fill=RED)
-    canvas.create_text(width - 20, 54, text="BY DONMILLSON",
-                       anchor="e", font=("Consolas", 12, "bold"), fill=TURQUOISE)
-
+    """Space-rift banner: PARADOX magenta anomaly and crewmate HUD."""
+    canvas.create_rectangle(0, 0, width, height, fill="#070717", outline="")
+    rng = random.Random(9127)
+    for _ in range(max(90, width // 6)):
+        sx = rng.randrange(0, width)
+        sy = rng.randrange(0, height)
+        canvas.create_oval(sx, sy, sx+rng.choice((1, 2)), sy+1,
+                           fill=rng.choice(("#8B55E3", "#A747F4", "#6F4C9D",
+                                            "#F4D1FF", "#EA346E")), outline="")
+    # Panoramic space-time tear on the right side of the banner.
+    cx, cy = width * .77, height * .46
+    radius = height * .78
+    for i in range(17):
+        rr = radius - i * height * .031
+        hue = ("#431471", "#6524BD", "#C021D4", "#FF2A90",
+               "#EE3664", "#7D37EA")[i % 6]
+        canvas.create_arc(cx-rr*1.65, cy-rr, cx+rr*1.65, cy+rr,
+                          start=17+i*7, extent=294-i*2, outline=hue,
+                          width=max(1, int(height / 48)))
+    canvas.create_oval(cx-radius*.50, cy-radius*.40,
+                       cx+radius*.50, cy+radius*.40,
+                       fill="#040410", outline="#AB31D8", width=2)
+    for n in range(21):
+        ax = width*.51 + n*width*.023
+        ay = height*.43 + math.sin(n*.92)*height*.25
+        canvas.create_polygon(
+            ax, ay-4, ax+8, ay-11, ax+12, ay+4, ax-4, ay+8,
+            fill=("#170B29", "#271134", "#401745")[n % 3],
+            outline="#702B89")
+    # Sharp spaceship plating and warning geometry.
+    canvas.create_polygon(0, 0, width*.42, 0, width*.40, height*.14,
+                          0, height*.14, fill="#0C0B20", outline="#7434AA",
+                          width=2)
+    canvas.create_polygon(0, height*.78, width*.42, height*.78,
+                          width*.46, height, 0, height,
+                          fill="#110B23", outline="#7232A5", width=2)
+    canvas.create_rectangle(16, 10, width*.46, height*.78,
+                            fill="#0D091C", outline="#7D36BB", width=2)
+    crew(canvas, 51, height*.49, height/220, suit="#E13268")
+    canvas.create_text(100, height*.42, text="PARADOX", anchor="w",
+                       fill="#EBB9FF", font=("Segoe UI Black",
+                       max(24, round(height*.29)), "bold"))
+    canvas.create_text(105, height*.69, text="A M O N G   U S   M O D",
+                       anchor="w", fill="#F6D9FE",
+                       font=("Consolas", max(10, round(height*.115))))
+    canvas.create_rectangle(width-140, 15, width-15, height-19,
+                            outline="#BD287C", width=2, fill="#0B081B")
+    canvas.create_text(width-130, height*.33, anchor="w",
+                       text="CREW", fill="#9D95F7",
+                       font=("Consolas", 12, "bold"))
+    canvas.create_text(width-130, height*.50, anchor="w",
+                       text="SYSTEMS", fill="#9D95F7",
+                       font=("Consolas", 12, "bold"))
+    canvas.create_text(width-130, height*.67, anchor="w",
+                       text="ONLINE", fill="#D54C9B",
+                       font=("Consolas", 12, "bold"))
+    for a in range(9):
+        canvas.create_rectangle(width-157, 17+a*11,
+                                width-152, 22+a*11,
+                                fill="#FF2775", outline="")
+    hazard_stripe(canvas, width*.47, height-9, width*.21, 9, pitch=23)
 
 def hunt_backdrop(canvas: tk.Canvas, width: int = 785,
                   height: int = 327) -> None:

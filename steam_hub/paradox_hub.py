@@ -21,6 +21,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 from launcher_python import paradox_visuals as art
+from launcher_python.paradox_install_ui import ParadoxInstallProgress
 from launcher_python.lobby_config import write_lobby_config
 from launcher_python.mod_health import (
     inspect_install, diagnosis_text, build_support_report,
@@ -124,10 +125,11 @@ class ParadoxHub(ctk.CTk):
                      font=ctk.CTkFont(family="Consolas", size=12)
                      ).pack(side="bottom", pady=18)
 
-        self.page_host = ctk.CTkFrame(bottom, fg_color=PANEL, corner_radius=5,
-                                       border_width=2, border_color=EDGE)
+        self.page_host = ctk.CTkScrollableFrame(bottom, fg_color="#0B1023",
+                                                 corner_radius=5,
+                                                 border_width=2,
+                                                 border_color="#7544B7")
         self.page_host.pack(side="right", fill="both", expand=True)
-        self.page_host.pack_propagate(False)
 
         ctk.CTkLabel(
             self,
@@ -225,13 +227,10 @@ class ParadoxHub(ctk.CTk):
         ctk.CTkLabel(row, text="Oficjalne serwery nadal: 15 osób",
                      text_color=MUTED).pack(side="left")
 
-        self.progress_bar = ctk.CTkProgressBar(self.page_host,
-                                               progress_color=GOLD, height=18)
-        self.progress_bar.pack(fill="x", padx=29, pady=(24, 4))
+        self.progress_bar = ParadoxInstallProgress(self.page_host)
+        self.progress_bar.pack(fill="x", padx=24, pady=(12, 9))
         self.progress_bar.set(0)
-        self.progress_label = ctk.CTkLabel(self.page_host, text="GOTOWY / 0%",
-                                            text_color=GOLD)
-        self.progress_label.pack(pady=(6, 14))
+        self.progress_label = self.progress_bar.status_label
         buttons = ctk.CTkFrame(self.page_host, fg_color="transparent")
         buttons.pack(pady=9)
         self._btn(buttons, "▶  ZAINSTALUJ / NAPRAW",
@@ -393,8 +392,7 @@ class ParadoxHub(ctk.CTk):
 
     def _set_progress(self, amount: float, text: str) -> None:
         if self.progress_bar is not None and self.progress_label is not None:
-            self.progress_bar.set(min(1, max(0, amount)))
-            self.progress_label.configure(text=f"{text}  /  {round(amount * 100)}%")
+            self.progress_bar.set(amount, text)
 
     def install_mod(self):
         if self.busy:
