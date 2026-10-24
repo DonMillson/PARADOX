@@ -177,7 +177,7 @@ def header(canvas: tk.Canvas, width: int = 920, height: int = 96) -> None:
     canvas.create_text(100, height*.42, text="PARADOX", anchor="w",
                        fill="#EBB9FF", font=("Segoe UI Black",
                        max(24, round(height*.29)), "bold"))
-    canvas.create_text(105, height*.69, text="A M O N G   U S   M O D",
+    canvas.create_text(105, height*.69, text="AMONG US  //  MOD",
                        anchor="w", fill="#F6D9FE",
                        font=("Consolas", max(10, round(height*.115))))
     canvas.create_rectangle(width-140, 15, width-15, height-19,
