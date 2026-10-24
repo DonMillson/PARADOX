@@ -195,7 +195,7 @@ def header(canvas: tk.Canvas, width: int = 920, height: int = 96) -> None:
         canvas.create_rectangle(width-157, 17+a*11,
                                 width-152, 22+a*11,
                                 fill="#FF2775", outline="")
-    hazard_stripe(canvas, width*.47, height-9, width*.21, 9, pitch=23)
+    hazard_stripe(canvas, int(width*.47), height-9, int(width*.21), 9, pitch=23)
 
 def hunt_backdrop(canvas: tk.Canvas, width: int = 785,
                   height: int = 327) -> None:
