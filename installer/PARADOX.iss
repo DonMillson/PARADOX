@@ -19,6 +19,7 @@ OutputBaseFilename=PARADOX-Setup-v{#AppVersion}-AmongUs19-x64
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile=..\dist\branding\paradox.ico
 WizardImageFile=..\dist\installer\branding\paradox-sidebar.bmp
 WizardSmallImageFile=..\dist\installer\branding\paradox-header.bmp
 SetupLogging=yes

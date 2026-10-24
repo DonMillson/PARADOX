@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "steam_hub/**"
+      - "scripts/generate_paradox_icon.py"
       - "launcher_python/**"
       - "installer/**"
       - "src/Paradox/**"
@@ -45,7 +46,7 @@ jobs:
       - name: Python dependencies
         shell: pwsh
         run: |
-          python -m pip install --disable-pip-version-check "customtkinter==5.2.2" "pyinstaller==6.16.0"
+          python -m pip install --disable-pip-version-check "customtkinter==5.2.2" "pyinstaller==6.16.0" "Pillow==11.3.0"
           if ($LASTEXITCODE -ne 0) { throw "CustomTkinter / PyInstaller failed" }
 
       - name: Unit tests and syntax checks
@@ -59,10 +60,16 @@ jobs:
           python -m py_compile steam_hub/paradox_hub.py steam_hub/steam_bridge.py
           if ($LASTEXITCODE -ne 0) { throw "Hub syntax failed" }
 
+      - name: Generate custom PARADOX Windows icon
+        shell: pwsh
+        run: |
+          python scripts/generate_paradox_icon.py --output dist/branding/paradox.ico
+          if ($LASTEXITCODE -ne 0) { throw "PARADOX icon generation failed" }
+
       - name: Build PARADOX Hub as one Windows EXE
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --name "PARADOX-Hub-v0.7.0-dev.7-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" steam_hub/paradox_hub.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --icon "dist/branding/paradox.ico" --name "PARADOX-Hub-v0.7.0-dev.7-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" steam_hub/paradox_hub.py
           if ($LASTEXITCODE -ne 0) { throw "Hub build failed" }
           $exe=Get-Item "dist/PARADOX-Hub-v0.7.0-dev.7-x64.exe"
           if ($exe.Length -lt 1000000) { throw "Executable is unexpectedly small" }

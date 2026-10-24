@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "launcher_python/**"
+      - "scripts/generate_paradox_icon.py"
       - "installer/**"
       - "src/Paradox/**"
       - "nuget.config"
@@ -52,7 +53,7 @@ jobs:
       - name: Install Python GUI and packaging dependencies
         shell: pwsh
         run: |
-          python -m pip install --disable-pip-version-check "customtkinter==5.2.2" "pyinstaller==6.16.0"
+          python -m pip install --disable-pip-version-check "customtkinter==5.2.2" "pyinstaller==6.16.0" "Pillow==11.3.0"
           if ($LASTEXITCODE -ne 0) { throw "Python dependencies failed" }
 
       - name: Test loader download resolver and GUI logic without opening UI
@@ -87,10 +88,16 @@ jobs:
           '@ | python -
           if ($LASTEXITCODE -ne 0) { throw "Official download integration test failed" }
 
+      - name: Generate custom PARADOX Windows icon
+        shell: pwsh
+        run: |
+          python scripts/generate_paradox_icon.py --output dist/branding/paradox.ico
+          if ($LASTEXITCODE -ne 0) { throw "PARADOX icon generation failed" }
+
       - name: Build single online updater launcher EXE
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --name "PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --uac-admin --icon "dist/branding/paradox.ico" --name "PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64" --collect-all customtkinter --add-data "src/Paradox/bin/Release/net6.0/Paradox.dll;mod" --add-data "launcher_python/compatibility.json;launcher_python" --add-data "installer/Install-Paradox.ps1;installer" --add-data "installer/Uninstall-Paradox.ps1;installer" launcher_python/paradox_launcher.py
           if ($LASTEXITCODE -ne 0) { throw "PyInstaller build failed" }
           $exe=Get-Item "dist/PARADOX-AMONG-US-Ship-Launcher-v0.7.0-dev.7-x64.exe"
           if ($exe.Length -lt 1000000) { throw "Missing or invalid bundled EXE" }
